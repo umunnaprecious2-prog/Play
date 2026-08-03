@@ -1,0 +1,96 @@
+{
+  "sourceName": "starter-seed",
+  "categories": [
+    {
+      "name": "Genesis",
+      "slug": "genesis",
+      "description": "Creation, beginnings, and early Bible stories",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "name": "Jesus",
+      "slug": "jesus",
+      "description": "The life and teachings of Jesus",
+      "sortOrder": 2,
+      "isActive": true
+    }
+  ],
+  "difficulties": [
+    {
+      "name": "Easy",
+      "slug": "easy",
+      "description": "Simple questions for beginners",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "name": "Medium",
+      "slug": "medium",
+      "description": "Questions that need a little more thinking",
+      "sortOrder": 2,
+      "isActive": true
+    }
+  ],
+  "mediaAssets": [
+    {
+      "name": "Bible cover art",
+      "slug": "bible-cover-art",
+      "url": "https://example.com/media/bible-cover.png",
+      "kind": "image",
+      "altText": "Illustrated Bible cover",
+      "mimeType": "image/png",
+      "source": "starter-seed"
+    }
+  ],
+  "quizQuestions": [
+    {
+      "slug": "genesis-creation-day-one",
+      "categorySlug": "genesis",
+      "difficultySlug": "easy",
+      "prompt": "What did God create on the first day?",
+      "explanation": "God created light on the first day.",
+      "scriptureReference": "Genesis 1:3",
+      "xpReward": 10,
+      "sortOrder": 1,
+      "isActive": true,
+      "options": [
+        { "text": "Light", "isCorrect": true, "sortOrder": 1 },
+        { "text": "Animals", "isCorrect": false, "sortOrder": 2 },
+        { "text": "Plants", "isCorrect": false, "sortOrder": 3 },
+        { "text": "Stars", "isCorrect": false, "sortOrder": 4 }
+      ]
+    },
+    {
+      "slug": "jesus-walked-on-water",
+      "categorySlug": "jesus",
+      "difficultySlug": "medium",
+      "prompt": "Who walked on water?",
+      "explanation": "Jesus walked on water to show His power over creation.",
+      "scriptureReference": "Matthew 14:25",
+      "xpReward": 12,
+      "sortOrder": 2,
+      "isActive": true,
+      "options": [
+        { "text": "Jesus", "isCorrect": true, "sortOrder": 1 },
+        { "text": "Moses", "isCorrect": false, "sortOrder": 2 },
+        { "text": "David", "isCorrect": false, "sortOrder": 3 },
+        { "text": "Noah", "isCorrect": false, "sortOrder": 4 }
+      ]
+    }
+  ],
+  "verses": [
+    {
+      "slug": "john-316",
+      "categorySlug": "jesus",
+      "difficultySlug": "easy",
+      "reference": "John 3:16",
+      "text": "For God so loved the world that he gave his one and only Son.",
+      "translation": "NIV",
+      "memoryHint": "God loves everyone deeply.",
+      "xpReward": 8,
+      "sortOrder": 1,
+      "isActive": true
+    }
+  ]
+}

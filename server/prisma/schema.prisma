@@ -7,10 +7,278 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+enum UserRole {
+  ADMIN
+  SUPER_ADMIN
 }
+
+enum ImportJobType {
+  SEED
+  JSON
+}
+
+enum ImportJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Category {
+  id            String          @id @default(cuid())
+  slug          String          @unique
+  name          String          @unique
+  description   String?
+  sortOrder     Int             @default(0)
+  isActive      Boolean         @default(true)
+  quizQuestions QuizQuestion[]
+  verses        BibleVerse[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model DifficultyLevel {
+  id            String          @id @default(cuid())
+  slug          String          @unique
+  name          String          @unique
+  description   String?
+  sortOrder     Int             @default(0)
+  isActive      Boolean         @default(true)
+  quizQuestions QuizQuestion[]
+  verses        BibleVerse[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model MediaAsset {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  name       String?
+  url        String
+  kind       String   @default("image")
+  altText    String?
+  mimeType   String?
+  source     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model QuizQuestion {
+  id                 String           @id @default(cuid())
+  slug               String           @unique
+  categoryId         String?
+  difficultyId       String?
+  prompt             String
+  explanation        String?
+  scriptureReference String?
+  imageUrl           String?
+  imageAlt           String?
+  xpReward           Int              @default(10)
+  sortOrder          Int              @default(0)
+  isActive           Boolean          @default(true)
+  category           Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  difficulty         DifficultyLevel? @relation(fields: [difficultyId], references: [id], onDelete: SetNull)
+  options            QuizOption[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+model QuizOption {
+  id         String       @id @default(cuid())
+  questionId String
+  text       String
+  isCorrect  Boolean      @default(false)
+  sortOrder  Int          @default(0)
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model BibleVerse {
+  id           String           @id @default(cuid())
+  slug         String           @unique
+  categoryId   String?
+  difficultyId String?
+  reference    String
+  text         String
+  translation  String?
+  memoryHint   String?
+  imageUrl     String?
+  imageAlt     String?
+  xpReward     Int              @default(8)
+  sortOrder    Int              @default(0)
+  isActive     Boolean          @default(true)
+  category     Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  difficulty   DifficultyLevel? @relation(fields: [difficultyId], references: [id], onDelete: SetNull)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model AdminUser {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  passwordHash String
+  role         UserRole        @default(ADMIN)
+  isActive     Boolean         @default(true)
+  sessions     AdminSession[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model AdminSession {
+  id          String    @id @default(cuid())
+  adminUserId String
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+  @@index([expiresAt])
+}
+
+model ImportJob {
+  id               String          @id @default(cuid())
+  type             ImportJobType   @default(JSON)
+  status           ImportJobStatus @default(PENDING)
+  sourceName       String
+  payload          Json?
+  totalRecords     Int             @default(0)
+  processedRecords Int             @default(0)
+  failedRecords    Int             @default(0)
+  errorMessage     String?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model PlayerProfile {
+  id               String              @id @default(cuid())
+  nickname         String              @unique
+  avatarSlug       String?
+  xp               Int                 @default(0)
+  level            Int                 @default(1)
+  stars            Int                 @default(0)
+  streakDays       Int                 @default(0)
+  lastActiveAt     DateTime?
+  totalGamesPlayed Int                 @default(0)
+  totalCorrect     Int                 @default(0)
+  totalIncorrect   Int                 @default(0)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  gameSessions     GameSession[]
+  progressLogs     PlayerProgressLog[]
+  badges           PlayerBadge[]
+  avatarUnlocks    PlayerAvatarUnlock[]
+}
+
+model PlayerProgressLog {
+  id          String        @id @default(cuid())
+  playerId    String
+  actionType  String
+  xpDelta     Int           @default(0)
+  starsDelta  Int           @default(0)
+  streakDelta Int           @default(0)
+  metadata    Json?
+  createdAt   DateTime      @default(now())
+  player      PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([actionType])
+}
+
+model GameSession {
+  id              String             @id @default(cuid())
+  playerId        String
+  gameMode        String
+  status          String             @default("ACTIVE")
+  score           Int                @default(0)
+  xpEarned        Int                @default(0)
+  starsEarned     Int                @default(0)
+  correctCount    Int                @default(0)
+  incorrectCount  Int                @default(0)
+  totalQuestions  Int                @default(0)
+  currentQuestion Int                @default(0)
+  startedAt       DateTime           @default(now())
+  completedAt     DateTime?
+  metadata        Json?
+  player          PlayerProfile      @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  answers         GameSessionAnswer[]
+
+  @@index([playerId])
+  @@index([gameMode])
+  @@index([status])
+}
+
+model GameSessionAnswer {
+  id           String      @id @default(cuid())
+  sessionId    String
+  questionId   String?
+  selectedText String
+  isCorrect    Boolean     @default(false)
+  xpAwarded    Int         @default(0)
+  answeredAt   DateTime    @default(now())
+  metadata     Json?
+  session      GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([questionId])
+}
+
+model Badge {
+  id                String       @id @default(cuid())
+  slug              String       @unique
+  name              String
+  description       String?
+  xpThreshold       Int          @default(0)
+  streakDaysNeeded  Int          @default(0)
+  sortOrder         Int          @default(0)
+  isActive          Boolean      @default(true)
+  unlockedByPlayers PlayerBadge[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
+
+model PlayerBadge {
+  id         String   @id @default(cuid())
+  playerId   String
+  badgeId    String
+  unlockedAt DateTime @default(now())
+  player     PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  badge      Badge         @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, badgeId])
+  @@index([playerId])
+  @@index([badgeId])
+}
+
+model AvatarItem {
+  id                String               @id @default(cuid())
+  slug              String               @unique
+  name              String
+  description       String?
+  unlockXp          Int                  @default(0)
+  unlockLevel       Int                  @default(1)
+  unlockStreakDays  Int                  @default(0)
+  imageUrl          String?
+  sortOrder         Int                  @default(0)
+  isActive          Boolean              @default(true)
+  unlockedByPlayers PlayerAvatarUnlock[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+}
+
+model PlayerAvatarUnlock {
+  id            String      @id @default(cuid())
+  playerId      String
+  avatarItemId  String
+  unlockedAt    DateTime    @default(now())
+  player        PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  avatarItem    AvatarItem    @relation(fields: [avatarItemId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, avatarItemId])
+  @@index([playerId])
+  @@index([avatarItemId])
+}
+

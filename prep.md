@@ -104,3 +104,4 @@ Backend and PostgreSQL deployed on Railway or Render.
 The codebase should be clean, modular, scalable, and easy to maintain. Features should be designed with future expansion in mind, allowing additional games, categories, achievements, and educational content to be added without major architectural changes.
 ```
 
+

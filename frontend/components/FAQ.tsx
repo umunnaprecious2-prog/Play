@@ -11,7 +11,7 @@ const QUESTIONS = [
   {
     question: "How does the level system work in Bible Quiz?",
     answer:
-      "Each level has 25 questions worth 10 points each. Stuck on one? Use a hint for -2 points, up to 2 hints per question — so the lowest score on a question you still get right is 6 points. Complete all 25 questions in a level to unlock the next one.",
+      "Each level has 25 questions worth 10 points each. Stuck on one? Use a hint for -2 points, up to 2 hints per question. Even with both hints used, a correct answer still earns 6 points. Complete all 25 questions in a level to unlock the next one.",
   },
   {
     question: "Do I need to create an account?",
@@ -20,7 +20,7 @@ const QUESTIONS = [
   },
   {
     question: "Is Play free to use?",
-    answer: "Yes — every game on Play is free to play right now.",
+    answer: "Yes, every game on Play is free to play right now.",
   },
   {
     question: "Can churches and schools use Play for their programs?",

@@ -10,8 +10,8 @@ export function LevelSystemPreview() {
         <h2 className="mt-2 text-2xl font-black sm:text-3xl">Structured Levels, Not a Wall of Questions</h2>
         <p className="mx-auto mt-2 max-w-2xl text-base text-white/70">
           Instead of hundreds of random questions, Bible Quiz is broken into levels that gradually increase in
-          difficulty — early levels build foundational knowledge, later levels dig into prophecy, parables, kings,
-          and the early church.
+          difficulty. Early levels cover the basics; later ones dig into prophecy, parables, kings, and the early
+          church.
         </p>
       </div>
 

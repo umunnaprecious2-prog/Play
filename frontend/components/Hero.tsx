@@ -8,9 +8,6 @@ export function Hero() {
       <div className="pointer-events-none absolute -right-10 -top-10 text-8xl opacity-20 animate-float" aria-hidden>
         📖
       </div>
-      <div className="pointer-events-none absolute bottom-6 left-6 text-6xl opacity-10 animate-pulseSoft" aria-hidden>
-        ⭐
-      </div>
 
       <div className="relative grid gap-10 lg:grid-cols-[1.2fr_0.9fr] lg:items-center">
         <div className="space-y-6">
@@ -23,8 +20,8 @@ export function Hero() {
           </h1>
 
           <p className="max-w-2xl text-lg leading-8 text-white/80 sm:text-xl">
-            8 Bible Quiz levels, 200+ questions, hints when you&apos;re stuck, and rewards that keep the whole family
-            coming back — XP, streaks, badges, and unlockable avatars.
+            8 Bible Quiz levels, 200+ questions, and hints whenever you&apos;re stuck. Earn XP, build streaks, and
+            unlock badges and avatars that keep the whole family coming back.
           </p>
 
           <div className="flex flex-wrap gap-4">

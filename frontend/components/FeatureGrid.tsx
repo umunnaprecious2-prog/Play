@@ -1,6 +1,6 @@
 const FEATURES = [
   { icon: "⭐", title: "XP & Levels", text: "Every correct answer earns points that add up to real progress." },
-  { icon: "💡", title: "Hints When Stuck", text: "Never a dead end — a hint is always one tap away, for a small cost." },
+  { icon: "💡", title: "Hints When Stuck", text: "A hint is always one tap away, for a small cost. Never a dead end." },
   { icon: "🏅", title: "Badges & Streaks", text: "Come back daily to build a streak and unlock badges along the way." },
   { icon: "🦁", title: "Unlockable Avatars", text: "Playful characters unlock as XP, levels, and streaks grow." },
 ];

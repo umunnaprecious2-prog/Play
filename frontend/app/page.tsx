@@ -79,7 +79,7 @@ const GAMES = [
     icon: "📅",
     accent: "border-sunrise-100",
   },
-];
+] as const;
 
 export default function HomePage() {
   return (
@@ -93,9 +93,8 @@ export default function HomePage() {
             Turning Bible study into something you look forward to
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            Play is a Bible learning platform combining faith, education, and gameplay — designed to be joyful,
-            rewarding, and welcoming to both children and adults, so people come back daily to grow their knowledge
-            of Scripture through play.
+            Play brings faith, education, and gameplay together for kids and adults alike. It&apos;s built to be
+            joyful and welcoming, so people keep coming back and growing in their knowledge of Scripture.
           </p>
         </section>
 
@@ -112,7 +111,7 @@ export default function HomePage() {
               written.
             </p>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2">
             {GAMES.map((game) => (
               <GameCard key={game.title} title={game.title} description={game.description} href={game.href} accent={game.accent} icon={game.icon} />
             ))}
@@ -135,11 +134,11 @@ export default function HomePage() {
           <PlayerSetupForm />
 
           <div className="grid gap-4 rounded-[1.75rem] border border-white/70 bg-white/80 p-6 shadow-soft backdrop-blur">
-            <h2 className="text-2xl font-black text-slate-900">Learn why every answer is right, not just that it is</h2>
+            <h2 className="text-2xl font-black text-slate-900">Understand why an answer is right, not just whether you got it</h2>
             <div className="grid gap-3">
               {[
                 "Every question comes with a short explanation and the Bible verse behind the answer.",
-                "Answer at your own pace — hints are there when you need them, never a punishment when you don't get it right.",
+                "Answer at your own pace. Hints are there when you need them, never a punishment when you don't get it right.",
                 "Earn XP, stars, badges, streaks, and avatar unlocks as you go.",
               ].map((item) => (
                 <div key={item} className="rounded-2xl bg-slate-50 px-4 py-4 text-base leading-7 text-slate-700">

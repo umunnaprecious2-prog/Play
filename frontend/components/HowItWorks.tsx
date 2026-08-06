@@ -5,7 +5,7 @@ const STEPS = [
     color: "bg-royal-100 text-royal-700",
     badge: "bg-royal-600",
     title: "Create Your Player",
-    text: "Pick a nickname and an avatar — no email or sign-up form needed. Your progress saves automatically on this device.",
+    text: "Pick a nickname and an avatar. No email or sign-up form needed, and your progress saves automatically on this device.",
   },
   {
     number: 2,
@@ -13,7 +13,7 @@ const STEPS = [
     color: "bg-gold-100 text-gold-600",
     badge: "bg-gold-500",
     title: "Choose a Game & Start",
-    text: "Start with the flagship Bible Quiz — complete Level 1's 25 questions to unlock Level 2, and keep climbing.",
+    text: "Start with the flagship Bible Quiz. Finish Level 1's 25 questions to unlock Level 2, and keep climbing from there.",
   },
   {
     number: 3,
@@ -29,7 +29,7 @@ const STEPS = [
     color: "bg-sky-100 text-sky-600",
     badge: "bg-sky-500",
     title: "Return Daily & Grow",
-    text: "Come back to keep your streak alive, review the verses behind past answers, and push into the next level.",
+    text: "Come back daily to keep your streak alive and push further into the next level.",
   },
 ];
 
@@ -40,8 +40,7 @@ export function HowItWorks() {
         <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">The Journey</span>
         <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">How Your Learning Journey Works</h2>
         <p className="mx-auto mt-2 max-w-2xl text-base text-slate-600">
-          Play is designed to build lasting biblical knowledge through daily habits, progressive challenge, and
-          meaningful rewards.
+          A few minutes a day, questions that get a little harder as you go, and real rewards for sticking with it.
         </p>
       </div>
 

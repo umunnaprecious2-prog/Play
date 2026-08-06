@@ -23,8 +23,8 @@ export function Footer() {
         <div>
           <p className="flex items-center gap-2 text-xl font-black">📖 Play</p>
           <p className="mt-3 max-w-xs text-sm leading-6 text-white/60">
-            A Bible learning platform for kids and families — faith, education, and gameplay in one joyful daily
-            experience.
+            A Bible learning platform for kids and families, bringing faith, education, and gameplay together in
+            one joyful daily habit.
           </p>
         </div>
 

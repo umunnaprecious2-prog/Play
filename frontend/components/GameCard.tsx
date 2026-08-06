@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
+import type { Route } from "next";
+import Link from "next/link";
 
 type GameCardProps = {
   title: string;
   description: string;
   accent: string;
-  href: string;
+  href: Route;
   icon: ReactNode;
   comingSoon?: boolean;
 };
@@ -42,8 +44,8 @@ export function GameCard({ title, description, accent, href, icon, comingSoon = 
   }
 
   return (
-    <a href={href} className={cardClasses}>
+    <Link href={href} className={cardClasses}>
       {content}
-    </a>
+    </Link>
   );
 }

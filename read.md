@@ -103,6 +103,39 @@ Reworked how a visitor gets from the landing page into an actual game, per the u
 - `Footer.tsx` and `LevelSystemPreview.tsx` game links updated to route through `/games/[slug]` instead of the bare game URL, so a first-time visitor arriving from either still gets the nickname/avatar step.
 - Verified end-to-end with the browser-automation skill (not just compiled): cleared localStorage, clicked Hero CTA → `/games`, picked Word Search → `/games/word-search` setup gate, picked an avatar, submitted a unique nickname, confirmed the celebration screen showed the right name, confirmed auto-redirect landed on the real `/word-search` page, confirmed `play.nickname`/`play.playerId` were persisted, then confirmed a second visit to `/games/levels` (same "browser") skipped setup and redirected straight to `/levels`. Full production build (`next build`) clean; `/games` is static, `/games/[slug]` is dynamic (correct, since it reads `localStorage`).
 
+## Roadmap: Mobile App Store Launch (planned, not started)
+User wants Play on the Google Play Store and Apple App Store, downloadable as a real app. Planned together in chat; nothing in this section is built yet. Decisions locked in:
+- **Audience framing: family app**, not a strict "kids' app." Standard app store review applies (still needs a privacy policy and honest data handling), not Apple's Kids Category or Google's Designed for Families program — avoids the heaviest COPPA/parental-consent/no-third-party-tracking constraints those trigger.
+- **Packaging: Capacitor**, not a native rewrite. Wraps the existing Next.js frontend into real iOS/Android app shells, reusing everything already built. Chosen because Play is tap/quiz-driven, not graphics-intensive, so a WebView-based shell is a legitimate fit, not a compromise.
+- **iOS builds: cloud Mac build service** (Codemagic or EAS Build), since development is on Windows with no Mac available. Signing/compiling for the App Store happens in the cloud, not locally.
+
+Phases, in order (each phase blocks the next):
+
+1. **Production infrastructure** (blocks everything below — an app store submission can't point at `localhost`).
+   - Deploy the backend (Express + Postgres) somewhere always-on with HTTPS — Railway, Render, or Fly.io are the low-effort options for this stack.
+   - Deploy the frontend publicly (Vercel is the natural fit for Next.js) or bundle it into the Capacitor shell (decide in Phase 3).
+   - Move secrets from local `server/.env` to real production environment config.
+
+2. **Login/accounts** — deliberately sequenced *before* store submission, not after, per the user's explicit question about ordering. Reasoning: retrofitting accounts after a public launch means migrating existing guest progress; mobile users expect progress to survive an uninstall or a new device, which localStorage-only guests can't do; and designing data handling after submission risks a rework mid-review.
+   - Pattern: a **parent-owned account** (email/password or Sign in with Apple/Google) as the login, with one or more **kid profiles** underneath reusing the nickname + avatar flow already built (`PlayerAvatarSetup.tsx`) — the parent's email is the account, the kid never enters personal info.
+   - If Google/Facebook sign-in is offered, Apple requires Sign in with Apple as an equal option (App Store review rule, not optional).
+   - Needs a migration path for existing guest players (`play.playerId` in localStorage) to "claim" their progress into a real account, so no one loses XP/streaks earned pre-login.
+   - This is the same "player accounts with login" item already flagged in "Not Started — Larger Platform Expansion" below; this roadmap supersedes that as the concrete plan for it.
+
+3. **Mobile packaging (Capacitor)**.
+   - Wrap the frontend for iOS + Android. Decide bundling approach: static assets shipped inside the app (works offline for UI, calls the production API for data) vs. a thin WebView pointing at the hosted site (simpler, but needs network always and is a weaker case for app review).
+   - Add native touches that strengthen the app's legitimacy for review and help retention: real app icon/splash screen (have the logo already), native status bar theming, push notifications for streak reminders.
+   - Test on Android emulator/device (native to Windows) and iOS via the cloud build service's simulator/device testing.
+
+4. **Store compliance & submission prep**.
+   - Privacy Policy + Terms of Service pages — mandatory for both stores, must accurately describe the new login/data handling from Phase 2.
+   - Developer accounts: Apple Developer Program ($99/yr), Google Play Console ($25 one-time).
+   - Standard age rating questionnaires (Apple) / IARC content rating (Google) — family framing keeps this straightforward.
+   - App icons at all required sizes, screenshots per device class, store listing copy.
+
+5. **Review & launch**.
+   - TestFlight (iOS) and Internal Testing track (Android) first, then public release.
+
 ## In Progress
 - Image upload endpoint for admin content management (not yet implemented; `server/uploads/` exists but nothing writes to it).
 - Admin dashboard frontend (not started) — increasingly needed now that there are 20 quiz levels' worth of content across 6 different content types (questions, verses, characters, stories, word search puzzles) all managed by hand-edited JSON + import scripts.
@@ -110,7 +143,7 @@ Reworked how a visitor gets from the landing page into an actual game, per the u
 
 ## Not Started — Larger Platform Expansion (flagged, not silently attempted)
 The user described an even bigger platform vision in chat beyond what's now built (not yet reconciled into `prep.md`):
-- Named player accounts with login (email/password or similar) — currently a lightweight guest profile persisted via `localStorage`, no auth system at all.
+- Named player accounts with login (email/password or similar) — currently a lightweight guest profile persisted via `localStorage`, no auth system at all. See "Roadmap: Mobile App Store Launch" above for the concrete plan (parent account + kid profiles), now that this has been sequenced as Phase 2 of the mobile launch.
 - Coins/currency, leaderboards, milestone rewards, question review/revisit history — none of these exist in the schema or API yet.
 - Admin dashboard UI (categories/levels/questions/verses/hints/images/audio/player accounts/leaderboard/achievements management) — the backend CRUD APIs mostly exist for categories/questions/verses/media, but there is no admin frontend at all, no audio upload support, and no hint-authoring UI (hints are currently generated programmatically — eliminating a wrong option, or revealing the next word/clue — not authored per-item).
 - A general "introduce new games without changing the architecture" plugin-style system — the current architecture has one bespoke service per game; no generic game-engine abstraction exists.
@@ -136,9 +169,10 @@ This remains a multi-phase build. Flagged to the user for prioritization rather 
 - Memory verse correctness check is an exact, case/whitespace-normalized string match against the full verse text — a single typo fails it. Not a bug (matches the current design), but worth revisiting for a "positive feedback, not punishment" UX per `prep.md`.
 
 ## Next Steps
-1. Build the admin dashboard frontend — now the highest-priority gap, since there are 6 content types (quiz questions, verses, characters, stories, word search puzzles, media) all currently managed by hand-editing JSON files and running import scripts by hand.
-2. Implement the admin content image/audio upload endpoints.
-3. Add the missing "Level N/20" badge to Word Search, Scripture Puzzle, Character Guess, and Story Challenge UIs (backend progression already works, just not surfaced as a number in those four).
-4. Add Swagger docs for the 6 new game route files.
-5. Decide on the bigger platform items (player accounts/login, coins, leaderboards) — see "Not Started" above.
-6. Add more seed content and, when ready, set `ADMIN_BOOTSTRAP_EMAIL`/`ADMIN_BOOTSTRAP_PASSWORD` in `server/.env` to create a real admin login.
+1. **Mobile launch Phase 1**: deploy the backend and frontend to real production hosting with HTTPS — currently the active priority, see "Roadmap: Mobile App Store Launch" above.
+2. **Mobile launch Phase 2**: design and build the login/accounts system (parent account + kid profiles) — see roadmap above for the agreed pattern.
+3. Build the admin dashboard frontend — still a real gap (6 content types managed by hand-editing JSON + import scripts), but no longer the top priority now that mobile launch is the active initiative.
+4. Implement the admin content image/audio upload endpoints.
+5. Add the missing "Level N/20" badge to Word Search, Scripture Puzzle, Character Guess, and Story Challenge UIs (backend progression already works, just not surfaced as a number in those four).
+6. Add Swagger docs for the 6 new game route files.
+7. Add more seed content and, when ready, set `ADMIN_BOOTSTRAP_EMAIL`/`ADMIN_BOOTSTRAP_PASSWORD` in `server/.env` to create a real admin login.

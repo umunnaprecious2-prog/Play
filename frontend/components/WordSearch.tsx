@@ -185,7 +185,8 @@ export function WordSearch() {
             }),
           )}
 
-          {/* Highlighter-style circles drawn over each found word, like marking it with a pen. */}
+          {/* A hand-drawn-style oval circled around each found word, the way you'd
+              mark one with a pen, not a line struck through it. */}
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full"
             viewBox={`0 0 ${cols} ${rows}`}
@@ -195,17 +196,28 @@ export function WordSearch() {
             {foundPaths.map((entry) => {
               const first = entry.path[0];
               const last = entry.path[entry.path.length - 1];
+              const dRow = last.row - first.row;
+              const dCol = last.col - first.col;
+              const midX = (first.col + last.col) / 2 + 0.5;
+              const midY = (first.row + last.row) / 2 + 0.5;
+              const angle = (Math.atan2(dRow, dCol) * 180) / Math.PI;
+              const wordLength = Math.hypot(dRow, dCol);
+              const capsuleLength = wordLength + 0.75;
+              const capsuleThickness = 0.85;
+
               return (
-                <line
+                <rect
                   key={entry.word}
-                  x1={first.col + 0.5}
-                  y1={first.row + 0.5}
-                  x2={last.col + 0.5}
-                  y2={last.row + 0.5}
+                  x={midX - capsuleLength / 2}
+                  y={midY - capsuleThickness / 2}
+                  width={capsuleLength}
+                  height={capsuleThickness}
+                  rx={capsuleThickness / 2}
+                  transform={`rotate(${angle} ${midX} ${midY})`}
+                  fill="none"
                   stroke={entry.color}
-                  strokeWidth={0.62}
-                  strokeLinecap="round"
-                  opacity={0.5}
+                  strokeWidth={0.1}
+                  strokeLinejoin="round"
                 />
               );
             })}

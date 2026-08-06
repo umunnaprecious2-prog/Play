@@ -445,6 +445,9 @@ type ImportPayload = {
   mediaAssets?: Array<Record<string, any>>;
   quizQuestions?: Array<Record<string, any>>;
   verses?: Array<Record<string, any>>;
+  wordSearchPuzzles?: Array<Record<string, any>>;
+  characters?: Array<Record<string, any>>;
+  stories?: Array<Record<string, any>>;
 };
 
 export async function importContent(payload: ImportPayload) {
@@ -460,7 +463,10 @@ export async function importContent(payload: ImportPayload) {
         (payload.difficulties?.length ?? 0) +
         (payload.mediaAssets?.length ?? 0) +
         (payload.quizQuestions?.length ?? 0) +
-        (payload.verses?.length ?? 0),
+        (payload.verses?.length ?? 0) +
+        (payload.wordSearchPuzzles?.length ?? 0) +
+        (payload.characters?.length ?? 0) +
+        (payload.stories?.length ?? 0),
     },
   });
 
@@ -611,12 +617,89 @@ export async function importContent(payload: ImportPayload) {
         });
       }
 
+      for (const item of payload.wordSearchPuzzles ?? []) {
+        await tx.wordSearchPuzzle.upsert({
+          where: { slug: item.slug || buildSlug(item.title) },
+          create: {
+            slug: item.slug || buildSlug(item.title),
+            title: item.title,
+            words: item.words,
+            gridSize: item.gridSize ?? 12,
+            categoryId: item.categoryId ?? (item.categorySlug ? categoryMap.get(item.categorySlug) ?? null : null),
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+          update: {
+            title: item.title,
+            words: item.words,
+            gridSize: item.gridSize ?? 12,
+            categoryId: item.categoryId ?? (item.categorySlug ? categoryMap.get(item.categorySlug) ?? null : null),
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+        });
+      }
+
+      for (const item of payload.characters ?? []) {
+        await tx.bibleCharacter.upsert({
+          where: { slug: item.slug || buildSlug(item.name) },
+          create: {
+            slug: item.slug || buildSlug(item.name),
+            name: item.name,
+            clues: item.clues,
+            imageUrl: item.imageUrl ?? null,
+            categoryId: item.categoryId ?? (item.categorySlug ? categoryMap.get(item.categorySlug) ?? null : null),
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+          update: {
+            name: item.name,
+            clues: item.clues,
+            imageUrl: item.imageUrl ?? null,
+            categoryId: item.categoryId ?? (item.categorySlug ? categoryMap.get(item.categorySlug) ?? null : null),
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+        });
+      }
+
+      for (const item of payload.stories ?? []) {
+        const story = await tx.bibleStory.upsert({
+          where: { slug: item.slug || buildSlug(item.title) },
+          create: {
+            slug: item.slug || buildSlug(item.title),
+            title: item.title,
+            categoryId: item.categoryId ?? (item.categorySlug ? categoryMap.get(item.categorySlug) ?? null : null),
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+          update: {
+            title: item.title,
+            categoryId: item.categoryId ?? (item.categorySlug ? categoryMap.get(item.categorySlug) ?? null : null),
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+        });
+
+        await tx.storyEvent.deleteMany({ where: { storyId: story.id } });
+        await tx.storyEvent.createMany({
+          data: (item.events ?? []).map((event: any, index: number) => ({
+            storyId: story.id,
+            text: event.text,
+            correctOrder: event.correctOrder ?? index + 1,
+          })),
+        });
+      }
+
       return {
         categories: categoryMap.size,
         difficulties: difficultyMap.size,
         mediaAssets: (payload.mediaAssets ?? []).length,
         quizQuestions: (payload.quizQuestions ?? []).length,
         verses: (payload.verses ?? []).length,
+        wordSearchPuzzles: (payload.wordSearchPuzzles ?? []).length,
+        characters: (payload.characters ?? []).length,
+        stories: (payload.stories ?? []).length,
       };
     });
 
@@ -624,7 +707,15 @@ export async function importContent(payload: ImportPayload) {
       where: { id: job.id },
       data: {
         status: "COMPLETED",
-        processedRecords: result.categories + result.difficulties + result.mediaAssets + result.quizQuestions + result.verses,
+        processedRecords:
+          result.categories +
+          result.difficulties +
+          result.mediaAssets +
+          result.quizQuestions +
+          result.verses +
+          result.wordSearchPuzzles +
+          result.characters +
+          result.stories,
         completedAt: new Date(),
       },
     });

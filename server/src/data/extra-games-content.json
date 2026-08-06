@@ -1,0 +1,344 @@
+{
+  "sourceName": "extra-games-v1",
+  "categories": [
+    { "slug": "genesis", "name": "Genesis", "description": "Creation, beginnings, and the early patriarchs", "sortOrder": 1 },
+    { "slug": "exodus", "name": "Exodus", "description": "Moses, the plagues, and the journey out of Egypt", "sortOrder": 2 },
+    { "slug": "kings", "name": "Kings", "description": "Saul, David, Solomon, and the kings of Israel and Judah", "sortOrder": 3 },
+    { "slug": "prophets", "name": "Prophets", "description": "Elijah, Elisha, Daniel, Isaiah, and God's messengers", "sortOrder": 4 },
+    { "slug": "parables", "name": "Parables", "description": "The stories Jesus told to teach truth", "sortOrder": 5 },
+    { "slug": "jesus", "name": "Jesus", "description": "The life and teachings of Jesus", "sortOrder": 6 },
+    { "slug": "miracles", "name": "Miracles", "description": "The wonders Jesus performed", "sortOrder": 7 },
+    { "slug": "apostles", "name": "Apostles", "description": "Peter, Paul, John, and the early church", "sortOrder": 8 }
+  ],
+  "verses": [
+    { "slug": "john-316", "categorySlug": "jesus", "difficultySlug": "easy", "reference": "John 3:16", "text": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.", "translation": "KJV", "memoryHint": "God loves everyone deeply.", "xpReward": 8, "sortOrder": 1, "isActive": true },
+    { "slug": "genesis-1-1", "categorySlug": "genesis", "reference": "Genesis 1:1", "text": "In the beginning God created the heaven and the earth.", "translation": "KJV", "memoryHint": "The very first verse of the Bible.", "xpReward": 8 },
+    { "slug": "psalm-23-1", "reference": "Psalm 23:1", "text": "The LORD is my shepherd; I shall not want.", "translation": "KJV", "memoryHint": "A shepherd psalm of David.", "xpReward": 8 },
+    { "slug": "proverbs-3-5", "reference": "Proverbs 3:5", "text": "Trust in the LORD with all thine heart; and lean not unto thine own understanding.", "translation": "KJV", "memoryHint": "About trusting God fully.", "xpReward": 8 },
+    { "slug": "joshua-1-9", "reference": "Joshua 1:9", "text": "Have not I commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest.", "translation": "KJV", "memoryHint": "God's command to Joshua before entering Canaan.", "xpReward": 10 },
+    { "slug": "isaiah-41-10", "categorySlug": "prophets", "reference": "Isaiah 41:10", "text": "Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness.", "translation": "KJV", "memoryHint": "A promise of God's presence.", "xpReward": 10 },
+    { "slug": "jeremiah-29-11", "categorySlug": "prophets", "reference": "Jeremiah 29:11", "text": "For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.", "translation": "KJV", "memoryHint": "God's plans for His people.", "xpReward": 10 },
+    { "slug": "philippians-4-13", "reference": "Philippians 4:13", "text": "I can do all things through Christ which strengtheneth me.", "translation": "KJV", "memoryHint": "A verse of strength and confidence.", "xpReward": 8 },
+    { "slug": "romans-8-28", "reference": "Romans 8:28", "text": "And we know that all things work together for good to them that love God, to them who are the called according to his purpose.", "translation": "KJV", "memoryHint": "About God's good purpose in all things.", "xpReward": 9 },
+    { "slug": "matthew-6-33", "categorySlug": "jesus", "reference": "Matthew 6:33", "text": "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.", "translation": "KJV", "memoryHint": "From the Sermon on the Mount.", "xpReward": 9 },
+    { "slug": "psalm-119-105", "reference": "Psalm 119:105", "text": "Thy word is a lamp unto my feet, and a light unto my path.", "translation": "KJV", "memoryHint": "About the guidance of God's word.", "xpReward": 8 },
+    { "slug": "1-corinthians-13-4", "reference": "1 Corinthians 13:4", "text": "Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up.", "translation": "KJV", "memoryHint": "The beginning of the love chapter.", "xpReward": 9 },
+    { "slug": "galatians-5-22", "reference": "Galatians 5:22", "text": "But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith.", "translation": "KJV", "memoryHint": "The fruit of the Spirit list.", "xpReward": 9 },
+    { "slug": "matthew-28-19", "categorySlug": "apostles", "reference": "Matthew 28:19", "text": "Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost.", "translation": "KJV", "memoryHint": "The Great Commission.", "xpReward": 9 },
+    { "slug": "psalm-46-1", "reference": "Psalm 46:1", "text": "God is our refuge and strength, a very present help in trouble.", "translation": "KJV", "memoryHint": "A psalm of comfort.", "xpReward": 8 },
+    { "slug": "proverbs-22-6", "reference": "Proverbs 22:6", "text": "Train up a child in the way he should go: and when he is old, he will not depart from it.", "translation": "KJV", "memoryHint": "About raising children well.", "xpReward": 9 },
+    { "slug": "2-timothy-1-7", "reference": "2 Timothy 1:7", "text": "For God hath not given us the spirit of fear; but of power, and of love, and of a sound mind.", "translation": "KJV", "memoryHint": "About courage instead of fear.", "xpReward": 8 },
+    { "slug": "deuteronomy-31-6", "reference": "Deuteronomy 31:6", "text": "Be strong and of a good courage, fear not, nor be afraid of them: for the LORD thy God, he it is that doth go with thee; he will not fail thee, nor forsake thee.", "translation": "KJV", "memoryHint": "Moses' charge to Israel.", "xpReward": 10 },
+    { "slug": "micah-6-8", "categorySlug": "prophets", "reference": "Micah 6:8", "text": "He hath shewed thee, O man, what is good; and what doth the LORD require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?", "translation": "KJV", "memoryHint": "What God requires of us.", "xpReward": 10 },
+    { "slug": "colossians-3-23", "reference": "Colossians 3:23", "text": "And whatsoever ye do, do it heartily, as to the Lord, and not unto men.", "translation": "KJV", "memoryHint": "About working with a good heart.", "xpReward": 8 },
+    { "slug": "james-1-5", "reference": "James 1:5", "text": "If any of you lack wisdom, let him ask of God, that giveth to all men liberally, and upbraideth not; and it shall be given him.", "translation": "KJV", "memoryHint": "About asking God for wisdom.", "xpReward": 9 }
+  ],
+  "wordSearchPuzzles": [
+    { "slug": "creation-week", "title": "Creation Week", "categorySlug": "genesis", "gridSize": 12, "sortOrder": 1, "words": ["LIGHT", "WATER", "LAND", "SUN", "MOON", "STARS", "ANIMALS", "ADAM", "EVE", "REST"] },
+    { "slug": "the-twelve-disciples", "title": "The Twelve Disciples", "categorySlug": "apostles", "gridSize": 12, "sortOrder": 2, "words": ["PETER", "ANDREW", "JAMES", "JOHN", "PHILIP", "THOMAS", "MATTHEW", "JUDAS", "SIMON"] },
+    { "slug": "fruit-of-the-spirit", "title": "Fruit of the Spirit", "gridSize": 12, "sortOrder": 3, "words": ["LOVE", "JOY", "PEACE", "PATIENCE", "KINDNESS", "GOODNESS", "FAITHFULNESS", "GENTLENESS"] },
+    { "slug": "old-testament-books", "title": "Old Testament Books", "gridSize": 12, "sortOrder": 4, "words": ["GENESIS", "EXODUS", "LEVITICUS", "NUMBERS", "JOSHUA", "RUTH", "ESTHER", "PSALMS"] },
+    { "slug": "new-testament-books", "title": "New Testament Books", "gridSize": 12, "sortOrder": 5, "words": ["MATTHEW", "MARK", "LUKE", "JOHN", "ACTS", "ROMANS", "JAMES", "REVELATION"] },
+    { "slug": "miracles-of-jesus", "title": "Miracles of Jesus", "categorySlug": "miracles", "gridSize": 12, "sortOrder": 6, "words": ["HEALING", "WATER", "BREAD", "FISH", "LAZARUS", "BLIND", "LAME", "STORM"] },
+    { "slug": "kings-of-israel", "title": "Kings of Israel", "categorySlug": "kings", "gridSize": 12, "sortOrder": 7, "words": ["SAUL", "DAVID", "SOLOMON", "REHOBOAM", "AHAB", "JOSIAH", "HEZEKIAH"] },
+    { "slug": "the-christmas-story", "title": "The Christmas Story", "categorySlug": "jesus", "gridSize": 12, "sortOrder": 8, "words": ["MARY", "JOSEPH", "BETHLEHEM", "MANGER", "SHEPHERDS", "ANGEL", "STAR", "WISEMEN"] },
+    { "slug": "prophets-of-the-old-testament", "title": "Prophets of the Old Testament", "categorySlug": "prophets", "gridSize": 12, "sortOrder": 9, "words": ["ISAIAH", "JEREMIAH", "EZEKIEL", "DANIEL", "HOSEA", "JOEL", "AMOS", "JONAH"] },
+    { "slug": "the-ten-commandments", "title": "The Ten Commandments", "categorySlug": "exodus", "gridSize": 12, "sortOrder": 10, "words": ["IDOLS", "SABBATH", "PARENTS", "MURDER", "ADULTERY", "STEAL", "LIE", "COVET", "GOD", "WORSHIP"] },
+    { "slug": "psalms-and-worship", "title": "Psalms and Worship", "gridSize": 14, "sortOrder": 11, "words": ["PRAISE", "WORSHIP", "PSALMIST", "HARP", "SHOUT", "SING", "JOY", "THANKSGIVING"] },
+    { "slug": "cities-of-the-bible", "title": "Cities of the Bible", "gridSize": 12, "sortOrder": 12, "words": ["JERUSALEM", "BETHLEHEM", "NAZARETH", "JERICHO", "DAMASCUS", "CORINTH", "EPHESUS", "ANTIOCH"] },
+    { "slug": "women-of-the-bible", "title": "Women of the Bible", "gridSize": 12, "sortOrder": 13, "words": ["SARAH", "RACHEL", "RUTH", "ESTHER", "DEBORAH", "MIRIAM", "HANNAH", "MARY", "ELIZABETH"] },
+    { "slug": "the-armor-of-god", "title": "The Armor of God", "categorySlug": "apostles", "gridSize": 15, "sortOrder": 14, "words": ["TRUTH", "RIGHTEOUSNESS", "GOSPEL", "FAITH", "SALVATION", "SPIRIT", "PRAYER", "SHIELD"] },
+    { "slug": "the-parables-of-jesus", "title": "The Parables of Jesus", "categorySlug": "parables", "gridSize": 13, "sortOrder": 15, "words": ["SOWER", "SAMARITAN", "PRODIGAL", "TALENTS", "MUSTARDSEED", "LOSTSHEEP", "FIG", "VINEYARD"] },
+    { "slug": "the-apostles-epistles", "title": "The Apostles' Epistles", "categorySlug": "apostles", "gridSize": 15, "sortOrder": 16, "words": ["ROMANS", "GALATIANS", "EPHESIANS", "PHILIPPIANS", "COLOSSIANS", "TIMOTHY", "TITUS", "PHILEMON"] },
+    { "slug": "the-book-of-revelation", "title": "The Book of Revelation", "categorySlug": "apostles", "gridSize": 12, "sortOrder": 17, "words": ["THRONE", "LAMB", "SCROLL", "TRUMPET", "DRAGON", "BEAST", "ARMAGEDDON", "HEAVEN"] },
+    { "slug": "wisdom-literature", "title": "Wisdom Literature", "categorySlug": "kings", "gridSize": 14, "sortOrder": 18, "words": ["PROVERBS", "ECCLESIASTES", "WISDOM", "VANITY", "FOLLY", "DILIGENCE", "SLOTHFUL"] },
+    { "slug": "the-covenant-and-law", "title": "The Covenant and the Law", "categorySlug": "exodus", "gridSize": 12, "sortOrder": 19, "words": ["COVENANT", "TABERNACLE", "PRIESTHOOD", "SACRIFICE", "ATONEMENT", "HOLINESS", "LEVITE"] },
+    { "slug": "theology-and-doctrine", "title": "Theology and Doctrine", "gridSize": 17, "sortOrder": 20, "words": ["TRINITY", "REDEMPTION", "JUSTIFICATION", "SANCTIFICATION", "GRACE", "MERCY", "REPENTANCE"] }
+  ],
+  "characters": [
+    { "slug": "noah", "name": "Noah", "categorySlug": "genesis", "sortOrder": 1, "clues": ["I built something huge at God's command.", "Animals came to me two by two.", "I survived a flood that covered the whole earth."] },
+    { "slug": "moses", "name": "Moses", "categorySlug": "exodus", "sortOrder": 2, "clues": ["I was found in a basket among the reeds.", "I saw a bush that burned but was not consumed.", "I led God's people out of slavery in Egypt."] },
+    { "slug": "david", "name": "David", "categorySlug": "kings", "sortOrder": 3, "clues": ["I was the youngest of my brothers.", "I defeated a giant with a sling and a stone.", "I became the second king of Israel."] },
+    { "slug": "esther", "name": "Esther", "categorySlug": "kings", "sortOrder": 4, "clues": ["I became queen of Persia without revealing where I was from.", "My cousin raised me after my parents died.", "I risked my life to save my people from a plot to destroy them."] },
+    { "slug": "daniel", "name": "Daniel", "categorySlug": "prophets", "sortOrder": 5, "clues": ["I was taken captive to Babylon as a young man.", "I interpreted dreams for a powerful king.", "I was thrown into a den of lions for praying."] },
+    { "slug": "mary-mother-of-jesus", "name": "Mary", "categorySlug": "jesus", "sortOrder": 6, "clues": ["An angel visited me with surprising news.", "I gave birth in a stable in Bethlehem.", "I raised a son who would save the world."] },
+    { "slug": "peter", "name": "Peter", "categorySlug": "apostles", "sortOrder": 7, "clues": ["I was a fisherman before I was called.", "I once tried to walk on water.", "I denied knowing my teacher three times."] },
+    { "slug": "paul", "name": "Paul", "categorySlug": "apostles", "sortOrder": 8, "clues": ["I once persecuted followers of Jesus.", "A bright light blinded me on a journey.", "I wrote many letters found in the New Testament."] },
+    { "slug": "ruth", "name": "Ruth", "categorySlug": "kings", "sortOrder": 9, "clues": ["I was not born an Israelite.", "I refused to leave my mother-in-law.", "I became an ancestor of King David."] },
+    { "slug": "samson", "name": "Samson", "categorySlug": "kings", "sortOrder": 10, "clues": ["I was set apart before I was born.", "My strength was tied to my uncut hair.", "I pushed down the pillars of a temple in my final act."] },
+    { "slug": "solomon", "name": "Solomon", "categorySlug": "kings", "sortOrder": 11, "clues": ["My father was King David.", "God gave me great wisdom when I asked for it.", "I built the first Temple in Jerusalem."] },
+    { "slug": "abraham", "name": "Abraham", "categorySlug": "genesis", "sortOrder": 12, "clues": ["God called me to leave my homeland for a land I had never seen.", "I am called the father of many nations.", "I was willing to sacrifice my son Isaac in obedience to God."] },
+    { "slug": "joseph-son-of-jacob", "name": "Joseph", "categorySlug": "genesis", "sortOrder": 13, "clues": ["My brothers sold me into slavery out of jealousy.", "I interpreted Pharaoh's dreams about famine.", "I forgave my brothers and saved my family from starvation."] },
+    { "slug": "elijah", "name": "Elijah", "categorySlug": "prophets", "sortOrder": 14, "clues": ["I challenged 450 prophets of a false god on a mountain.", "Ravens brought me food beside a brook.", "I was taken up to heaven in a chariot of fire."] },
+    { "slug": "gideon", "name": "Gideon", "categorySlug": "kings", "sortOrder": 15, "clues": ["An angel called me a mighty man of valor while I hid from enemies.", "I tested God with a fleece of wool.", "I defeated a huge army with just 300 men."] },
+    { "slug": "deborah", "name": "Deborah", "categorySlug": "kings", "sortOrder": 16, "clues": ["I was a judge and prophetess who led Israel.", "I sat under a palm tree to settle disputes.", "I helped lead Israel to victory over a Canaanite army."] },
+    { "slug": "nehemiah", "name": "Nehemiah", "categorySlug": "kings", "sortOrder": 17, "clues": ["I served as cupbearer to a Persian king.", "I asked permission to rebuild the walls of my home city.", "I rebuilt Jerusalem's walls in fifty-two days despite opposition."] },
+    { "slug": "job", "name": "Job", "categorySlug": "prophets", "sortOrder": 18, "clues": ["I lost my wealth, children, and health in a single trial.", "My friends came to comfort me but argued instead.", "God restored double what I had lost after my time of testing."] },
+    { "slug": "jonathan", "name": "Jonathan", "categorySlug": "kings", "sortOrder": 19, "clues": ["I was the son of the first king of Israel.", "I made a covenant of friendship with a future king.", "I gave my armor and weapons to my closest friend, David."] },
+    { "slug": "john-the-baptist", "name": "John the Baptist", "categorySlug": "jesus", "sortOrder": 20, "clues": ["I lived in the wilderness and ate locusts and wild honey.", "I baptized people in the Jordan River.", "I told people to prepare the way for the one coming after me."] }
+  ],
+  "stories": [
+    {
+      "slug": "noahs-ark",
+      "title": "Noah's Ark",
+      "categorySlug": "genesis",
+      "sortOrder": 1,
+      "events": [
+        { "text": "God tells Noah to build an ark because a flood is coming." },
+        { "text": "Noah builds the ark and gathers two of every kind of animal." },
+        { "text": "The flood covers the whole earth for forty days and nights." },
+        { "text": "Noah sends out a raven and then a dove to find dry land." },
+        { "text": "God sets a rainbow in the sky as a promise never to flood the earth again." }
+      ]
+    },
+    {
+      "slug": "the-exodus",
+      "title": "The Exodus",
+      "categorySlug": "exodus",
+      "sortOrder": 2,
+      "events": [
+        { "text": "Moses is called by God at the burning bush." },
+        { "text": "Moses asks Pharaoh to let God's people go." },
+        { "text": "God sends ten plagues on Egypt." },
+        { "text": "The Israelites eat the Passover meal and leave Egypt." },
+        { "text": "God parts the Red Sea so Israel can cross on dry ground." },
+        { "text": "The Israelites receive the Ten Commandments at Mount Sinai." }
+      ]
+    },
+    {
+      "slug": "david-and-goliath",
+      "title": "David and Goliath",
+      "categorySlug": "kings",
+      "sortOrder": 3,
+      "events": [
+        { "text": "The Philistine army gathers to fight Israel, led by the giant Goliath." },
+        { "text": "David visits his brothers at the battle camp." },
+        { "text": "David volunteers to fight Goliath, trusting in God." },
+        { "text": "David defeats Goliath with a sling and a stone." },
+        { "text": "The Philistine army flees, and Israel celebrates the victory." }
+      ]
+    },
+    {
+      "slug": "the-birth-of-jesus",
+      "title": "The Birth of Jesus",
+      "categorySlug": "jesus",
+      "sortOrder": 4,
+      "events": [
+        { "text": "The angel Gabriel tells Mary she will give birth to Jesus." },
+        { "text": "Mary and Joseph travel to Bethlehem for a census." },
+        { "text": "Jesus is born and laid in a manger because there was no room in the inn." },
+        { "text": "Shepherds visit after angels announce the good news to them." },
+        { "text": "Wise men from the East follow a star to worship the newborn king." }
+      ]
+    },
+    {
+      "slug": "jesus-death-and-resurrection",
+      "title": "Jesus' Death and Resurrection",
+      "categorySlug": "jesus",
+      "sortOrder": 5,
+      "events": [
+        { "text": "Jesus shares the Last Supper with His disciples." },
+        { "text": "Jesus is betrayed by Judas and arrested in the garden." },
+        { "text": "Jesus is crucified on a cross at Golgotha." },
+        { "text": "Jesus is buried in a tomb, and a stone seals the entrance." },
+        { "text": "Jesus rises from the dead on the third day." },
+        { "text": "Jesus appears to His disciples before ascending to heaven." }
+      ]
+    },
+    {
+      "slug": "the-tower-of-babel",
+      "title": "The Tower of Babel",
+      "categorySlug": "genesis",
+      "sortOrder": 6,
+      "events": [
+        { "text": "People settle in Shinar and decide to build a city and a tower to the heavens." },
+        { "text": "They begin building with brick and tar to make a name for themselves." },
+        { "text": "God comes down to see the tower the people are building." },
+        { "text": "God confuses their language so they can no longer understand one another." },
+        { "text": "The people scatter across the earth, and the city is called Babel." }
+      ]
+    },
+    {
+      "slug": "abraham-and-isaac",
+      "title": "Abraham and Isaac",
+      "categorySlug": "genesis",
+      "sortOrder": 7,
+      "events": [
+        { "text": "God calls Abraham to leave his home for a land God will show him." },
+        { "text": "God promises Abraham he will become the father of many nations." },
+        { "text": "God tests Abraham by asking him to sacrifice his son Isaac." },
+        { "text": "Abraham obeys and travels to Mount Moriah to offer Isaac." },
+        { "text": "God provides a ram and stops Abraham at the last moment." }
+      ]
+    },
+    {
+      "slug": "joseph-and-his-brothers",
+      "title": "Joseph and His Brothers",
+      "categorySlug": "genesis",
+      "sortOrder": 8,
+      "events": [
+        { "text": "Joseph's brothers become jealous of him and sell him into slavery." },
+        { "text": "Joseph is taken to Egypt and put in charge of Potiphar's house." },
+        { "text": "Joseph is falsely accused and thrown into prison." },
+        { "text": "Joseph interprets Pharaoh's dreams and is made second in command over Egypt." },
+        { "text": "Joseph's brothers come to Egypt for food, and Joseph forgives and reveals himself to them." }
+      ]
+    },
+    {
+      "slug": "the-ten-plagues",
+      "title": "The Ten Plagues",
+      "categorySlug": "exodus",
+      "sortOrder": 9,
+      "events": [
+        { "text": "Moses asks Pharaoh to let the Israelites go, but Pharaoh refuses." },
+        { "text": "God sends plagues of blood, frogs, and gnats upon Egypt." },
+        { "text": "God sends more plagues, including flies, livestock disease, boils, hail, locusts, and darkness." },
+        { "text": "The final plague brings death to every firstborn in Egypt." },
+        { "text": "Pharaoh finally lets the Israelites leave after the tenth plague." }
+      ]
+    },
+    {
+      "slug": "crossing-the-red-sea",
+      "title": "Crossing the Red Sea",
+      "categorySlug": "exodus",
+      "sortOrder": 10,
+      "events": [
+        { "text": "Pharaoh changes his mind and chases the Israelites with his army." },
+        { "text": "The Israelites are trapped between Pharaoh's army and the Red Sea." },
+        { "text": "Moses stretches out his hand, and God parts the sea." },
+        { "text": "The Israelites cross on dry ground with walls of water on each side." },
+        { "text": "The sea closes over Pharaoh's army as they try to follow." }
+      ]
+    },
+    {
+      "slug": "the-battle-of-jericho",
+      "title": "Joshua and the Battle of Jericho",
+      "categorySlug": "kings",
+      "sortOrder": 11,
+      "events": [
+        { "text": "Joshua sends spies into Jericho, who are helped by Rahab." },
+        { "text": "God tells Joshua to march around the city once a day for six days." },
+        { "text": "On the seventh day, the priests and army march around the city seven times." },
+        { "text": "The priests blow their trumpets, and the people give a great shout." },
+        { "text": "The walls of Jericho fall down, and Israel takes the city." }
+      ]
+    },
+    {
+      "slug": "samuel-anoints-david",
+      "title": "Samuel Anoints David",
+      "categorySlug": "kings",
+      "sortOrder": 12,
+      "events": [
+        { "text": "God tells the prophet Samuel that He has chosen a new king from the sons of Jesse." },
+        { "text": "Samuel looks at Jesse's older sons, but God says He does not judge by outward appearance." },
+        { "text": "Jesse brings his youngest son David in from tending the sheep." },
+        { "text": "Samuel anoints David with oil in front of his brothers." },
+        { "text": "The Spirit of the Lord comes powerfully upon David from that day on." }
+      ]
+    },
+    {
+      "slug": "elijah-and-the-prophets-of-baal",
+      "title": "Elijah and the Prophets of Baal",
+      "categorySlug": "prophets",
+      "sortOrder": 13,
+      "events": [
+        { "text": "King Ahab and the prophets of Baal challenge Elijah on Mount Carmel." },
+        { "text": "The prophets of Baal cry out to their god all day, but nothing happens." },
+        { "text": "Elijah rebuilds an altar to the Lord and has it soaked with water." },
+        { "text": "Elijah prays, and fire falls from heaven, consuming the sacrifice." },
+        { "text": "The people see the fire and declare that the Lord is God." }
+      ]
+    },
+    {
+      "slug": "daniel-in-the-lions-den",
+      "title": "Daniel in the Lions' Den",
+      "categorySlug": "prophets",
+      "sortOrder": 14,
+      "events": [
+        { "text": "Daniel continues to pray to God three times a day despite a new law." },
+        { "text": "Daniel's enemies trick the king into signing a law against prayer." },
+        { "text": "Daniel is caught praying and thrown into the den of lions." },
+        { "text": "God sends an angel to shut the mouths of the lions overnight." },
+        { "text": "The king finds Daniel unharmed the next morning and praises God." }
+      ]
+    },
+    {
+      "slug": "jonah-and-the-great-fish",
+      "title": "Jonah and the Great Fish",
+      "categorySlug": "prophets",
+      "sortOrder": 15,
+      "events": [
+        { "text": "God tells Jonah to go preach to the city of Nineveh." },
+        { "text": "Jonah runs away and boards a ship sailing the opposite direction." },
+        { "text": "A great storm arises, and the sailors throw Jonah into the sea." },
+        { "text": "A great fish swallows Jonah, and he prays to God from inside it." },
+        { "text": "The fish spits Jonah onto dry land, and he goes to preach in Nineveh." }
+      ]
+    },
+    {
+      "slug": "esther-saves-her-people",
+      "title": "Esther Saves Her People",
+      "categorySlug": "kings",
+      "sortOrder": 16,
+      "events": [
+        { "text": "Esther becomes queen of Persia without revealing that she is Jewish." },
+        { "text": "Haman plots to destroy all the Jewish people in the kingdom." },
+        { "text": "Mordecai asks Esther to approach the king on behalf of her people." },
+        { "text": "Esther risks her life by appearing before the king uninvited." },
+        { "text": "The king grants Esther's request, and her people are saved." }
+      ]
+    },
+    {
+      "slug": "the-sermon-on-the-mount",
+      "title": "The Sermon on the Mount",
+      "categorySlug": "jesus",
+      "sortOrder": 17,
+      "events": [
+        { "text": "Jesus goes up on a mountainside, and His disciples come to Him." },
+        { "text": "Jesus teaches the Beatitudes, blessing the poor in spirit and the meek." },
+        { "text": "Jesus teaches about being salt and light in the world." },
+        { "text": "Jesus teaches His followers how to pray using the Lord's Prayer." },
+        { "text": "Jesus concludes by teaching about building a house on the rock." }
+      ]
+    },
+    {
+      "slug": "feeding-the-5000",
+      "title": "The Feeding of the 5,000",
+      "categorySlug": "miracles",
+      "sortOrder": 18,
+      "events": [
+        { "text": "A large crowd follows Jesus to a remote place to hear Him teach." },
+        { "text": "Evening comes, and the disciples want to send the hungry crowd away." },
+        { "text": "A boy offers five loaves and two fish to Jesus." },
+        { "text": "Jesus gives thanks and breaks the bread, and it multiplies to feed everyone." },
+        { "text": "Twelve baskets of leftovers are gathered after everyone eats." }
+      ]
+    },
+    {
+      "slug": "the-prodigal-son-story",
+      "title": "The Prodigal Son",
+      "categorySlug": "parables",
+      "sortOrder": 19,
+      "events": [
+        { "text": "A younger son asks his father for his inheritance early and leaves home." },
+        { "text": "The son wastes his wealth in wild living in a distant country." },
+        { "text": "A severe famine hits, and the son ends up feeding pigs, starving." },
+        { "text": "The son comes to his senses and decides to return home to his father." },
+        { "text": "The father runs to meet his son, forgives him, and celebrates his return." }
+      ]
+    },
+    {
+      "slug": "pauls-conversion",
+      "title": "Paul's Conversion on the Road to Damascus",
+      "categorySlug": "apostles",
+      "sortOrder": 20,
+      "events": [
+        { "text": "Saul travels toward Damascus intending to arrest followers of Jesus." },
+        { "text": "A bright light from heaven suddenly shines around him." },
+        { "text": "Saul hears the voice of Jesus asking why he is persecuting Him." },
+        { "text": "Saul is blinded and led into the city, where he fasts for three days." },
+        { "text": "Ananias visits Saul, his sight is restored, and he is baptized." }
+      ]
+    }
+  ]
+}

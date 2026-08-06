@@ -3,6 +3,7 @@ import adminRoutes from "./adminRoutes";
 import authRoutes from "./authRoutes";
 import gameRoutes from "./gameRoutes";
 import levelRoutes from "./levelRoutes";
+import miniGameRoutes from "./miniGameRoutes";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
 router.use("/games", gameRoutes);
 router.use("/games/levels", levelRoutes);
+router.use("/games", miniGameRoutes);
 
 export default router;

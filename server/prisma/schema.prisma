@@ -34,8 +34,85 @@ model Category {
   quizQuestions  QuizQuestion[]
   verses         BibleVerse[]
   levelProgress  PlayerLevelProgress[]
+  wordSearches   WordSearchPuzzle[]
+  characters     BibleCharacter[]
+  stories        BibleStory[]
   createdAt      DateTime               @default(now())
   updatedAt      DateTime               @updatedAt
+}
+
+// Word Search: a themed list of words placed into a generated letter grid at
+// session start. The grid itself isn't stored — it's deterministic per
+// session seed so it can be regenerated, keeping this table small.
+model WordSearchPuzzle {
+  id         String    @id @default(cuid())
+  slug       String    @unique
+  title      String
+  words      String[]
+  gridSize   Int       @default(12)
+  categoryId String?
+  sortOrder  Int       @default(0)
+  isActive   Boolean   @default(true)
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+// Character Guessing Game ("Who Am I?"): a hidden name revealed progressively
+// through an ordered list of clues.
+model BibleCharacter {
+  id         String    @id @default(cuid())
+  slug       String    @unique
+  name       String
+  clues      String[]
+  imageUrl   String?
+  categoryId String?
+  sortOrder  Int       @default(0)
+  isActive   Boolean   @default(true)
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+// Bible Story Challenge: players reorder a story's events into the correct
+// sequence.
+model BibleStory {
+  id         String        @id @default(cuid())
+  slug       String        @unique
+  title      String
+  categoryId String?
+  sortOrder  Int           @default(0)
+  isActive   Boolean       @default(true)
+  category   Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  events     StoryEvent[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model StoryEvent {
+  id           String     @id @default(cuid())
+  storyId      String
+  text         String
+  correctOrder Int
+  story        BibleStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([storyId])
+}
+
+// Daily Bible Challenge: one question per calendar day, shared by every
+// player, with at most one completion per player per day.
+model DailyChallengeCompletion {
+  id            String        @id @default(cuid())
+  playerId      String
+  challengeDate DateTime      @db.Date
+  questionId    String
+  isCorrect     Boolean       @default(false)
+  xpAwarded     Int           @default(0)
+  createdAt     DateTime      @default(now())
+  player        PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, challengeDate])
+  @@index([playerId])
 }
 
 model DifficultyLevel {
@@ -173,6 +250,7 @@ model PlayerProfile {
   badges           PlayerBadge[]
   avatarUnlocks    PlayerAvatarUnlock[]
   levelProgress    PlayerLevelProgress[]
+  dailyChallenges  DailyChallengeCompletion[]
 }
 
 model PlayerProgressLog {

@@ -47,3 +47,32 @@ export async function authenticateAdmin(req: Request, _res: Response, next: Next
     next(error);
   }
 }
+
+export async function authenticateParent(req: Request, _res: Response, next: NextFunction) {
+  try {
+    const token = extractToken(req);
+
+    if (!token) {
+      throw AppError.unauthorized("Missing session token");
+    }
+
+    const session = await prisma.parentSession.findUnique({
+      where: { tokenHash: hashToken(token) },
+      include: { parentAccount: true },
+    });
+
+    if (!session || session.expiresAt.getTime() < Date.now()) {
+      throw AppError.unauthorized("Invalid or expired session");
+    }
+
+    if (!session.parentAccount.isActive) {
+      throw AppError.forbidden("Account is disabled");
+    }
+
+    req.parentAccount = session.parentAccount;
+    req.parentSession = session;
+    next();
+  } catch (error) {
+    next(error);
+  }
+}

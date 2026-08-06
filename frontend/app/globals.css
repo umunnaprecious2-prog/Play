@@ -9,8 +9,10 @@
 html {
   /* Bumps the base rem size app-wide (browser default is 16px), so every
      Tailwind text-* and spacing-* utility, which are all rem-based, scales
-     up together instead of needing every className touched individually. */
-  font-size: 18px;
+     up together instead of needing every className touched individually.
+     Set deliberately large: this app is read by young children as much as
+     adults, so legibility wins over fitting more on screen. */
+  font-size: 20px;
 }
 
 html,

@@ -1,6 +1,6 @@
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
-import { calculateLevel, calculateStars, updateStreak } from "../utils/gameMath";
+import { calculateLevel, updateStreak } from "../utils/gameMath";
 
 function shuffle<T>(items: T[]): T[] {
   const copy = [...items];
@@ -181,7 +181,11 @@ export async function submitQuizAnswer(input: { sessionId: string; questionId: s
   const correctOption = question.options.find((option) => option.isCorrect);
   const isCorrect = Boolean(correctOption && correctOption.text === input.selectedText);
   const xpAwarded = isCorrect ? question.xpReward : 0;
-  const starsAwarded = calculateStars(isCorrect ? 1 : 0);
+  // calculateStars() is a threshold function over a cumulative correct-answer
+  // count (>=3, >=6, >=10), so calling it with a single 0/1 value always
+  // returned 0 here — stars were never actually awarded for a quiz answer.
+  // Match the memory-verse flow: 1 star per correct answer.
+  const starsAwarded = isCorrect ? 1 : 0;
   const nextXp = session.player.xp + xpAwarded;
   const nextCorrect = session.correctCount + (isCorrect ? 1 : 0);
   const nextIncorrect = session.incorrectCount + (isCorrect ? 0 : 1);

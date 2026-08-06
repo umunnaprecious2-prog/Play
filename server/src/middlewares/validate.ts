@@ -10,7 +10,15 @@ function validate(schema: ZodTypeAny, source: "body" | "params" | "query") {
       return next(AppError.unprocessable("Validation failed", result.error.flatten()));
     }
 
-    req[source] = result.data;
+    // Express 5 defines req.query as a getter-only accessor (no setter), so a
+    // plain `req.query = ...` throws. Redefining the property is the standard
+    // workaround; req.body/req.params remain plain writable properties.
+    if (source === "query") {
+      Object.defineProperty(req, "query", { value: result.data, writable: true, configurable: true });
+    } else {
+      req[source] = result.data;
+    }
+
     return next();
   };
 }

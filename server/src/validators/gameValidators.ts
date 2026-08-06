@@ -30,3 +30,22 @@ export const submitMemoryVerseAnswerSchema = z.object({
   verseId: z.string().min(1),
   answerText: z.string().min(1).max(2000),
 });
+
+export const listLevelsQuerySchema = z.object({
+  playerId: z.string().min(1),
+});
+
+export const startLevelSessionSchema = z.object({
+  playerId: z.string().min(1),
+});
+
+export const requestLevelHintSchema = z.object({
+  sessionId: z.string().min(1),
+  questionId: z.string().min(1),
+});
+
+export const submitLevelAnswerSchema = z.object({
+  sessionId: z.string().min(1),
+  questionId: z.string().min(1),
+  selectedText: z.string().min(1).max(250),
+});

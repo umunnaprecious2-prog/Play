@@ -25,16 +25,17 @@ enum ImportJobStatus {
 }
 
 model Category {
-  id            String          @id @default(cuid())
-  slug          String          @unique
-  name          String          @unique
-  description   String?
-  sortOrder     Int             @default(0)
-  isActive      Boolean         @default(true)
-  quizQuestions QuizQuestion[]
-  verses        BibleVerse[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id             String                 @id @default(cuid())
+  slug           String                 @unique
+  name           String                 @unique
+  description    String?
+  sortOrder      Int                    @default(0)
+  isActive       Boolean                @default(true)
+  quizQuestions  QuizQuestion[]
+  verses         BibleVerse[]
+  levelProgress  PlayerLevelProgress[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
 }
 
 model DifficultyLevel {
@@ -171,6 +172,7 @@ model PlayerProfile {
   progressLogs     PlayerProgressLog[]
   badges           PlayerBadge[]
   avatarUnlocks    PlayerAvatarUnlock[]
+  levelProgress    PlayerLevelProgress[]
 }
 
 model PlayerProgressLog {
@@ -205,6 +207,7 @@ model GameSession {
   metadata        Json?
   player          PlayerProfile      @relation(fields: [playerId], references: [id], onDelete: Cascade)
   answers         GameSessionAnswer[]
+  hints           GameSessionHint[]
 
   @@index([playerId])
   @@index([gameMode])
@@ -224,6 +227,47 @@ model GameSessionAnswer {
 
   @@index([sessionId])
   @@index([questionId])
+}
+
+// Tracks each hint a player uses on a specific question within a level session.
+// Server-authoritative so point deductions can't be spoofed by the client:
+// the score for a question is computed from the count of rows here, not from
+// a client-supplied "hints used" number.
+model GameSessionHint {
+  id                String      @id @default(cuid())
+  sessionId         String
+  questionId        String
+  hintNumber        Int
+  eliminatedOptionId String?
+  createdAt         DateTime    @default(now())
+  session           GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, questionId, hintNumber])
+  @@index([sessionId])
+  @@index([questionId])
+}
+
+// One row per (player, category) tracking progress through the leveled Bible
+// Quiz. A category acts as a "level" — sortOrder defines the level order.
+// Level 1 (lowest sortOrder) is unlocked for every player by default; each
+// subsequent level unlocks only once the prior one's session is completed.
+model PlayerLevelProgress {
+  id           String        @id @default(cuid())
+  playerId     String
+  categoryId   String
+  isUnlocked   Boolean       @default(false)
+  isCompleted  Boolean       @default(false)
+  bestScore    Int           @default(0)
+  attempts     Int           @default(0)
+  completedAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  player       PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, categoryId])
+  @@index([playerId])
+  @@index([categoryId])
 }
 
 model Badge {

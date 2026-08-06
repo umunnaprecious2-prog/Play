@@ -18,6 +18,12 @@ export function Footer() {
             A Bible learning platform for kids and families, bringing faith, education, and gameplay together in
             one joyful daily habit.
           </p>
+          <Link
+            href="/account"
+            className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold-300 hover:underline"
+          >
+            Family Sign In →
+          </Link>
         </div>
 
         <div>

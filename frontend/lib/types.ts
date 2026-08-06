@@ -11,6 +11,21 @@ export type PlayerProfile = {
   totalIncorrect: number;
 };
 
+// Parent accounts & child profiles
+export type ChildProfile = {
+  id: string;
+  nickname: string;
+  avatarSlug: string | null;
+  xp: number;
+  level: number;
+  stars: number;
+  streakDays: number;
+};
+
+export type ParentSummary = { id: string; email: string };
+export type ParentAuthResponse = { token: string; expiresAt: string; parent: ParentSummary };
+export type ParentMeResponse = { parent: ParentSummary; children: ChildProfile[] };
+
 export type QuizQuestion = {
   id: string;
   slug: string;

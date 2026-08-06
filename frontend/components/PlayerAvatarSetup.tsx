@@ -3,21 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Route } from "next";
+import Link from "next/link";
 import { apiFetch } from "../lib/api";
+import { AVATAR_OPTIONS } from "../lib/avatars";
 import { setStoredNickname, setStoredPlayerId } from "../lib/player";
 import type { PlayerProfile } from "../lib/types";
-
-type AvatarOption = {
-  slug: string;
-  label: string;
-  emoji: string;
-  ring: string;
-};
-
-const AVATAR_OPTIONS: AvatarOption[] = [
-  { slug: "boy-explorer", label: "Boy", emoji: "🧑", ring: "ring-sky-400 bg-sky-50" },
-  { slug: "girl-explorer", label: "Girl", emoji: "👧", ring: "ring-sunrise-400 bg-sunrise-50" },
-];
 
 type PlayerAvatarSetupProps = {
   gameTitle: string;
@@ -140,6 +130,13 @@ export function PlayerAvatarSetup({ gameTitle, redirectTo }: PlayerAvatarSetupPr
       >
         {isLoading ? "Saving..." : "Start Playing →"}
       </button>
+
+      <p className="text-center text-sm text-slate-500">
+        Already have a family account?{" "}
+        <Link href="/account" className="font-semibold text-royal-600 hover:underline">
+          Sign in
+        </Link>
+      </p>
     </form>
   );
 }

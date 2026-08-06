@@ -7,6 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "render-start": "prisma migrate deploy && node dist/server.js",
     "seed": "tsx src/scripts/seed.ts",
     "import:content": "tsx src/scripts/importContent.ts",
     "prisma:generate": "prisma generate"
@@ -15,6 +16,9 @@
   "author": "",
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "cors": "^2.8.6",

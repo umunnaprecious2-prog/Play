@@ -19,11 +19,6 @@ const QUESTIONS = [
       "Bible Quiz Levels has 8 structured levels of 25 questions each, 10 points a question. Stuck on one? Use a hint for -2 points, up to 2 per question, and a correct answer still earns 6 points even with both hints used. Most of the other games ramp difficulty across up to 20 rounds the same way. Finish one to unlock the next.",
   },
   {
-    question: "Do I need to create an account?",
-    answer:
-      "No email or password needed. Pick a game, then choose a nickname and an avatar. A player profile is created automatically and saved on your device, so your XP, streaks, and progress persist between visits, and you won't be asked again next time.",
-  },
-  {
     question: "Is Play free to use?",
     answer: "Yes, every game on Play is free to play right now.",
   },

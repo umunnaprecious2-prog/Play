@@ -1,20 +1,8 @@
 import Link from "next/link";
+import { GAMES } from "../lib/games";
 
-const PLATFORM_LINKS = [
-  { label: "Bible Quiz Levels", href: "/levels" },
-  { label: "Memory Verse", href: "/memory-verse" },
-  { label: "Word Search", href: "/word-search" },
-  { label: "Scripture Puzzle", href: "/scripture-puzzle" },
-  { label: "Flash Cards", href: "/flashcards" },
-] as const;
-
-const MORE_LINKS = [
-  { label: "Match the Verse", href: "/match-the-verse" },
-  { label: "Bible Trivia", href: "/trivia" },
-  { label: "Bible Story Challenge", href: "/story-challenge" },
-  { label: "Character Guessing Game", href: "/who-am-i" },
-  { label: "Daily Bible Challenge", href: "/daily-challenge" },
-] as const;
+const PLATFORM_LINKS = GAMES.slice(0, 5);
+const MORE_LINKS = GAMES.slice(5);
 
 export function Footer() {
   return (
@@ -31,10 +19,10 @@ export function Footer() {
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Play Now</p>
           <ul className="mt-3 grid gap-2">
-            {PLATFORM_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="text-sm text-white/70 hover:text-gold-300 hover:underline">
-                  {link.label}
+            {PLATFORM_LINKS.map((game) => (
+              <li key={game.slug}>
+                <Link href={`/games/${game.slug}`} className="text-sm text-white/70 hover:text-gold-300 hover:underline">
+                  {game.title}
                 </Link>
               </li>
             ))}
@@ -44,10 +32,10 @@ export function Footer() {
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">More Games</p>
           <ul className="mt-3 grid gap-2">
-            {MORE_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="text-sm text-white/70 hover:text-gold-300 hover:underline">
-                  {link.label}
+            {MORE_LINKS.map((game) => (
+              <li key={game.slug}>
+                <Link href={`/games/${game.slug}`} className="text-sm text-white/70 hover:text-gold-300 hover:underline">
+                  {game.title}
                 </Link>
               </li>
             ))}

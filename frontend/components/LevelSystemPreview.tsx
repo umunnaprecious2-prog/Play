@@ -50,7 +50,7 @@ export function LevelSystemPreview() {
 
       <div className="flex justify-center">
         <Link
-          href="/levels"
+          href="/games/levels"
           className="rounded-full bg-gold-400 px-6 py-3 text-sm font-bold text-royal-900 transition hover:bg-gold-300"
         >
           See the Level Map →

@@ -1,0 +1,72 @@
+"use client";
+
+import { useState } from "react";
+
+const QUESTIONS = [
+  {
+    question: "Is Play suitable for young children?",
+    answer:
+      "Yes. Large touch-friendly buttons, bright colors, short reading, and encouraging feedback (never punishment for a wrong answer) are core to the design. Each Bible Quiz level mixes easy, medium, and hard questions.",
+  },
+  {
+    question: "How does the level system work in Bible Quiz?",
+    answer:
+      "Each level has 25 questions worth 10 points each. Stuck on one? Use a hint for -2 points, up to 2 hints per question — so the lowest score on a question you still get right is 6 points. Complete all 25 questions in a level to unlock the next one.",
+  },
+  {
+    question: "Do I need to create an account?",
+    answer:
+      "No email or password needed. Pick a nickname and an avatar, and a player profile is created automatically and saved on your device, so your XP, streaks, and level progress persist between visits.",
+  },
+  {
+    question: "Is Play free to use?",
+    answer: "Yes — every game on Play is free to play right now.",
+  },
+  {
+    question: "Can churches and schools use Play for their programs?",
+    answer:
+      "That's a big part of the vision. Dedicated classroom or group-management tools aren't built yet, but the games themselves work great today for a kids' church class, youth group, or homeschool routine.",
+  },
+];
+
+export function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  return (
+    <section className="grid gap-6 rounded-[1.75rem] border border-white/70 bg-white/80 p-6 shadow-soft backdrop-blur sm:p-8">
+      <div className="text-center">
+        <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">FAQ</span>
+        <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">Frequently Asked Questions</h2>
+        <p className="mx-auto mt-2 max-w-2xl text-base text-slate-600">
+          Everything you need to know before starting your Bible learning journey.
+        </p>
+      </div>
+
+      <div className="grid gap-3">
+        {QUESTIONS.map((item, index) => {
+          const isOpen = openIndex === index;
+
+          return (
+            <div
+              key={item.question}
+              className={`rounded-2xl border px-5 py-4 transition ${isOpen ? "border-royal-200 bg-royal-50" : "border-slate-200 bg-white"}`}
+            >
+              <button
+                type="button"
+                onClick={() => setOpenIndex(isOpen ? null : index)}
+                className="flex w-full items-center justify-between gap-4 text-left"
+                aria-expanded={isOpen}
+              >
+                <span className="text-base font-bold text-slate-900">{item.question}</span>
+                <span className={`text-xl text-royal-500 transition ${isOpen ? "rotate-180" : ""}`} aria-hidden>
+                  ⌄
+                </span>
+              </button>
+              {isOpen ? <p className="mt-3 text-sm leading-6 text-slate-600">{item.answer}</p> : null}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

@@ -701,7 +701,7 @@ export async function importContent(payload: ImportPayload) {
         characters: (payload.characters ?? []).length,
         stories: (payload.stories ?? []).length,
       };
-    });
+    }, { timeout: 180000, maxWait: 20000 });
 
     await prisma.importJob.update({
       where: { id: job.id },

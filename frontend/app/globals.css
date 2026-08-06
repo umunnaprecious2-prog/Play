@@ -6,6 +6,13 @@
   color-scheme: light;
 }
 
+html {
+  /* Bumps the base rem size app-wide (browser default is 16px), so every
+     Tailwind text-* and spacing-* utility, which are all rem-based, scales
+     up together instead of needing every className touched individually. */
+  font-size: 18px;
+}
+
 html,
 body {
   margin: 0;

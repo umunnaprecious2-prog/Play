@@ -16,7 +16,7 @@ export default function HomePage() {
         <section className="rounded-[1.75rem] border border-white/70 bg-white/80 p-6 text-center shadow-soft backdrop-blur sm:p-8">
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">Our Mission</span>
           <h2 className="mx-auto mt-2 max-w-3xl text-2xl font-black text-slate-900 sm:text-3xl">
-            Turning Bible study into something you look forward to
+            Bible Study Made Joyful
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-slate-600">
             Play brings faith, education, and gameplay together for kids and adults alike. It&apos;s built to be

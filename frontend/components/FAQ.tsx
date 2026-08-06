@@ -6,17 +6,22 @@ const QUESTIONS = [
   {
     question: "Is Play suitable for young children?",
     answer:
-      "Yes. Large touch-friendly buttons, bright colors, short reading, and encouraging feedback (never punishment for a wrong answer) are core to the design. Each Bible Quiz level mixes easy, medium, and hard questions.",
+      "Yes. Large touch-friendly buttons, bright colors, short reading, and encouraging feedback (never punishment for a wrong answer) are core to the design across every game. Difficulty ramps up gradually as you go, so it stays approachable from the first round.",
   },
   {
-    question: "How does the level system work in Bible Quiz?",
+    question: "How many games are there?",
     answer:
-      "Each level has 25 questions worth 10 points each. Stuck on one? Use a hint for -2 points, up to 2 hints per question. Even with both hints used, a correct answer still earns 6 points. Complete all 25 questions in a level to unlock the next one.",
+      "Ten, and all of them are live today: Bible Quiz Levels, Memory Verse, Word Search, Scripture Puzzle, Flash Cards, Match the Verse, Bible Trivia, Bible Story Challenge, the Character Guessing Game, and the Daily Bible Challenge. Every verse quoted anywhere on Play is the King James Version, word for word.",
+  },
+  {
+    question: "How does the level system work?",
+    answer:
+      "Bible Quiz Levels has 8 structured levels of 25 questions each, 10 points a question. Stuck on one? Use a hint for -2 points, up to 2 per question, and a correct answer still earns 6 points even with both hints used. Most of the other games ramp difficulty across up to 20 rounds the same way. Finish one to unlock the next.",
   },
   {
     question: "Do I need to create an account?",
     answer:
-      "No email or password needed. Pick a nickname and an avatar, and a player profile is created automatically and saved on your device, so your XP, streaks, and level progress persist between visits.",
+      "No email or password needed. Pick a game, then choose a nickname and an avatar. A player profile is created automatically and saved on your device, so your XP, streaks, and progress persist between visits, and you won't be asked again next time.",
   },
   {
     question: "Is Play free to use?",

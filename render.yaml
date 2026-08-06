@@ -37,9 +37,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      # Expected URL for the play-api service above. Render assigns this from the
-      # service name unless that name is already taken globally, in which case Render
-      # appends a suffix -- if so, update this value in the dashboard to match the
-      # real backend URL and redeploy the frontend.
+      # The "play-api" name was already taken on Render, so it got assigned this
+      # suffixed URL instead of the plain https://play-api.onrender.com. If play-api
+      # is ever recreated under a different name/URL, update this to match.
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://play-api.onrender.com/api
+        value: https://play-api-hb7f.onrender.com/api

@@ -1,15 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden rounded-[2rem] bg-landing-hero p-8 shadow-glow sm:p-10 lg:p-14">
-      <div className="pointer-events-none absolute -right-10 -top-10 text-8xl opacity-20 animate-float" aria-hidden>
-        📖
-      </div>
-
       <div className="relative mx-auto max-w-2xl space-y-6 text-center">
+        <Image
+          src="/logo.png"
+          alt="Play logo"
+          width={96}
+          height={80}
+          priority
+          className="mx-auto h-20 w-auto animate-float drop-shadow-[0_10px_25px_rgba(245,165,36,0.35)]"
+        />
+
         <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-gold-200 ring-1 ring-inset ring-white/20">
           🌟 Bible Adventure for Kids &amp; Families
         </span>

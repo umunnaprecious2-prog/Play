@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { GAMES } from "../lib/games";
 
@@ -9,7 +10,10 @@ export function Footer() {
     <footer className="grid gap-8 rounded-[1.75rem] bg-royal-900 p-8 text-white sm:p-10">
       <div className="grid gap-8 sm:grid-cols-3">
         <div>
-          <p className="flex items-center gap-2 text-xl font-black">📖 Play</p>
+          <p className="flex items-center gap-2 text-xl font-black">
+            <Image src="/logo.png" alt="Play logo" width={36} height={30} className="h-8 w-auto" />
+            Play
+          </p>
           <p className="mt-3 max-w-xs text-sm leading-6 text-white/60">
             A Bible learning platform for kids and families, bringing faith, education, and gameplay together in
             one joyful daily habit.

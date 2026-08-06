@@ -167,10 +167,10 @@ export function MatchTheVerse() {
                   ? "border-meadow-300 bg-meadow-50 text-meadow-800"
                   : isRevealed
                     ? "border-royal-300 bg-royal-50 text-royal-900"
-                    : "border-slate-200 bg-slate-900 text-transparent hover:bg-slate-800"
+                    : "border-slate-200 bg-slate-900 text-white/70 hover:bg-slate-800"
               }`}
             >
-              {isRevealed ? card.content : "?"}
+              {isRevealed ? card.content : <span className="text-2xl font-black">?</span>}
             </button>
           );
         })}

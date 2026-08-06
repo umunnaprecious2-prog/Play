@@ -1,19 +1,19 @@
 const STEPS = [
   {
     number: 1,
+    icon: "📖",
+    color: "bg-gold-100 text-gold-600",
+    badge: "bg-gold-500",
+    title: "Choose a Game",
+    text: "Pick from ten Bible-centered games, each built around a different way to learn Scripture.",
+  },
+  {
+    number: 2,
     icon: "👤",
     color: "bg-royal-100 text-royal-700",
     badge: "bg-royal-600",
     title: "Create Your Player",
     text: "Pick a nickname and an avatar. No email or sign-up form needed, and your progress saves automatically on this device.",
-  },
-  {
-    number: 2,
-    icon: "📖",
-    color: "bg-gold-100 text-gold-600",
-    badge: "bg-gold-500",
-    title: "Choose a Game & Start",
-    text: "Start with the flagship Bible Quiz. Finish Level 1's 25 questions to unlock Level 2, and keep climbing from there.",
   },
   {
     number: 3,

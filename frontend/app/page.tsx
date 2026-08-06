@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Hero } from "../components/Hero";
 import { FeatureGrid } from "../components/FeatureGrid";
 import { HowItWorks } from "../components/HowItWorks";
-import { LevelSystemPreview } from "../components/LevelSystemPreview";
 import { AudienceHighlights } from "../components/AudienceHighlights";
 import { FAQ } from "../components/FAQ";
 import { Footer } from "../components/Footer";
@@ -45,8 +44,6 @@ export default function HomePage() {
             </Link>
           </div>
         </section>
-
-        <LevelSystemPreview />
 
         <AudienceHighlights />
 

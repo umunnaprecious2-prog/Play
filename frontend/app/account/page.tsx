@@ -136,13 +136,13 @@ export default function AccountPage() {
         <div className="mx-auto flex max-w-md flex-col gap-6 py-10">
           <form onSubmit={handleAuthSubmit} className="grid gap-5 rounded-[1.75rem] border border-white/70 bg-white/80 p-6 shadow-soft backdrop-blur sm:p-8">
             <div className="text-center">
-              <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">Family Account</span>
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">Account</span>
               <h1 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">
                 {authMode === "signup" ? "Create your account" : "Welcome back"}
               </h1>
               <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-600">
                 {authMode === "signup"
-                  ? "One account for the whole family. Add a profile for each kid, and progress syncs across devices."
+                  ? "One account, multiple player profiles. Add a profile for each kid, and progress syncs across devices."
                   : "Sign in to see your kids' profiles and progress."}
               </p>
             </div>
@@ -190,7 +190,7 @@ export default function AccountPage() {
               }}
               className="text-center text-sm font-semibold text-royal-600 hover:underline"
             >
-              {authMode === "signup" ? "Already have an account? Sign in" : "New here? Create a family account"}
+              {authMode === "signup" ? "Already have an account? Sign in" : "New here? Create an account"}
             </button>
           </form>
         </div>
@@ -203,7 +203,7 @@ export default function AccountPage() {
       <div className="mx-auto flex max-w-3xl flex-col gap-6 py-10">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/70 bg-white/80 p-6 shadow-soft backdrop-blur">
           <div>
-            <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">Family Account</span>
+            <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">Account</span>
             <h1 className="mt-1 text-2xl font-black text-slate-900">{parentEmail}</h1>
           </div>
           <button

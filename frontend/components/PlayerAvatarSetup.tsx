@@ -132,7 +132,7 @@ export function PlayerAvatarSetup({ gameTitle, redirectTo }: PlayerAvatarSetupPr
       </button>
 
       <p className="text-center text-sm text-slate-500">
-        Already have a family account?{" "}
+        Already have an account?{" "}
         <Link href="/account" className="font-semibold text-royal-600 hover:underline">
           Sign in
         </Link>

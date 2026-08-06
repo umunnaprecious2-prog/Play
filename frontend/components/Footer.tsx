@@ -15,14 +15,14 @@ export function Footer() {
             Play
           </p>
           <p className="mt-3 max-w-xs text-sm leading-6 text-white/60">
-            A Bible learning platform for kids and families, bringing faith, education, and gameplay together in
+            A Bible learning platform for kids and adults, bringing faith, education, and gameplay together in
             one joyful daily habit.
           </p>
           <Link
             href="/account"
             className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold-300 hover:underline"
           >
-            Family Sign In →
+            Sign In →
           </Link>
         </div>
 

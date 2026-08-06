@@ -17,7 +17,7 @@ export function Hero() {
         />
 
         <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-gold-200 ring-1 ring-inset ring-white/20">
-          🌟 Bible Adventure for Kids &amp; Families
+          🌟 Bible Adventure for Kids &amp; Adults
         </span>
 
         <h1 className="mx-auto text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -25,7 +25,7 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto max-w-xl text-lg leading-8 text-white/80 sm:text-xl">
-          Ten Bible-centered games, XP, streaks, and rewards that keep the whole family coming back. Pick a game
+          Ten Bible-centered games, XP, streaks, and rewards that keep you coming back. Pick a game
           and start playing.
         </p>
 

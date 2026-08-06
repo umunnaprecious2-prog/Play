@@ -251,6 +251,37 @@ model PlayerProfile {
   avatarUnlocks    PlayerAvatarUnlock[]
   levelProgress    PlayerLevelProgress[]
   dailyChallenges  DailyChallengeCompletion[]
+
+  // Optional: guest players (parentAccountId null) work exactly as before.
+  // Set once a parent signs up and either creates this profile or claims an
+  // existing guest profile that already has real progress on it.
+  parentAccountId  String?
+  parentAccount    ParentAccount?      @relation(fields: [parentAccountId], references: [id], onDelete: SetNull)
+
+  @@index([parentAccountId])
+}
+
+model ParentAccount {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  passwordHash String
+  isActive     Boolean         @default(true)
+  children     PlayerProfile[]
+  sessions     ParentSession[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model ParentSession {
+  id              String        @id @default(cuid())
+  parentAccountId String
+  tokenHash       String        @unique
+  expiresAt       DateTime
+  createdAt       DateTime      @default(now())
+  parentAccount   ParentAccount @relation(fields: [parentAccountId], references: [id], onDelete: Cascade)
+
+  @@index([parentAccountId])
+  @@index([expiresAt])
 }
 
 model PlayerProgressLog {

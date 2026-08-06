@@ -42,7 +42,7 @@ model Category {
 }
 
 // Word Search: a themed list of words placed into a generated letter grid at
-// session start. The grid itself isn't stored — it's deterministic per
+// session start. The grid itself isn't stored, since it's deterministic per
 // session seed so it can be regenerated, keeping this table small.
 model WordSearchPuzzle {
   id         String    @id @default(cuid())
@@ -326,7 +326,7 @@ model GameSessionHint {
 }
 
 // One row per (player, category) tracking progress through the leveled Bible
-// Quiz. A category acts as a "level" — sortOrder defines the level order.
+// Quiz. A category acts as a "level"; sortOrder defines the level order.
 // Level 1 (lowest sortOrder) is unlocked for every player by default; each
 // subsequent level unlocks only once the prior one's session is completed.
 model PlayerLevelProgress {

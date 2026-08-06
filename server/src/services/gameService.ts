@@ -183,8 +183,8 @@ export async function submitQuizAnswer(input: { sessionId: string; questionId: s
   const xpAwarded = isCorrect ? question.xpReward : 0;
   // calculateStars() is a threshold function over a cumulative correct-answer
   // count (>=3, >=6, >=10), so calling it with a single 0/1 value always
-  // returned 0 here — stars were never actually awarded for a quiz answer.
-  // Match the memory-verse flow: 1 star per correct answer.
+  // returned 0 here: stars were never actually awarded for a quiz answer.
+  // Match the memory-verse flow instead, with 1 star per correct answer.
   const starsAwarded = isCorrect ? 1 : 0;
   const nextXp = session.player.xp + xpAwarded;
   const nextCorrect = session.correctCount + (isCorrect ? 1 : 0);

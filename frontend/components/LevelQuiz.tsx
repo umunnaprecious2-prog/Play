@@ -278,7 +278,7 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
           >
             {currentAnswer.isCorrect
               ? `Correct! +${currentAnswer.pointsEarned} points.`
-              : `Not quite — the correct answer is "${currentAnswer.correctText}".`}
+              : `Not quite. The correct answer is "${currentAnswer.correctText}".`}
           </div>
           {question.explanation ? (
             <div className="rounded-2xl bg-royal-50 px-4 py-4 text-sm leading-6 text-royal-900">

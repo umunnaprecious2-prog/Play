@@ -8,7 +8,7 @@ export default function MatchTheVersePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-meadow-600">Match the Verse</p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">Pair the reference with its verse</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            Flip two cards at a time. Find every reference-and-verse pair with as few misses as possible — every verse
+            Flip two cards at a time. Find every reference-and-verse pair with as few misses as possible. Every verse
             is quoted exactly from the King James Version.
           </p>
         </header>

@@ -166,7 +166,7 @@ export function QuizPreview() {
         >
           {currentAnswer.isCorrect
             ? `Great job! You earned ${currentAnswer.xpAwarded} XP.`
-            : `Not quite — the correct answer is "${currentAnswer.correctText}".`}
+            : `Not quite. The correct answer is "${currentAnswer.correctText}".`}
         </div>
       ) : null}
 

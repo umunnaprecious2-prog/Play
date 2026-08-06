@@ -166,7 +166,7 @@ export function CharacterGuess() {
         <div className={`rounded-2xl px-4 py-4 text-base font-semibold ${state.answer.isCorrect ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-800"}`}>
           {state.answer.isCorrect
             ? `Correct! It was ${state.answer.correctName}. +${state.answer.pointsEarned} points.`
-            : `Not quite — it was ${state.answer.correctName}.`}
+            : `Not quite. It was ${state.answer.correctName}.`}
         </div>
       ) : (
         <div className="grid gap-3">

@@ -230,7 +230,7 @@ export function TriviaGame() {
             ? `Time's up! The answer was "${currentAnswer.correctText}".`
             : currentAnswer.isCorrect
               ? `Correct! +${currentAnswer.xpAwarded} points.`
-              : `Not quite — the answer was "${currentAnswer.correctText}".`}
+              : `Not quite. The answer was "${currentAnswer.correctText}".`}
         </div>
       ) : null}
     </section>

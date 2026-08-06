@@ -100,7 +100,7 @@ export function LevelMap() {
                 </p>
                 {level.isUnlocked ? (
                   <p className="mt-1 text-sm text-slate-600">
-                    {level.isCompleted ? `Completed — best score ${level.bestScore}` : `${level.totalQuestions} questions · 10 pts each`}
+                    {level.isCompleted ? `Completed · best score ${level.bestScore}` : `${level.totalQuestions} questions · 10 pts each`}
                   </p>
                 ) : (
                   <p className="mt-1 text-sm text-slate-500">Complete Level {level.levelNumber - 1} to unlock</p>

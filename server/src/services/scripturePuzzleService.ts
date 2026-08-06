@@ -23,8 +23,8 @@ function normalizeAnswer(words: string[]): string {
   return words.join(" ").trim().toLowerCase().replace(/\s+/g, " ");
 }
 
-// Serves verses shortest-first (a reasonable proxy for puzzle difficulty —
-// fewer words to reorder is easier) and skips verses this player has already
+// Serves verses shortest-first (a reasonable proxy for puzzle difficulty,
+// since fewer words to reorder is easier) and skips verses this player has already
 // solved, so the puzzle naturally gets harder as they progress. Falls back
 // to a random pick once everything has been solved at least once.
 async function pickNextVerse(playerId: string) {

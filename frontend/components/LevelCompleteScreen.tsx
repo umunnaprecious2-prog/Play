@@ -29,7 +29,7 @@ export function LevelCompleteScreen({
         🏆
       </div>
 
-      <h2 className="text-3xl font-black">{passed ? "You passed!" : "So close — try again!"}</h2>
+      <h2 className="text-3xl font-black">{passed ? "You passed!" : "So close! Try again."}</h2>
 
       <div className="flex gap-2 text-3xl" aria-label={`${stars} out of 3 stars`}>
         {[1, 2, 3].map((position) => (

@@ -8,7 +8,7 @@ export default function FlashCardsPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sunrise-600">Flash Cards</p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">Quick verse recall practice</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            See a reference, try to recall the verse, then flip the card to check yourself — every verse quoted
+            See a reference, try to recall the verse, then flip the card to check yourself. Every verse is quoted
             exactly from the King James Version.
           </p>
         </header>

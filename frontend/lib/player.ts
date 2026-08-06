@@ -37,9 +37,9 @@ const TRIVIA_ROUND_KEY = "play.triviaRound";
 const MAX_TRIVIA_ROUND = 20;
 
 // Bible Trivia has no per-puzzle identity to track server-side (it draws
-// randomly from the shared question pool), so round progress — used to ramp
-// difficulty over 20 rounds — is tracked locally, the same way player
-// identity itself is.
+// randomly from the shared question pool). Round progress, used to ramp
+// difficulty over 20 rounds, is tracked locally instead, the same way
+// player identity itself is.
 export function getNextTriviaRound(): number {
   if (typeof window === "undefined") {
     return 1;

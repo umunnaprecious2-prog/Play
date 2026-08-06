@@ -15,8 +15,8 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-// Escalates difficulty over 20 levels using the existing verse pool — no new
-// content needed. The level is derived from how many rounds this player has
+// Escalates difficulty over 20 levels using the existing verse pool, so no
+// new content is needed. The level is derived from how many rounds this player has
 // already completed, so pair count and verse difficulty both ramp up the
 // more they play, then hold steady at the hardest tier.
 async function pickLevelVerses(playerId: string, requestedPairCount?: number) {

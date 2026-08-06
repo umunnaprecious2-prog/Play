@@ -108,10 +108,10 @@ export function WordSearch() {
           setIsComplete(true);
         }
       } else {
-        setMessage("Not a word in this puzzle — try again.");
+        setMessage("Not a word in this puzzle. Try again.");
       }
     } catch {
-      setMessage("Not a word in this puzzle — try again.");
+      setMessage("Not a word in this puzzle. Try again.");
     }
   }
 

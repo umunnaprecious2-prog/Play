@@ -8,7 +8,7 @@ export default function WordSearchPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-600">Word Search</p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">Find the hidden Bible words</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            Words can run in any direction — across, down, or diagonal. Tap the first and last letter to select one.
+            Words can run in any direction: across, down, or diagonal. Tap the first and last letter to select one.
           </p>
         </header>
 

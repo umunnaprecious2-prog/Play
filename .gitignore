@@ -18,3 +18,11 @@ frontend/ios/App/build
 frontend/ios/App/DerivedData
 frontend/ios/App/App/public
 frontend/android/app/src/main/assets/public
+
+# Release signing secrets -- never commit these. Losing the keystore means
+# losing the ability to publish updates to the app under the same listing,
+# so back it up somewhere safe outside this repo (a password manager, etc.),
+# not just here.
+frontend/android/keystore.properties
+frontend/android/app/*.keystore
+frontend/android/app/*.jks

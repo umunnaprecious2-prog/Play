@@ -121,7 +121,11 @@ Apple's $99/year and Google's $25 one-time fee are both real costs with no waive
 - **Android: the same Next.js app packaged into an APK via Capacitor** — this was already the Phase 3 approach, now explicitly confirmed as the long-term one rather than a stopgap. No separate React Native or Flutter codebase, and none is planned.
 - **iOS: architecture stays ready for it** (the Capacitor `ios/` project already exists and already produced one successful Codemagic build), but actually shipping it is paused on the same $99/year Apple constraint — not a structural blocker, purely a "revisit when there's budget" item.
 - **Backend unchanged**: Express + Prisma + PostgreSQL, single codebase, no duplicated business logic — this was already true and remains true; the hybrid decision doesn't touch the backend at all.
-- **Distribution channel while store accounts aren't affordable**: discussed real zero-cost options (direct APK sharing — already have a working signed build; Amazon Appstore and Samsung Galaxy Store, both free developer registration with a real searchable listing; F-Droid, free but requires open-sourcing the app and meeting its build criteria) — **not yet decided which one**, flagged as the next real decision point once the user wants to move on it.
+- **Distribution channel — decided: direct APK download, hosted on the website itself. DONE, live.** The user confirmed the budget constraint is real (not solvable by a nonprofit-style Apple fee waiver, which doesn't apply to an individual) and explicitly deprioritized official Apple/Google store submission entirely, not just "paused for now" — so Phase 4/5's store-submission track (developer accounts, TestFlight, Play Store review) is no longer being pursued. Everything already built for it (Privacy Policy, Terms, signed Android release, store listing copy, screenshots) stays in the repo untouched since it's harmless to keep and cheap to revisit later, but it's not active work.
+  - Built a real signed **installable release APK** (not the AAB — that's Play Store's upload-only bundle format, not directly installable): `./gradlew assembleRelease`, verified with `apksigner verify` (real signature check, not just "the build didn't error") before treating it as done.
+  - Hosted at `frontend/public/downloads/play.apk`, served through the same Render deploy already working — confirmed the production server returns the correct `Content-Type: application/vnd.android.package-archive` and matching `Content-Length`, not just a 200.
+  - New `/download` page: a clear "Download for Android" button plus step-by-step sideload instructions (Android will warn about an unrecognized source since this isn't the Play Store — walked through exactly how to allow it), with an honest note that the web app itself works great without installing anything. Linked from the Footer and from the landing page's game-selection section.
+  - iOS stays exactly where it was (Capacitor project + one successful Codemagic build) — not removed, not being actively pursued either.
 
 Phases, in order (each phase blocks the next):
 
@@ -217,8 +221,8 @@ This remains a multi-phase build. Flagged to the user for prioritization rather 
 - Memory verse correctness check is an exact, case/whitespace-normalized string match against the full verse text — a single typo fails it. Not a bug (matches the current design), but worth revisiting for a "positive feedback, not punishment" UX per `prep.md`.
 
 ## Next Steps
-1. **Decide on a free Android distribution channel** — direct APK link, Amazon Appstore, Samsung Galaxy Store, or F-Droid (see "Distribution channel" note in the roadmap above). The real signed APK/AAB already exists; this is about where it gets listed.
-2. **Revisit Apple/Google store submission when there's budget** for the $99/year + $25 one-time fees — everything on Claude's side (Privacy Policy, Terms, signed Android release build, store listing copy, real screenshots) is already done and waiting, see roadmap Phase 4.
+1. ~~Decide on a free Android distribution channel~~ — **done**: direct APK download at `/download`, live on the site.
+2. Apple/Google store submission is no longer being actively pursued (explicit user decision, not a budget-driven pause) — nothing to do here unless that changes.
 3. Build the admin dashboard frontend — still a real gap (6 content types managed by hand-editing JSON + import scripts).
 4. Implement the admin content image/audio upload endpoints.
 5. Add the missing "Level N/20" badge to Word Search, Scripture Puzzle, Character Guess, and Story Challenge UIs (backend progression already works, just not surfaced as a number in those four).

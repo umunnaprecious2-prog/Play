@@ -43,6 +43,12 @@ export default function HomePage() {
               See All Games →
             </Link>
           </div>
+          <p className="text-sm text-slate-500">
+            On Android?{" "}
+            <Link href="/download" className="font-semibold text-royal-600 hover:underline">
+              Install the app →
+            </Link>
+          </p>
         </section>
 
         <AudienceHighlights />

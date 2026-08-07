@@ -18,12 +18,14 @@ export function Footer() {
             A Bible learning platform for kids and adults, bringing faith, education, and gameplay together in
             one joyful daily habit.
           </p>
-          <Link
-            href="/account"
-            className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold-300 hover:underline"
-          >
-            Sign In →
-          </Link>
+          <div className="mt-4 flex flex-wrap gap-4">
+            <Link href="/account" className="inline-flex items-center gap-1 text-sm font-semibold text-gold-300 hover:underline">
+              Sign In →
+            </Link>
+            <Link href="/download" className="inline-flex items-center gap-1 text-sm font-semibold text-gold-300 hover:underline">
+              Get Android App →
+            </Link>
+          </div>
         </div>
 
         <div>

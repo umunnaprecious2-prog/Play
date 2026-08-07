@@ -37,10 +37,10 @@ export default function HomePage() {
           </p>
           <div className="flex justify-center pt-2">
             <Link
-              href="/games"
+              href="/account"
               className="rounded-full bg-royal-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-royal-500/30 transition hover:-translate-y-0.5 hover:bg-royal-700"
             >
-              See All Games →
+              Sign In to Play →
             </Link>
           </div>
           <p className="text-sm text-slate-500">
@@ -70,10 +70,10 @@ export default function HomePage() {
           </div>
           <div className="flex justify-center pt-2">
             <Link
-              href="/games"
+              href="/account"
               className="rounded-full bg-sunrise-500 px-8 py-3 text-base font-bold text-white transition hover:bg-sunrise-600"
             >
-              Start Playing →
+              Sign In to Play →
             </Link>
           </div>
         </section>

@@ -25,16 +25,22 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto max-w-xl text-lg leading-8 text-white/80 sm:text-xl">
-          Ten Bible-centered games, XP, streaks, and rewards that keep you coming back. Pick a game
-          and start playing.
+          Ten Bible-centered games, XP, streaks, and rewards that keep you coming back. Sign in to set up your
+          players and start playing.
         </p>
 
-        <div className="flex justify-center pt-2">
+        <div className="flex flex-col items-center justify-center gap-3 pt-2">
           <Link
-            href="/games"
+            href="/account"
             className="rounded-full bg-gold-400 px-8 py-4 text-lg font-bold text-royal-900 shadow-lg shadow-gold-500/30 transition hover:-translate-y-0.5 hover:bg-gold-300"
           >
-            Start Playing →
+            Sign In to Play →
+          </Link>
+          <Link
+            href="/download"
+            className="inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 text-sm font-bold text-white ring-1 ring-inset ring-white/25 transition hover:bg-white/20"
+          >
+            ⬇ Download for Android
           </Link>
         </div>
       </div>

@@ -48,10 +48,10 @@ export default function DownloadPage() {
             iPhone, tablets, and desktop alike.
           </p>
           <Link
-            href="/games"
+            href="/account"
             className="mt-3 inline-flex items-center gap-1 font-semibold text-royal-600 hover:underline"
           >
-            Play in your browser instead →
+            Sign in to play in your browser instead →
           </Link>
         </div>
       </div>

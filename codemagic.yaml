@@ -1,0 +1,52 @@
+workflows:
+  # Builds an unsigned debug APK -- installable on a device/emulator for
+  # testing right away, no Google Play Console account or keystore needed
+  # yet. Add a release-signing section (Codemagic dashboard -> this
+  # workflow -> Code signing) once there's a real keystore, then switch
+  # `assembleDebug` to `bundleRelease` for an actual Play Store upload.
+  android-debug:
+    name: Android (debug APK)
+    max_build_duration: 30
+    instance_type: linux_x2
+    environment:
+      node: 20
+      vars:
+        NEXT_PUBLIC_API_BASE_URL: https://play-api-hb7f.onrender.com/api
+    scripts:
+      - name: Install frontend dependencies
+        script: cd frontend && npm install
+      - name: Build static export + sync Capacitor
+        script: cd frontend && npm run cap:sync
+      - name: Build debug APK
+        script: cd frontend/android && ./gradlew assembleDebug
+    artifacts:
+      - frontend/android/app/build/outputs/**/*.apk
+
+  # Builds for the iOS Simulator only -- no Apple Developer Program
+  # enrollment or signing certificate needed for this. Real device builds
+  # and TestFlight need code signing set up in the Codemagic dashboard
+  # (this workflow -> Code signing -> iOS) once there's an Apple Developer
+  # account, then switch to an archive + IPA export step.
+  ios-simulator:
+    name: iOS (Simulator build)
+    max_build_duration: 30
+    instance_type: mac_mini_m2
+    environment:
+      node: 20
+      vars:
+        NEXT_PUBLIC_API_BASE_URL: https://play-api-hb7f.onrender.com/api
+    scripts:
+      - name: Install frontend dependencies
+        script: cd frontend && npm install
+      - name: Build static export + sync Capacitor
+        script: cd frontend && npm run cap:sync
+      - name: Install CocoaPods dependencies
+        script: cd frontend/ios/App && pod install
+      - name: Build for iOS Simulator
+        script: |
+          cd frontend/ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build build
+    artifacts:
+      - frontend/ios/App/build/**/*.app

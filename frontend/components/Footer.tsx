@@ -53,8 +53,16 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 pt-6 text-center text-xs text-white/40">
-        Play &middot; Built with faith and purpose.
+      <div className="flex flex-col items-center gap-2 border-t border-white/10 pt-6 text-center text-xs text-white/40 sm:flex-row sm:justify-between">
+        <span>Play &middot; Built with faith and purpose.</span>
+        <span className="flex gap-4">
+          <Link href="/privacy" className="hover:text-gold-300 hover:underline">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="hover:text-gold-300 hover:underline">
+            Terms of Service
+          </Link>
+        </span>
       </div>
     </footer>
   );

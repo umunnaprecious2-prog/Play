@@ -6,6 +6,10 @@ coverage
 *.log
 *.tsbuildinfo
 
+# Database backups (pg_dump output) -- contains real user data
+# (hashed passwords, parent emails, player records). Never commit.
+backups/
+
 # Capacitor mobile build (frontend/out is the static export input;
 # android/ios keep their project source committed, just not build output)
 frontend/out

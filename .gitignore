@@ -5,3 +5,16 @@ dist
 coverage
 *.log
 *.tsbuildinfo
+
+# Capacitor mobile build (frontend/out is the static export input;
+# android/ios keep their project source committed, just not build output)
+frontend/out
+frontend/android/app/build
+frontend/android/.gradle
+frontend/android/local.properties
+frontend/android/capacitor-cordova-android-plugins/build
+frontend/ios/App/Pods
+frontend/ios/App/build
+frontend/ios/App/DerivedData
+frontend/ios/App/App/public
+frontend/android/app/src/main/assets/public

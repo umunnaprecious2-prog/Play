@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { LevelQuiz } from "../../../components/LevelQuiz";
+import { LEVEL_SLUGS } from "../../../lib/levels";
+
+export function generateStaticParams() {
+  return LEVEL_SLUGS.map((slug) => ({ slug }));
+}
 
 export default function LevelPlayPage({ params }: { params: { slug: string } }) {
   return (

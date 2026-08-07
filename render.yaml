@@ -15,10 +15,13 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Migrated off Render's managed Postgres (play-db) to Neon. Set manually in the
+      # Render dashboard (Environment tab) -- sync: false means Blueprint syncs will
+      # never overwrite it back to play-db's connection string. No credentials committed
+      # to the repo. play-db itself is left defined above and untouched until it's
+      # confirmed safe to remove.
       - key: DATABASE_URL
-        fromDatabase:
-          name: play-db
-          property: connectionString
+        sync: false
       # Set these two in the Render dashboard after the first deploy (Environment tab) --
       # left unset here on purpose so no credentials ever get committed to the repo.
       - key: ADMIN_BOOTSTRAP_EMAIL

@@ -22,12 +22,15 @@ workflows:
         script: cd frontend && npm install
       - name: Build static export + sync Capacitor
         script: cd frontend && npm run cap:sync
-      - name: Install CocoaPods dependencies
-        script: cd frontend/ios/App && pod install
+      # No CocoaPods step: this project uses Capacitor's Swift Package
+      # Manager integration (frontend/ios/App/CapApp-SPM), confirmed by a
+      # real build failure -- "No `Podfile' found" -- since Capacitor 8
+      # defaults to SPM, not CocoaPods. Xcode resolves the SPM dependency
+      # automatically from App.xcodeproj directly; there's no .xcworkspace.
       - name: Build for iOS Simulator
         script: |
           cd frontend/ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App \
+          xcodebuild -project App.xcodeproj -scheme App \
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build build
     artifacts:

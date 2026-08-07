@@ -103,11 +103,25 @@ Reworked how a visitor gets from the landing page into an actual game, per the u
 - `Footer.tsx` and `LevelSystemPreview.tsx` game links updated to route through `/games/[slug]` instead of the bare game URL, so a first-time visitor arriving from either still gets the nickname/avatar step.
 - Verified end-to-end with the browser-automation skill (not just compiled): cleared localStorage, clicked Hero CTA → `/games`, picked Word Search → `/games/word-search` setup gate, picked an avatar, submitted a unique nickname, confirmed the celebration screen showed the right name, confirmed auto-redirect landed on the real `/word-search` page, confirmed `play.nickname`/`play.playerId` were persisted, then confirmed a second visit to `/games/levels` (same "browser") skipped setup and redirected straight to `/levels`. Full production build (`next build`) clean; `/games` is static, `/games/[slug]` is dynamic (correct, since it reads `localStorage`).
 
-## Roadmap: Mobile App Store Launch (planned, not started)
-User wants Play on the Google Play Store and Apple App Store, downloadable as a real app. Planned together in chat; nothing in this section is built yet. Decisions locked in:
+## Roadmap: Mobile App Store Launch (in progress)
+User wants Play on the Google Play Store and Apple App Store, downloadable as a real app. Planned together in chat. Decisions locked in:
 - **Audience framing: family app**, not a strict "kids' app." Standard app store review applies (still needs a privacy policy and honest data handling), not Apple's Kids Category or Google's Designed for Families program — avoids the heaviest COPPA/parental-consent/no-third-party-tracking constraints those trigger.
 - **Packaging: Capacitor**, not a native rewrite. Wraps the existing Next.js frontend into real iOS/Android app shells, reusing everything already built. Chosen because Play is tap/quiz-driven, not graphics-intensive, so a WebView-based shell is a legitimate fit, not a compromise.
-- **iOS builds: cloud Mac build service** (Codemagic or EAS Build), since development is on Windows with no Mac available. Signing/compiling for the App Store happens in the cloud, not locally.
+- **iOS builds: cloud Mac build service** (Codemagic), since development is on Windows with no Mac available. Signing/compiling for the App Store happens in the cloud, not locally.
+
+### Architecture decision (revised): hybrid strategy, confirmed by the user after hitting a real budget constraint
+Apple's $99/year and Google's $25 one-time fee are both real costs with no waiver available to an individual (Apple's fee waiver exists but only for verified nonprofits/schools, not applicable here). Rather than block on that, the user confirmed the following as the actual architecture going forward — this doesn't undo any work already done, it's exactly the direction Phase 3 already happened to take:
+- **The Next.js web app is the primary platform.** It must work well on Android, iPhone, tablets, and desktop browsers via the browser directly — not just as a wrapped native shell. Verified in this pass: responsive at tablet (768px) and desktop (1440px) widths with real screenshots, not just "no horizontal scrollbar" — found and fixed one real gap (the games grid capped at 2 columns even at desktop width; added a `lg:grid-cols-3` breakpoint and widened the page container from `max-w-6xl` to `max-w-7xl` to match the rest of the site).
+- **The web app is also a installable PWA with offline support**, built in this pass:
+  - `public/manifest.webmanifest` (name, icons at 192/512px generated from the real logo, `display: standalone`, theme color matching the brand).
+  - `public/sw.js`, a hand-written service worker (deliberately not a plugin like `next-pwa`, to keep full control and avoid interactions with the conditional static-export config the mobile build already depends on): cache-first for Next's content-hashed static assets, network-first-with-cache-fallback for page navigations, and a strict pass-through for anything hitting the API's different origin (game data must never be served stale).
+  - `components/ServiceWorkerRegistration.tsx` registers it, production-only (registering in dev would fight Next's own hot-reload caching).
+  - Wired into `app/layout.tsx` via Next's native `Metadata.manifest` field and a `Viewport` export for `themeColor` — no extra dependency needed for the manifest link itself.
+  - **Verified working, not just configured**: real production build, real production server, confirmed the manifest resolves (200, correct name/icons), the service worker actually registers, and — the real test — visited a page, went fully offline (`context.setOffline(true)`), reloaded, and the cached page loaded correctly with zero errors.
+- **Android: the same Next.js app packaged into an APK via Capacitor** — this was already the Phase 3 approach, now explicitly confirmed as the long-term one rather than a stopgap. No separate React Native or Flutter codebase, and none is planned.
+- **iOS: architecture stays ready for it** (the Capacitor `ios/` project already exists and already produced one successful Codemagic build), but actually shipping it is paused on the same $99/year Apple constraint — not a structural blocker, purely a "revisit when there's budget" item.
+- **Backend unchanged**: Express + Prisma + PostgreSQL, single codebase, no duplicated business logic — this was already true and remains true; the hybrid decision doesn't touch the backend at all.
+- **Distribution channel while store accounts aren't affordable**: discussed real zero-cost options (direct APK sharing — already have a working signed build; Amazon Appstore and Samsung Galaxy Store, both free developer registration with a real searchable listing; F-Droid, free but requires open-sourcing the app and meeting its build criteria) — **not yet decided which one**, flagged as the next real decision point once the user wants to move on it.
 
 Phases, in order (each phase blocks the next):
 
@@ -203,9 +217,9 @@ This remains a multi-phase build. Flagged to the user for prioritization rather 
 - Memory verse correctness check is an exact, case/whitespace-normalized string match against the full verse text — a single typo fails it. Not a bug (matches the current design), but worth revisiting for a "positive feedback, not punishment" UX per `prep.md`.
 
 ## Next Steps
-1. **Mobile launch Phase 1**: deploy the backend and frontend to real production hosting with HTTPS — currently the active priority, see "Roadmap: Mobile App Store Launch" above.
-2. **Mobile launch Phase 2**: design and build the login/accounts system (parent account + kid profiles) — see roadmap above for the agreed pattern.
-3. Build the admin dashboard frontend — still a real gap (6 content types managed by hand-editing JSON + import scripts), but no longer the top priority now that mobile launch is the active initiative.
+1. **Decide on a free Android distribution channel** — direct APK link, Amazon Appstore, Samsung Galaxy Store, or F-Droid (see "Distribution channel" note in the roadmap above). The real signed APK/AAB already exists; this is about where it gets listed.
+2. **Revisit Apple/Google store submission when there's budget** for the $99/year + $25 one-time fees — everything on Claude's side (Privacy Policy, Terms, signed Android release build, store listing copy, real screenshots) is already done and waiting, see roadmap Phase 4.
+3. Build the admin dashboard frontend — still a real gap (6 content types managed by hand-editing JSON + import scripts).
 4. Implement the admin content image/audio upload endpoints.
 5. Add the missing "Level N/20" badge to Word Search, Scripture Puzzle, Character Guess, and Story Challenge UIs (backend progression already works, just not surfaced as a number in those four).
 6. Add Swagger docs for the 6 new game route files.

@@ -6,7 +6,7 @@ import { GAMES } from "../../lib/games";
 export default function GamesPage() {
   return (
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6">
         <header className="rounded-[1.75rem] border border-white/70 bg-white/80 p-6 text-center shadow-soft backdrop-blur sm:p-8">
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">The Arcade</span>
           <h1 className="mx-auto mt-2 max-w-3xl text-3xl font-black text-slate-900 sm:text-4xl">Choose Your Game</h1>
@@ -16,7 +16,7 @@ export default function GamesPage() {
           </p>
         </header>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {GAMES.map((game) => (
             <GameCard
               key={game.slug}

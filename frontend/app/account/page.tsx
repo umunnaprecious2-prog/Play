@@ -143,7 +143,7 @@ export default function AccountPage() {
               <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-600">
                 {authMode === "signup"
                   ? "One account, multiple player profiles. Add a profile for each kid, and progress syncs across devices."
-                  : "Sign in to see your kids' profiles and progress."}
+                  : "Sign in to see your profiles and progress."}
               </p>
             </div>
 

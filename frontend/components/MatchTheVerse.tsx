@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
 import type { VerseMatchCard } from "../lib/types";
+
+// A level holds 20 pairs total, but showing all 40 cards at once is
+// overwhelming to actually play. Instead, the level's pairs are split into
+// small groups of this size (matching the original, easier-to-scan design)
+// and served one group at a time with an explicit "Next" step between them
+// -- the full 20-per-level count is preserved, just paced out.
+const GROUP_SIZE = 3;
 
 export function MatchTheVerse() {
   const router = useRouter();
@@ -16,6 +23,7 @@ export function MatchTheVerse() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [groupIndex, setGroupIndex] = useState(0);
   const [flipped, setFlipped] = useState<string[]>([]);
   const [matchedVerseIds, setMatchedVerseIds] = useState<Set<string>>(new Set());
   const [mistakeCount, setMistakeCount] = useState(0);
@@ -39,6 +47,9 @@ export function MatchTheVerse() {
           setSessionId(response.data.session.id);
           setLevel(response.data.level);
           setCards(response.data.cards);
+          setGroupIndex(0);
+          setMatchedVerseIds(new Set());
+          setMistakeCount(0);
         }
       })
       .catch((fetchError: unknown) => {
@@ -52,6 +63,30 @@ export function MatchTheVerse() {
       cancelled = true;
     };
   }, [playerId]);
+
+  // Unique verse IDs in the order they first appear, chunked into
+  // GROUP_SIZE-pair rounds. The last group may hold fewer than GROUP_SIZE
+  // if the total (20) doesn't divide evenly.
+  const verseGroups = useMemo(() => {
+    if (!cards) return [];
+    const seen: string[] = [];
+    for (const card of cards) {
+      if (!seen.includes(card.verseId)) seen.push(card.verseId);
+    }
+    const groups: string[][] = [];
+    for (let i = 0; i < seen.length; i += GROUP_SIZE) {
+      groups.push(seen.slice(i, i + GROUP_SIZE));
+    }
+    return groups;
+  }, [cards]);
+
+  const currentGroupVerseIds = verseGroups[groupIndex] ?? [];
+  const visibleCards = useMemo(
+    () => (cards ?? []).filter((card) => currentGroupVerseIds.includes(card.verseId)),
+    [cards, currentGroupVerseIds],
+  );
+  const isGroupComplete = currentGroupVerseIds.length > 0 && currentGroupVerseIds.every((id) => matchedVerseIds.has(id));
+  const isLastGroup = groupIndex >= verseGroups.length - 1;
 
   async function finishGame(matchesFound: number, mistakes: number) {
     if (!sessionId) return;
@@ -103,6 +138,10 @@ export function MatchTheVerse() {
     }
   }
 
+  function goToNextGroup() {
+    setGroupIndex((value) => value + 1);
+  }
+
   if (isPlayerLoading || isLoading) {
     return (
       <section className="grid gap-3 rounded-[1.75rem] border border-white/80 bg-white/80 p-6 shadow-soft backdrop-blur">
@@ -146,6 +185,9 @@ export function MatchTheVerse() {
           {level ? (
             <span className="rounded-full bg-gold-50 px-4 py-2 text-sm font-semibold text-gold-700">Level {level}/20</span>
           ) : null}
+          <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
+            Group {groupIndex + 1} of {verseGroups.length}
+          </span>
           <span className="rounded-full bg-meadow-50 px-4 py-2 text-sm font-semibold text-meadow-700">
             {matchedVerseIds.size}/{cards.length / 2} matched
           </span>
@@ -154,7 +196,7 @@ export function MatchTheVerse() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {cards.map((card) => {
+        {visibleCards.map((card) => {
           const isFlipped = flipped.includes(card.cardId);
           const isMatched = matchedVerseIds.has(card.verseId);
           const isRevealed = isFlipped || isMatched;
@@ -178,6 +220,16 @@ export function MatchTheVerse() {
           );
         })}
       </div>
+
+      {isGroupComplete && !isLastGroup ? (
+        <button
+          type="button"
+          onClick={goToNextGroup}
+          className="justify-self-start rounded-full bg-royal-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-royal-700"
+        >
+          Next Group →
+        </button>
+      ) : null}
     </section>
   );
 }

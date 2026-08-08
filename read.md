@@ -275,7 +275,8 @@ Once the flat-20 fix above shipped, the user reported the result was itself unpl
 - A "Next Group →" button appears once every pair in the current group is matched, advancing to the next chunk (7 groups total per level, last group holding 2 pairs).
 - A "Group X of Y" HUD badge tracks position through the groups, alongside the existing "N/20 matched" badge which stays cumulative across all groups.
 - The actual match-checking and level-completion logic (`handleFlip`, `finishGame`) is untouched — grouping only changes which cards are rendered and adds the group-advance step, so the already-correct "all 20 pairs matched triggers completion" behavior still works regardless of group boundaries.
-- Verified live: fresh session renders 6 cards (3 pairs, not 40), correct "Group 1 of 7", correct "0/20 matched" overall total, zero console errors, `tsc --noEmit` clean.
+- Verified live: fresh session renders 6 cards (3 pairs, not 40), correct "0/20 matched" overall total, zero console errors, `tsc --noEmit` clean.
+- Follow-up: the first cut labeled the per-screen indicator "Group 1 of 7", which the user flagged as confusing since 7 is an internal detail (20 pairs / 3 per group), not the level's real total. Changed the label to "Pairs A-B of 20" so every number on the page reads against the actual 20-per-level count. Gameplay logic unchanged, label only. Verified live: "Pairs 1-3 of 20" on a fresh session.
 
 ## In Progress
 - Image upload endpoint for admin content management (not yet implemented; `server/uploads/` exists but nothing writes to it).

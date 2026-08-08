@@ -233,6 +233,26 @@ User request: leaving a level partway through and coming back later should **res
 - **Verified live** for all 5 games via real API calls (not just `tsc`): started a level, answered some items, called start-session again without `restart` and confirmed the same session id, the correct remaining item count, and the correct carried-over score; then called with `restart: true` and confirmed a fresh session with the full item set and score reset to 0. Scripture Puzzle specifically verified on a 12-verse level (not the 1-verse Genesis level, which completes in a single answer and has no "leave partway through" state to test) — same pattern held. Test players cleaned up afterward.
 - Both `tsc --noEmit` (backend and frontend) clean.
 
+## Completed Work — Bible Quiz Levels: All 66 Books (this pass)
+User request: add the remaining 64 Bible books to Bible Quiz Levels as individual levels (Genesis and Exodus already existed), each book getting "as many good questions as it genuinely supports" rather than padded to a fixed count — approach explicitly approved by the user after a clarifying question about how to handle tiny books. This was the largest single content-authoring pass of the project.
+- **64 new `Category` rows added**, one per remaining Bible book, `sortOrder` continuing from 9 through 72 (after the original 8 thematic categories: genesis, exodus, kings, prophets, parables, jesus, miracles, apostles). Book categories sit in canonical Bible order after the thematic ones, so the level map now reads: the original 8 thematic levels, then Leviticus through Revelation in order.
+- **756 new quiz questions authored and imported across 9 batches**, each batch its own JSON file (`server/src/data/levels-books-batch1.json` through `batch9.json`) run through the existing `importContent` pipeline via a new reusable `server/src/scripts/importBooksBatch.ts` (takes a file path argument, replacing one-off per-batch scripts):
+  1. Leviticus, Numbers, Deuteronomy, Joshua, Judges, Ruth — 101 questions
+  2. 1–2 Samuel, 1–2 Kings, 1–2 Chronicles, Ezra, Nehemiah, Esther — 126 questions
+  3. Job, Psalms, Proverbs, Ecclesiastes, Song of Solomon — 74 questions
+  4. Isaiah, Jeremiah, Lamentations, Ezekiel, Daniel — 65 questions
+  5. All 12 Minor Prophets (Hosea–Malachi) — 114 questions (completes the Old Testament)
+  6. Matthew, Mark, Luke, John — 62 questions
+  7. Acts, Romans, 1–2 Corinthians, Galatians — 54 questions
+  8. Ephesians, Philippians, Colossians, 1–2 Thessalonians, 1–2 Timothy, Titus, Philemon — 74 questions
+  9. Hebrews, James, 1–2 Peter, 1–3 John, Jude, Revelation — 86 questions (completes the New Testament)
+- **Real, honest per-book counts, never padded**: ranges from 5 (Philemon, Paul's shortest letter) up to 22 (Psalms) — most books land between 8 and 20. Every question has a real scripture reference and a one-line explanation, matching the existing `levels-content.json` schema exactly.
+- **Deliberately avoided duplicating the 8 existing thematic categories**, which already cover a lot of ground (Jesus' life/miracles/parables, the apostles' well-known stories from Acts). Checked programmatically before every import: built a set of every existing question prompt (original content + all prior batches) and diffed each new batch against it — zero duplicate prompts across all 756 new questions. New Gospel/Acts/Revelation content instead covers book-specific facts (authorship, audience, unique passages) not already asked elsewhere — e.g. Luke's Magnificat and Zacchaeus, Mark's fast pace and Peter's eyewitness basis, Ananias and Sapphira, the Jerusalem Council, the seven churches of Revelation — rather than re-asking "who betrayed Jesus" or "which apostle wrote Revelation," which were already covered.
+- **Verified live for every single batch, not just compiled**: a reusable `server/src/scripts/verifyBooksBatch.ts` (takes category slugs as CLI args) starts a real session for each new level, looks up each question's actual correct answer from the database, submits it through the real API, and confirms 100% correctness plus the full sequential unlock chain to the next book — run and passed for all 64 new books across all 9 batches. Test players cleaned up after each run.
+- `npx tsc --noEmit` clean after every batch. All 9 batches committed and pushed individually, not as one giant commit.
+- **Final totals**: 72 total levels (8 thematic + 64 book-based), 956 total quiz questions in Bible Quiz Levels (200 original + 756 new).
+- **Not yet run against production** — needs all 9 `npx tsx src/scripts/importBooksBatch.ts src/data/levels-books-batchN.json` commands (N = 1 through 9) run once against the production `DATABASE_URL`, same pattern as every prior content seeding pass. The levels page copy ("up to 25 questions") was already accurate for variable counts before this pass (fixed in an earlier session) — no frontend copy change was needed here.
+
 ## In Progress
 - Image upload endpoint for admin content management (not yet implemented; `server/uploads/` exists but nothing writes to it).
 - Admin dashboard frontend (not started) — increasingly needed now that there are 20 quiz levels' worth of content across 6 different content types (questions, verses, characters, stories, word search puzzles) all managed by hand-edited JSON + import scripts.
@@ -297,5 +317,5 @@ User-approved, explicitly gated migration of the production database from Render
 5. ~~Add the missing "Level N/20" badge to Word Search, Scripture Puzzle, Character Guess, and Story Challenge UIs~~ — **done**, see "Snake-Path Level Maps" pass above.
 6. ~~Add Swagger docs for the 6 new game route files~~ — **done**, see "Not Started" section above for detail.
 7. ~~Session resume / continue where you left off~~ — **done**, see "Session Resume / Continue Where You Left Off" pass above.
-8. Return to the deferred content-expansion request: add the remaining 64 Bible books to Bible Quiz Levels as individual level categories (Genesis/Exodus already exist), each with as many genuine, non-padded questions as it supports, up to 25 — user-approved approach, not yet started.
+8. ~~Add the remaining 64 Bible books to Bible Quiz Levels~~ — **done**, see "Bible Quiz Levels: All 66 Books" pass above. All 66 Bible books now have a level. Still needs: running the 9 import scripts once against production (see that section for the exact commands).
 7. Add more seed content and, when ready, set `ADMIN_BOOTSTRAP_EMAIL`/`ADMIN_BOOTSTRAP_PASSWORD` in `server/.env` to create a real admin login.

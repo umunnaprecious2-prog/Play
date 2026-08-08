@@ -1,0 +1,68 @@
+{
+  "sourceName": "character-guess-20-per-level-batch1",
+  "categories": [
+    { "slug": "genesis", "name": "Genesis", "description": "Creation, beginnings, and the early patriarchs", "sortOrder": 1 },
+    { "slug": "exodus", "name": "Exodus", "description": "Moses, the plagues, and the journey out of Egypt", "sortOrder": 2 },
+    { "slug": "kings", "name": "Kings", "description": "Saul, David, Solomon, and the kings of Israel and Judah", "sortOrder": 3 },
+    { "slug": "prophets", "name": "Prophets", "description": "Elijah, Elisha, Daniel, Isaiah, and God's messengers", "sortOrder": 4 },
+    { "slug": "jesus", "name": "Jesus", "description": "The life and teachings of Jesus", "sortOrder": 6 },
+    { "slug": "apostles", "name": "Apostles", "description": "Peter, Paul, John, and the early church", "sortOrder": 8 }
+  ],
+  "characters": [
+    { "slug": "cain", "name": "Cain", "categorySlug": "genesis", "sortOrder": 9, "clues": ["I was the first child ever born to two people.", "I was jealous when God favored my brother's offering over mine.", "I killed my brother Abel out of anger."] },
+    { "slug": "abel", "name": "Abel", "categorySlug": "genesis", "sortOrder": 10, "clues": ["I kept flocks of sheep.", "God favored my offering over my brother's.", "I was murdered by my own brother."] },
+    { "slug": "lot", "name": "Lot", "categorySlug": "genesis", "sortOrder": 11, "clues": ["I was Abraham's nephew.", "I chose to live near a wicked city.", "My wife looked back and turned into a pillar of salt."] },
+    { "slug": "hagar", "name": "Hagar", "categorySlug": "genesis", "sortOrder": 12, "clues": ["I was an Egyptian servant.", "I bore Abraham a son when his wife could not.", "God provided a well for me and my son in the wilderness."] },
+    { "slug": "rebekah", "name": "Rebekah", "categorySlug": "genesis", "sortOrder": 13, "clues": ["I drew water for a stranger's camels at a well.", "I became Isaac's wife.", "I helped my son Jacob receive his father's blessing instead of his brother."] },
+    { "slug": "esau", "name": "Esau", "categorySlug": "genesis", "sortOrder": 14, "clues": ["I was born first, covered in red hair.", "I sold my birthright for a bowl of stew.", "My brother tricked me out of our father's blessing."] },
+    { "slug": "rachel", "name": "Rachel", "categorySlug": "genesis", "sortOrder": 15, "clues": ["I was a shepherdess when I met my future husband at a well.", "My father tricked my husband into marrying my sister first.", "I died giving birth to my youngest son, Benjamin."] },
+    { "slug": "leah", "name": "Leah", "categorySlug": "genesis", "sortOrder": 16, "clues": ["I was the older of two sisters.", "My father deceived my husband into marrying me first.", "I gave birth to Judah, from whose line the promised King would come."] },
+    { "slug": "laban", "name": "Laban", "categorySlug": "genesis", "sortOrder": 17, "clues": ["I was Rebekah's brother.", "I tricked my nephew into marrying my older daughter first.", "I was the father of Rachel and Leah."] },
+    { "slug": "potiphar", "name": "Potiphar", "categorySlug": "genesis", "sortOrder": 18, "clues": ["I was an Egyptian official.", "I bought a Hebrew slave to serve in my house.", "My wife falsely accused my faithful servant, so I had him imprisoned."] },
+    { "slug": "judah-son-of-jacob", "name": "Judah", "categorySlug": "genesis", "sortOrder": 19, "clues": ["I was one of twelve brothers.", "I suggested selling our brother instead of killing him.", "My family's line would one day produce the promised King."] },
+    { "slug": "benjamin", "name": "Benjamin", "categorySlug": "genesis", "sortOrder": 20, "clues": ["I was the youngest of twelve brothers.", "My mother died giving birth to me.", "My brother hid a silver cup in my sack to test our family."] },
+
+    { "slug": "zipporah", "name": "Zipporah", "categorySlug": "exodus", "sortOrder": 11, "clues": ["I was a shepherdess from Midian.", "I became Moses' wife.", "My father was the priest of Midian."] },
+    { "slug": "eleazar", "name": "Eleazar", "categorySlug": "exodus", "sortOrder": 12, "clues": ["I was one of Aaron's sons.", "I became high priest after my father died.", "I helped Moses take a census of Israel."] },
+    { "slug": "ithamar", "name": "Ithamar", "categorySlug": "exodus", "sortOrder": 13, "clues": ["I was one of Aaron's sons.", "My older brothers died for offering strange fire.", "I oversaw the work of the Levites in the tabernacle."] },
+    { "slug": "hur", "name": "Hur", "categorySlug": "exodus", "sortOrder": 14, "clues": ["I helped hold up Moses' hands during a crucial battle.", "I worked alongside Aaron.", "I helped lead Israel while Moses was up on Mount Sinai."] },
+    { "slug": "bezaleel", "name": "Bezaleel", "categorySlug": "exodus", "sortOrder": 15, "clues": ["I was filled with the Spirit of God for skilled craftsmanship.", "I was chosen to build the tabernacle's furnishings.", "I worked with gold, silver, and bronze for God's house."] },
+    { "slug": "nadab", "name": "Nadab", "categorySlug": "exodus", "sortOrder": 16, "clues": ["I was one of Aaron's sons.", "I served as a priest alongside my brothers.", "I offered strange fire before the LORD and was consumed by fire."] },
+    { "slug": "abihu", "name": "Abihu", "categorySlug": "exodus", "sortOrder": 17, "clues": ["I was one of Aaron's sons.", "I served as a priest alongside my brothers.", "I died alongside my brother for disobedient worship."] },
+    { "slug": "dathan", "name": "Dathan", "categorySlug": "exodus", "sortOrder": 18, "clues": ["I joined a rebellion against Moses' leadership.", "I complained about being led out of Egypt.", "The earth opened up and swallowed me and my family."] },
+    { "slug": "balak", "name": "Balak", "categorySlug": "exodus", "sortOrder": 19, "clues": ["I was a king who feared the Israelites.", "I hired a prophet to curse God's people.", "My plan failed when the prophet blessed Israel instead."] },
+    { "slug": "og", "name": "Og", "categorySlug": "exodus", "sortOrder": 20, "clues": ["I was a giant king of Bashan.", "I had an iron bed of enormous size.", "Israel defeated me and took my land east of the Jordan."] },
+
+    { "slug": "absalom", "name": "Absalom", "categorySlug": "kings", "sortOrder": 16, "clues": ["I was one of King David's sons.", "I rebelled against my own father.", "My long hair caught in a tree branch, leading to my death."] },
+    { "slug": "bathsheba", "name": "Bathsheba", "categorySlug": "kings", "sortOrder": 17, "clues": ["A king saw me bathing and desired me.", "My first husband was killed in battle by the king's order.", "My son Solomon became the wisest king of Israel."] },
+    { "slug": "joab", "name": "Joab", "categorySlug": "kings", "sortOrder": 18, "clues": ["I commanded King David's army.", "I helped capture the city of Jerusalem.", "I killed Absalom against the king's direct orders."] },
+    { "slug": "jezebel", "name": "Jezebel", "categorySlug": "kings", "sortOrder": 19, "clues": ["I was a foreign princess who became queen of Israel.", "I promoted the worship of a false god named Baal.", "I was thrown from a window and my body was eaten by dogs."] },
+    { "slug": "mordecai", "name": "Mordecai", "categorySlug": "kings", "sortOrder": 20, "clues": ["I raised my orphaned cousin as my own daughter.", "I uncovered a plot to assassinate the king.", "I was honored by the king instead of the man who plotted my death."] },
+
+    { "slug": "joel", "name": "Joel", "categorySlug": "prophets", "sortOrder": 14, "clues": ["I was a prophet who described a devastating locust plague.", "I prophesied about God pouring out His Spirit on all people.", "The apostle Peter quoted my words on the day of Pentecost."] },
+    { "slug": "obadiah", "name": "Obadiah", "categorySlug": "prophets", "sortOrder": 15, "clues": ["I wrote the shortest book in the Old Testament.", "My entire message was a judgment against one nation.", "I prophesied against Edom, the descendants of Esau."] },
+    { "slug": "nahum", "name": "Nahum", "categorySlug": "prophets", "sortOrder": 16, "clues": ["I prophesied about the fall of a great and wicked city.", "My message came after another prophet's earlier warning to that same city.", "I announced judgment against Nineveh."] },
+    { "slug": "habakkuk", "name": "Habakkuk", "categorySlug": "prophets", "sortOrder": 17, "clues": ["I questioned God about why evil seemed to go unpunished.", "God answered that He was raising up the Chaldeans to bring judgment.", "I wrote that the just shall live by faith."] },
+    { "slug": "zephaniah", "name": "Zephaniah", "categorySlug": "prophets", "sortOrder": 18, "clues": ["I was a descendant of King Hezekiah.", "I prophesied during King Josiah's reign.", "I spoke of the great and terrible day of the LORD."] },
+    { "slug": "haggai", "name": "Haggai", "categorySlug": "prophets", "sortOrder": 19, "clues": ["I encouraged the exiles to rebuild God's house.", "I prophesied to Zerubbabel and Joshua the high priest.", "My short book helped restart work on the second temple."] },
+    { "slug": "huldah", "name": "Huldah", "categorySlug": "prophets", "sortOrder": 20, "clues": ["I was a prophetess living in Jerusalem.", "King Josiah's officials came to me to inquire of the LORD.", "I confirmed that the newly found Book of the Law was true."] },
+
+    { "slug": "joseph-the-carpenter", "name": "Joseph the Carpenter", "categorySlug": "jesus", "sortOrder": 11, "clues": ["I worked as a carpenter.", "An angel told me in a dream not to fear taking my betrothed as my wife.", "I raised Jesus as my own son."] },
+    { "slug": "elizabeth", "name": "Elizabeth", "categorySlug": "jesus", "sortOrder": 12, "clues": ["I was barren for many years.", "My relative visited me while both of us were expecting sons.", "I gave birth to John the Baptist in my old age."] },
+    { "slug": "herod-the-great", "name": "Herod the Great", "categorySlug": "jesus", "sortOrder": 13, "clues": ["I was king when Jesus was born.", "Wise men came to my palace asking about a newborn king.", "I ordered the deaths of infant boys in Bethlehem."] },
+    { "slug": "herod-antipas", "name": "Herod Antipas", "categorySlug": "jesus", "sortOrder": 14, "clues": ["I ruled over Galilee during Jesus' ministry.", "I had John the Baptist beheaded.", "Pilate sent Jesus to me before His crucifixion."] },
+    { "slug": "caiaphas", "name": "Caiaphas", "categorySlug": "jesus", "sortOrder": 15, "clues": ["I was the high priest the year Jesus was crucified.", "I said it was better for one man to die for the people.", "I presided over Jesus' trial before the Jewish council."] },
+    { "slug": "simon-of-cyrene", "name": "Simon of Cyrene", "categorySlug": "jesus", "sortOrder": 16, "clues": ["I was a traveler from North Africa.", "Roman soldiers forced me into an unexpected task.", "I carried Jesus' cross on the way to Golgotha."] },
+    { "slug": "bartimaeus", "name": "Bartimaeus", "categorySlug": "jesus", "sortOrder": 17, "clues": ["I was a blind beggar sitting by the road.", "I called out loudly even when the crowd told me to be quiet.", "Jesus healed my sight because of my faith."] },
+    { "slug": "jairus", "name": "Jairus", "categorySlug": "jesus", "sortOrder": 18, "clues": ["I was a ruler of the synagogue.", "I begged Jesus to come heal my dying daughter.", "Jesus raised my daughter from the dead."] },
+    { "slug": "anna", "name": "Anna", "categorySlug": "jesus", "sortOrder": 19, "clues": ["I was a very old prophetess.", "I worshiped in the temple night and day.", "I recognized the infant Jesus as the promised redeemer."] },
+    { "slug": "the-samaritan-woman", "name": "The Samaritan Woman", "categorySlug": "jesus", "sortOrder": 20, "clues": ["I met a Jewish stranger at a well in the heat of the day.", "I had been married five times.", "Jesus told me about living water, and I told my whole town about Him."] },
+
+    { "slug": "simon-the-zealot", "name": "Simon the Zealot", "categorySlug": "apostles", "sortOrder": 15, "clues": ["I was one of the twelve apostles.", "I belonged to a group known for zealous devotion to Jewish law.", "Little else is recorded of me beyond my name among the twelve."] },
+    { "slug": "matthias", "name": "Matthias", "categorySlug": "apostles", "sortOrder": 16, "clues": ["I was chosen by casting lots.", "I replaced a disciple who had betrayed Jesus.", "I became the twelfth apostle after the resurrection."] },
+    { "slug": "stephen", "name": "Stephen", "categorySlug": "apostles", "sortOrder": 17, "clues": ["I was one of the first seven deacons chosen to serve.", "I gave a bold speech before the Jewish council.", "I became the first Christian martyr, stoned to death."] },
+    { "slug": "apollos", "name": "Apollos", "categorySlug": "apostles", "sortOrder": 18, "clues": ["I was an eloquent speaker from Alexandria.", "I taught boldly but needed correcting on some doctrine.", "A husband and wife explained the way of God to me more accurately."] },
+    { "slug": "titus", "name": "Titus", "categorySlug": "apostles", "sortOrder": 19, "clues": ["I was a Gentile companion of Paul.", "Paul sent me to organize the church on the island of Crete.", "Paul wrote me a letter about sound doctrine and godly living."] },
+    { "slug": "priscilla", "name": "Priscilla", "categorySlug": "apostles", "sortOrder": 20, "clues": ["I worked as a tentmaker alongside my husband.", "We hosted a church in our home.", "My husband and I explained the way of God more accurately to a gifted preacher named Apollos."] }
+  ]
+}

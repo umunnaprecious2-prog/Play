@@ -1,7 +1,23 @@
 import { Router } from "express";
-import { postPlayer, getPlayer, getPlayerProgressHandler, postMemoryVerseAnswer, postMemoryVerseSession, postQuizSession, postQuizAnswer } from "../controllers/gameController";
-import { validateBody } from "../middlewares/validate";
-import { createPlayerSchema, startMemoryVerseSessionSchema, startQuizSessionSchema, submitMemoryVerseAnswerSchema, submitQuizAnswerSchema } from "../validators/gameValidators";
+import {
+  postPlayer,
+  getPlayer,
+  getPlayerProgressHandler,
+  getTriviaLevelMapController,
+  postMemoryVerseAnswer,
+  postMemoryVerseSession,
+  postQuizSession,
+  postQuizAnswer,
+} from "../controllers/gameController";
+import { validateBody, validateQuery } from "../middlewares/validate";
+import {
+  createPlayerSchema,
+  startMemoryVerseSessionSchema,
+  startQuizSessionSchema,
+  submitMemoryVerseAnswerSchema,
+  submitQuizAnswerSchema,
+  triviaLevelMapQuerySchema,
+} from "../validators/gameValidators";
 
 /**
  * @swagger
@@ -82,6 +98,24 @@ router.get("/players/:playerId", getPlayer);
  *               $ref: '#/components/schemas/PlayerProgress'
  */
 router.get("/players/:playerId/progress", getPlayerProgressHandler);
+
+/**
+ * @swagger
+ * /trivia/level-map:
+ *   get:
+ *     tags: [Quiz]
+ *     summary: Get this player's current Bible Trivia level position (Trivia reuses quiz sessions tagged metadata.mode="trivia")
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Current level and max level
+ */
+router.get("/trivia/level-map", validateQuery(triviaLevelMapQuerySchema), getTriviaLevelMapController);
 
 /**
  * @swagger

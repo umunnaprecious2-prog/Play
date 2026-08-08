@@ -1,7 +1,9 @@
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
+import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
 
+const GAME_MODE = "scripture_puzzle";
 const POINTS = 10;
 const POINTS_PER_HINT = 2;
 const MAX_HINTS = 2;
@@ -50,12 +52,36 @@ async function pickNextVerse(playerId: string) {
   return allVerses[Math.floor(Math.random() * allVerses.length)];
 }
 
-export async function startScripturePuzzleSession(input: { playerId: string }) {
+// Difficulty proxy items for the level map: sortOrder here is derived from
+// verse text length (shorter = easier), matching pickNextVerse's existing
+// difficulty ordering, rather than BibleVerse's stored sortOrder field
+// (which reflects authoring/category order, not puzzle difficulty).
+async function levelItems() {
+  const verses = await prisma.bibleVerse.findMany({ where: { isActive: true } });
+  return verses.map((verse) => ({ id: verse.id, slug: verse.slug, title: verse.reference, sortOrder: verse.text.length }));
+}
+
+export async function listScripturePuzzleLevels(playerId: string) {
+  return listLevels(playerId, GAME_MODE, await levelItems());
+}
+
+export async function startScripturePuzzleSession(input: { playerId: string; verseSlug?: string }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
-  const verse = await pickNextVerse(input.playerId);
-  if (!verse) throw AppError.notFound("No verses available for a puzzle yet");
+  const verse = input.verseSlug
+    ? await prisma.bibleVerse.findUnique({ where: { slug: input.verseSlug } })
+    : await pickNextVerse(input.playerId);
+  if (!verse || !verse.isActive) throw AppError.notFound("No verses available for a puzzle yet");
+
+  const items = await levelItems();
+  const levelNumber = [...items].sort((a, b) => a.sortOrder - b.sortOrder).findIndex((item) => item.id === verse.id) + 1;
+
+  if (input.verseSlug) {
+    const unlocked = await isContentUnlocked(player.id, GAME_MODE, verse.id, items);
+    if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
+    await recordAttempt(player.id, GAME_MODE, verse.id);
+  }
 
   const session = await prisma.gameSession.create({
     data: { playerId: player.id, gameMode: "scripture_puzzle", totalQuestions: 1, metadata: { verseId: verse.id } },
@@ -63,7 +89,9 @@ export async function startScripturePuzzleSession(input: { playerId: string }) {
 
   return {
     session,
-    verse: { id: verse.id, reference: verse.reference },
+    verse: { id: verse.id, slug: verse.slug, reference: verse.reference },
+    levelNumber,
+    maxLevel: items.length,
     scrambledWords: shuffle(splitVerseWords(verse.text)),
   };
 }
@@ -131,6 +159,19 @@ export async function submitScripturePuzzleAnswer(input: { sessionId: string; ve
     },
   });
 
+  let nextLevelSlug: string | null = null;
+
+  if (isCorrect) {
+    const unlockResult = await markCompleteAndUnlockNext(
+      updatedPlayer.id,
+      GAME_MODE,
+      verse.id,
+      completedSession.score,
+      await levelItems(),
+    );
+    nextLevelSlug = unlockResult.nextSlug;
+  }
+
   const rewards = await awardProgressRewards(updatedPlayer.id);
   await logProgress({
     playerId: updatedPlayer.id,
@@ -145,6 +186,6 @@ export async function submitScripturePuzzleAnswer(input: { sessionId: string; ve
     session: completedSession,
     player: updatedPlayer,
     rewards,
-    result: { isCorrect, pointsEarned, hintsUsed, correctText: verse.text, isComplete: true },
+    result: { isCorrect, pointsEarned, hintsUsed, correctText: verse.text, isComplete: true, nextLevelSlug },
   };
 }

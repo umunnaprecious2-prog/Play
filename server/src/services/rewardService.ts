@@ -35,7 +35,23 @@ export async function applyPlayerReward(
   });
 }
 
-// Same badge/avatar unlock evaluation used across every game mode.
+// Total levels completed across every level-based game -- Bible Quiz Levels
+// (PlayerLevelProgress) plus the "collection" games sharing the generic
+// PlayerContentProgress table. Feeds milestone badges (Badge.levelsCompletedThreshold).
+// Group B games (Match the Verse, Flash Cards, Trivia) have no discrete
+// per-level completion row, so they don't contribute to this count.
+async function countTotalLevelsCompleted(playerId: string): Promise<number> {
+  const [levelProgressCount, contentProgressCount] = await Promise.all([
+    prisma.playerLevelProgress.count({ where: { playerId, isCompleted: true } }),
+    prisma.playerContentProgress.count({ where: { playerId, isCompleted: true } }),
+  ]);
+  return levelProgressCount + contentProgressCount;
+}
+
+// Same badge/avatar unlock evaluation used across every game mode -- this is
+// the one shared implementation; levelService.ts previously had its own
+// separate copy that didn't check the milestone threshold below, since that
+// threshold didn't exist yet.
 export async function awardProgressRewards(playerId: string) {
   const player = await prisma.playerProfile.findUnique({ where: { id: playerId } });
 
@@ -43,10 +59,15 @@ export async function awardProgressRewards(playerId: string) {
     throw AppError.notFound("Player profile not found");
   }
 
-  const badges = await prisma.badge.findMany({
+  const totalLevelsCompleted = await countTotalLevelsCompleted(playerId);
+
+  const eligibleBadges = await prisma.badge.findMany({
     where: { isActive: true, xpThreshold: { lte: player.xp }, streakDaysNeeded: { lte: player.streakDays } },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
   });
+  const badges = eligibleBadges.filter(
+    (badge) => badge.levelsCompletedThreshold == null || totalLevelsCompleted >= badge.levelsCompletedThreshold,
+  );
 
   const unlockedBadges = await prisma.playerBadge.findMany({ where: { playerId } });
   const unlockedBadgeIds = new Set(unlockedBadges.map((badge) => badge.badgeId));

@@ -25,20 +25,20 @@ enum ImportJobStatus {
 }
 
 model Category {
-  id             String                 @id @default(cuid())
-  slug           String                 @unique
-  name           String                 @unique
-  description    String?
-  sortOrder      Int                    @default(0)
-  isActive       Boolean                @default(true)
-  quizQuestions  QuizQuestion[]
-  verses         BibleVerse[]
-  levelProgress  PlayerLevelProgress[]
-  wordSearches   WordSearchPuzzle[]
-  characters     BibleCharacter[]
-  stories        BibleStory[]
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
+  id            String                @id @default(cuid())
+  slug          String                @unique
+  name          String                @unique
+  description   String?
+  sortOrder     Int                   @default(0)
+  isActive      Boolean               @default(true)
+  quizQuestions QuizQuestion[]
+  verses        BibleVerse[]
+  levelProgress PlayerLevelProgress[]
+  wordSearches  WordSearchPuzzle[]
+  characters    BibleCharacter[]
+  stories       BibleStory[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
 }
 
 // Word Search: a themed list of words placed into a generated letter grid at
@@ -77,16 +77,16 @@ model BibleCharacter {
 // Bible Story Challenge: players reorder a story's events into the correct
 // sequence.
 model BibleStory {
-  id         String        @id @default(cuid())
-  slug       String        @unique
+  id         String       @id @default(cuid())
+  slug       String       @unique
   title      String
   categoryId String?
-  sortOrder  Int           @default(0)
-  isActive   Boolean       @default(true)
-  category   Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  sortOrder  Int          @default(0)
+  isActive   Boolean      @default(true)
+  category   Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   events     StoryEvent[]
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model StoryEvent {
@@ -116,29 +116,29 @@ model DailyChallengeCompletion {
 }
 
 model DifficultyLevel {
-  id            String          @id @default(cuid())
-  slug          String          @unique
-  name          String          @unique
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  name          String         @unique
   description   String?
-  sortOrder     Int             @default(0)
-  isActive      Boolean         @default(true)
+  sortOrder     Int            @default(0)
+  isActive      Boolean        @default(true)
   quizQuestions QuizQuestion[]
   verses        BibleVerse[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model MediaAsset {
-  id         String   @id @default(cuid())
-  slug       String   @unique
-  name       String?
-  url        String
-  kind       String   @default("image")
-  altText    String?
-  mimeType   String?
-  source     String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String?
+  url       String
+  kind      String   @default("image")
+  altText   String?
+  mimeType  String?
+  source    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model QuizQuestion {
@@ -193,14 +193,14 @@ model BibleVerse {
 }
 
 model AdminUser {
-  id           String          @id @default(cuid())
-  email        String          @unique
+  id           String         @id @default(cuid())
+  email        String         @unique
   passwordHash String
-  role         UserRole        @default(ADMIN)
-  isActive     Boolean         @default(true)
+  role         UserRole       @default(ADMIN)
+  isActive     Boolean        @default(true)
   sessions     AdminSession[]
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model AdminSession {
@@ -232,31 +232,32 @@ model ImportJob {
 }
 
 model PlayerProfile {
-  id               String              @id @default(cuid())
-  nickname         String              @unique
+  id               String                     @id @default(cuid())
+  nickname         String                     @unique
   avatarSlug       String?
-  xp               Int                 @default(0)
-  level            Int                 @default(1)
-  stars            Int                 @default(0)
-  streakDays       Int                 @default(0)
+  xp               Int                        @default(0)
+  level            Int                        @default(1)
+  stars            Int                        @default(0)
+  streakDays       Int                        @default(0)
   lastActiveAt     DateTime?
-  totalGamesPlayed Int                 @default(0)
-  totalCorrect     Int                 @default(0)
-  totalIncorrect   Int                 @default(0)
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  totalGamesPlayed Int                        @default(0)
+  totalCorrect     Int                        @default(0)
+  totalIncorrect   Int                        @default(0)
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
   gameSessions     GameSession[]
   progressLogs     PlayerProgressLog[]
   badges           PlayerBadge[]
   avatarUnlocks    PlayerAvatarUnlock[]
   levelProgress    PlayerLevelProgress[]
+  contentProgress  PlayerContentProgress[]
   dailyChallenges  DailyChallengeCompletion[]
 
   // Optional: guest players (parentAccountId null) work exactly as before.
   // Set once a parent signs up and either creates this profile or claims an
   // existing guest profile that already has real progress on it.
-  parentAccountId  String?
-  parentAccount    ParentAccount?      @relation(fields: [parentAccountId], references: [id], onDelete: SetNull)
+  parentAccountId String?
+  parentAccount   ParentAccount? @relation(fields: [parentAccountId], references: [id], onDelete: SetNull)
 
   @@index([parentAccountId])
 }
@@ -300,21 +301,21 @@ model PlayerProgressLog {
 }
 
 model GameSession {
-  id              String             @id @default(cuid())
+  id              String              @id @default(cuid())
   playerId        String
   gameMode        String
-  status          String             @default("ACTIVE")
-  score           Int                @default(0)
-  xpEarned        Int                @default(0)
-  starsEarned     Int                @default(0)
-  correctCount    Int                @default(0)
-  incorrectCount  Int                @default(0)
-  totalQuestions  Int                @default(0)
-  currentQuestion Int                @default(0)
-  startedAt       DateTime           @default(now())
+  status          String              @default("ACTIVE")
+  score           Int                 @default(0)
+  xpEarned        Int                 @default(0)
+  starsEarned     Int                 @default(0)
+  correctCount    Int                 @default(0)
+  incorrectCount  Int                 @default(0)
+  totalQuestions  Int                 @default(0)
+  currentQuestion Int                 @default(0)
+  startedAt       DateTime            @default(now())
   completedAt     DateTime?
   metadata        Json?
-  player          PlayerProfile      @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  player          PlayerProfile       @relation(fields: [playerId], references: [id], onDelete: Cascade)
   answers         GameSessionAnswer[]
   hints           GameSessionHint[]
 
@@ -343,13 +344,13 @@ model GameSessionAnswer {
 // the score for a question is computed from the count of rows here, not from
 // a client-supplied "hints used" number.
 model GameSessionHint {
-  id                String      @id @default(cuid())
-  sessionId         String
-  questionId        String
-  hintNumber        Int
+  id                 String      @id @default(cuid())
+  sessionId          String
+  questionId         String
+  hintNumber         Int
   eliminatedOptionId String?
-  createdAt         DateTime    @default(now())
-  session           GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  createdAt          DateTime    @default(now())
+  session            GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@unique([sessionId, questionId, hintNumber])
   @@index([sessionId])
@@ -361,43 +362,71 @@ model GameSessionHint {
 // Level 1 (lowest sortOrder) is unlocked for every player by default; each
 // subsequent level unlocks only once the prior one's session is completed.
 model PlayerLevelProgress {
-  id           String        @id @default(cuid())
-  playerId     String
-  categoryId   String
-  isUnlocked   Boolean       @default(false)
-  isCompleted  Boolean       @default(false)
-  bestScore    Int           @default(0)
-  attempts     Int           @default(0)
-  completedAt  DateTime?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  player       PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id          String        @id @default(cuid())
+  playerId    String
+  categoryId  String
+  isUnlocked  Boolean       @default(false)
+  isCompleted Boolean       @default(false)
+  bestScore   Int           @default(0)
+  attempts    Int           @default(0)
+  completedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  player      PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  category    Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([playerId, categoryId])
   @@index([playerId])
   @@index([categoryId])
 }
 
+// Generic level-progress tracker for the "collection" games (each level is
+// one fixed piece of content -- a word search puzzle, a verse, a character,
+// a story). One shared table instead of a near-duplicate of PlayerLevelProgress
+// per content type; gameMode + contentId together identify the specific level
+// (contentId is a plain string, not a hard FK, since it points at different
+// tables depending on gameMode). Same unlock semantics as PlayerLevelProgress:
+// level 1 (lowest sortOrder) is unlocked by default, each subsequent level
+// unlocks once the prior one is completed.
+model PlayerContentProgress {
+  id          String        @id @default(cuid())
+  playerId    String
+  gameMode    String
+  contentId   String
+  isUnlocked  Boolean       @default(false)
+  isCompleted Boolean       @default(false)
+  bestScore   Int           @default(0)
+  attempts    Int           @default(0)
+  completedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  player      PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, gameMode, contentId])
+  @@index([playerId])
+  @@index([gameMode])
+}
+
 model Badge {
-  id                String       @id @default(cuid())
-  slug              String       @unique
-  name              String
-  description       String?
-  xpThreshold       Int          @default(0)
-  streakDaysNeeded  Int          @default(0)
-  sortOrder         Int          @default(0)
-  isActive          Boolean      @default(true)
-  unlockedByPlayers PlayerBadge[]
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  id                       String        @id @default(cuid())
+  slug                     String        @unique
+  name                     String
+  description              String?
+  xpThreshold              Int           @default(0)
+  streakDaysNeeded         Int           @default(0)
+  levelsCompletedThreshold Int?
+  sortOrder                Int           @default(0)
+  isActive                 Boolean       @default(true)
+  unlockedByPlayers        PlayerBadge[]
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
 }
 
 model PlayerBadge {
-  id         String   @id @default(cuid())
+  id         String        @id @default(cuid())
   playerId   String
   badgeId    String
-  unlockedAt DateTime @default(now())
+  unlockedAt DateTime      @default(now())
   player     PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
   badge      Badge         @relation(fields: [badgeId], references: [id], onDelete: Cascade)
 
@@ -423,15 +452,14 @@ model AvatarItem {
 }
 
 model PlayerAvatarUnlock {
-  id            String      @id @default(cuid())
-  playerId      String
-  avatarItemId  String
-  unlockedAt    DateTime    @default(now())
-  player        PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  avatarItem    AvatarItem    @relation(fields: [avatarItemId], references: [id], onDelete: Cascade)
+  id           String        @id @default(cuid())
+  playerId     String
+  avatarItemId String
+  unlockedAt   DateTime      @default(now())
+  player       PlayerProfile @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  avatarItem   AvatarItem    @relation(fields: [avatarItemId], references: [id], onDelete: Cascade)
 
   @@unique([playerId, avatarItemId])
   @@index([playerId])
   @@index([avatarItemId])
 }
-

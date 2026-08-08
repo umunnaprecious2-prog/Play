@@ -118,6 +118,7 @@ export type ScripturePuzzleAnswerResult = {
   hintsUsed: number;
   correctText: string | null;
   isComplete: boolean;
+  nextLevelSlug?: string | null;
 };
 
 // Character Guessing Game
@@ -134,11 +135,18 @@ export type CharacterGuessResult = {
   hintsUsed: number;
   correctName: string;
   isComplete: boolean;
+  nextLevelSlug?: string | null;
 };
 
 // Bible Story Challenge
 export type StoryEventCard = { id: string; text: string };
-export type StoryOrderResult = { isCorrect: boolean; pointsEarned: number; correctOrderIds: string[]; isComplete: boolean };
+export type StoryOrderResult = {
+  isCorrect: boolean;
+  pointsEarned: number;
+  correctOrderIds: string[];
+  isComplete: boolean;
+  nextLevelSlug?: string | null;
+};
 
 // Word Search
 export type WordSearchFoundResult = {
@@ -147,6 +155,7 @@ export type WordSearchFoundResult = {
   wordsFound: number;
   totalWords: number;
   isComplete: boolean;
+  nextLevelSlug?: string | null;
   player?: { xp: number };
 };
 

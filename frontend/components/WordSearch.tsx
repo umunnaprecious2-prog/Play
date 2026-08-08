@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
@@ -28,12 +30,15 @@ function straightLine(start: Cell, end: Cell): Cell[] | null {
   return cells;
 }
 
-export function WordSearch() {
+export function WordSearch({ levelSlug }: { levelSlug: string }) {
+  const router = useRouter();
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [title, setTitle] = useState<string | null>(null);
   const [words, setWords] = useState<string[]>([]);
   const [grid, setGrid] = useState<string[][] | null>(null);
+  const [levelNumber, setLevelNumber] = useState<number | null>(null);
+  const [maxLevel, setMaxLevel] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +46,7 @@ export function WordSearch() {
   const [foundPaths, setFoundPaths] = useState<FoundPath[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const [nextLevelSlug, setNextLevelSlug] = useState<string | null>(null);
   const [sessionScore, setSessionScore] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
 
@@ -50,16 +56,24 @@ export function WordSearch() {
     let cancelled = false;
     setIsLoading(true);
 
-    apiFetch<{ success: boolean; data: { session: { id: string }; puzzle: { title: string; words: string[] }; grid: string[][] } }>(
-      "/games/word-search/sessions",
-      { method: "POST", body: JSON.stringify({ playerId }) },
-    )
+    apiFetch<{
+      success: boolean;
+      data: {
+        session: { id: string };
+        puzzle: { title: string; words: string[] };
+        grid: string[][];
+        levelNumber: number;
+        maxLevel: number;
+      };
+    }>("/games/word-search/sessions", { method: "POST", body: JSON.stringify({ playerId, puzzleSlug: levelSlug }) })
       .then((response) => {
         if (!cancelled) {
           setSessionId(response.data.session.id);
           setTitle(response.data.puzzle.title);
           setWords(response.data.puzzle.words);
           setGrid(response.data.grid);
+          setLevelNumber(response.data.levelNumber);
+          setMaxLevel(response.data.maxLevel);
         }
       })
       .catch((fetchError: unknown) => {
@@ -72,7 +86,7 @@ export function WordSearch() {
     return () => {
       cancelled = true;
     };
-  }, [playerId]);
+  }, [playerId, levelSlug]);
 
   async function handleCellClick(cell: Cell) {
     if (!selectionStart) {
@@ -105,6 +119,7 @@ export function WordSearch() {
         setSessionScore((value) => value + response.data.pointsEarned);
         if (response.data.isComplete) {
           if (response.data.player) setTotalXp(response.data.player.xp);
+          setNextLevelSlug(response.data.nextLevelSlug ?? null);
           setIsComplete(true);
         }
       } else {
@@ -141,8 +156,8 @@ export function WordSearch() {
         levelScore={sessionScore}
         xpEarned={sessionScore}
         totalScore={totalXp}
-        continueLabel="Next Puzzle"
-        onContinue={() => window.location.reload()}
+        continueLabel={nextLevelSlug ? "Next Level" : "Back to Levels"}
+        onContinue={() => router.push((nextLevelSlug ? `/word-search/${nextLevelSlug}` : "/word-search") as Route)}
       />
     );
   }
@@ -153,11 +168,18 @@ export function WordSearch() {
 
   return (
     <section className="grid gap-5 rounded-[1.75rem] border border-white/80 bg-white/80 p-6 shadow-soft backdrop-blur">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-2xl font-black text-slate-900">{title}</h2>
-        <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
-          {foundPaths.length}/{words.length} found
-        </span>
+        <div className="flex flex-wrap gap-3">
+          {levelNumber ? (
+            <span className="rounded-full bg-gold-50 px-4 py-2 text-sm font-semibold text-gold-700">
+              Level {levelNumber}/{maxLevel}
+            </span>
+          ) : null}
+          <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
+            {foundPaths.length}/{words.length} found
+          </span>
+        </div>
       </div>
 
       <p className="text-sm text-slate-500">Tap the first letter, then the last letter, of a word to select it.</p>

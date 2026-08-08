@@ -10,6 +10,11 @@ export const startQuizSessionSchema = z.object({
   categorySlug: z.string().min(1).optional(),
   difficultySlug: z.string().min(1).optional(),
   questionCount: z.number().int().min(1).max(20).optional().default(5),
+  mode: z.string().min(1).optional(),
+});
+
+export const triviaLevelMapQuerySchema = z.object({
+  playerId: z.string().min(1),
 });
 
 export const submitQuizAnswerSchema = z.object({

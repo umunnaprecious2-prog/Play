@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
@@ -8,10 +10,13 @@ import type { CharacterGuessResult, CharacterHintResult, CharacterRound } from "
 
 type RoundState = { clues: string[]; hintsUsed: number; answer?: CharacterGuessResult };
 
-export function CharacterGuess() {
+export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
+  const router = useRouter();
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [rounds, setRounds] = useState<CharacterRound[] | null>(null);
+  const [levelNumber, setLevelNumber] = useState<number | null>(null);
+  const [maxLevel, setMaxLevel] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,14 +35,19 @@ export function CharacterGuess() {
     let cancelled = false;
     setIsLoading(true);
 
-    apiFetch<{ success: boolean; data: { session: { id: string }; rounds: CharacterRound[] } }>("/games/characters/sessions", {
+    apiFetch<{
+      success: boolean;
+      data: { session: { id: string }; rounds: CharacterRound[]; levelNumber: number | null; maxLevel: number | null };
+    }>("/games/characters/sessions", {
       method: "POST",
-      body: JSON.stringify({ playerId, roundCount: 5 }),
+      body: JSON.stringify({ playerId, characterSlug: levelSlug }),
     })
       .then((response) => {
         if (!cancelled) {
           setSessionId(response.data.session.id);
           setRounds(response.data.rounds);
+          setLevelNumber(response.data.levelNumber);
+          setMaxLevel(response.data.maxLevel);
         }
       })
       .catch((fetchError: unknown) => {
@@ -50,7 +60,7 @@ export function CharacterGuess() {
     return () => {
       cancelled = true;
     };
-  }, [playerId]);
+  }, [playerId, levelSlug]);
 
   const round = rounds?.[currentIndex];
   const state: RoundState = round
@@ -120,6 +130,8 @@ export function CharacterGuess() {
     if (isFinished) {
       const ratio = rounds.length > 0 ? correctCount / rounds.length : 0;
       const stars = ratio >= 0.9 ? 3 : ratio >= 0.6 ? 2 : ratio > 0 ? 1 : 0;
+      const lastRound = rounds[rounds.length - 1];
+      const nextLevelSlug = lastRound ? roundStates[lastRound.characterId]?.answer?.nextLevelSlug : null;
 
       return (
         <LevelCompleteScreen
@@ -129,8 +141,8 @@ export function CharacterGuess() {
           levelScore={sessionScore}
           xpEarned={sessionScore}
           totalScore={totalXp}
-          continueLabel="Next Round"
-          onContinue={() => window.location.reload()}
+          continueLabel={nextLevelSlug ? "Next Level" : "Back to Levels"}
+          onContinue={() => router.push((nextLevelSlug ? `/who-am-i/${nextLevelSlug}` : "/who-am-i") as Route)}
         />
       );
     }
@@ -144,11 +156,18 @@ export function CharacterGuess() {
 
   return (
     <section className="grid gap-5 rounded-[1.75rem] border border-white/80 bg-white/80 p-6 shadow-soft backdrop-blur">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-2xl font-black text-slate-900">Who Am I?</h2>
-        <span className="rounded-full bg-gold-100 px-4 py-2 text-sm font-semibold text-gold-700">
-          Character {currentIndex + 1} of {rounds.length}
-        </span>
+        <div className="flex flex-wrap gap-3">
+          {levelNumber ? (
+            <span className="rounded-full bg-gold-50 px-4 py-2 text-sm font-semibold text-gold-700">
+              Level {levelNumber}/{maxLevel}
+            </span>
+          ) : null}
+          <span className="rounded-full bg-gold-100 px-4 py-2 text-sm font-semibold text-gold-700">
+            Character {currentIndex + 1} of {rounds.length}
+          </span>
+        </div>
       </div>
 
       <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-lg">

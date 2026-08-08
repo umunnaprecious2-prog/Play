@@ -448,6 +448,7 @@ type ImportPayload = {
   wordSearchPuzzles?: Array<Record<string, any>>;
   characters?: Array<Record<string, any>>;
   stories?: Array<Record<string, any>>;
+  badges?: Array<Record<string, any>>;
 };
 
 export async function importContent(payload: ImportPayload) {
@@ -466,7 +467,8 @@ export async function importContent(payload: ImportPayload) {
         (payload.verses?.length ?? 0) +
         (payload.wordSearchPuzzles?.length ?? 0) +
         (payload.characters?.length ?? 0) +
-        (payload.stories?.length ?? 0),
+        (payload.stories?.length ?? 0) +
+        (payload.badges?.length ?? 0),
     },
   });
 
@@ -691,6 +693,31 @@ export async function importContent(payload: ImportPayload) {
         });
       }
 
+      for (const item of payload.badges ?? []) {
+        await tx.badge.upsert({
+          where: { slug: item.slug || buildSlug(item.name) },
+          create: {
+            slug: item.slug || buildSlug(item.name),
+            name: item.name,
+            description: item.description ?? null,
+            xpThreshold: item.xpThreshold ?? 0,
+            streakDaysNeeded: item.streakDaysNeeded ?? 0,
+            levelsCompletedThreshold: item.levelsCompletedThreshold ?? null,
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+          update: {
+            name: item.name,
+            description: item.description ?? null,
+            xpThreshold: item.xpThreshold ?? 0,
+            streakDaysNeeded: item.streakDaysNeeded ?? 0,
+            levelsCompletedThreshold: item.levelsCompletedThreshold ?? null,
+            sortOrder: item.sortOrder ?? 0,
+            isActive: item.isActive ?? true,
+          },
+        });
+      }
+
       return {
         categories: categoryMap.size,
         difficulties: difficultyMap.size,
@@ -700,6 +727,7 @@ export async function importContent(payload: ImportPayload) {
         wordSearchPuzzles: (payload.wordSearchPuzzles ?? []).length,
         characters: (payload.characters ?? []).length,
         stories: (payload.stories ?? []).length,
+        badges: (payload.badges ?? []).length,
       };
     }, { timeout: 180000, maxWait: 20000 });
 
@@ -715,7 +743,8 @@ export async function importContent(payload: ImportPayload) {
           result.verses +
           result.wordSearchPuzzles +
           result.characters +
-          result.stories,
+          result.stories +
+          result.badges,
         completedAt: new Date(),
       },
     });

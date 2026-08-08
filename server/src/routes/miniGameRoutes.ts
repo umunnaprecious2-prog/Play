@@ -1,36 +1,48 @@
 import { Router } from "express";
 import { validateBody, validateQuery } from "../middlewares/validate";
 import {
+  getVerseMatchLevelMapController,
   postVerseMatchSession,
   postVerseMatchComplete,
+  getFlashCardLevelMapController,
   postFlashCardSession,
   postFlashCardComplete,
+  getScripturePuzzleLevels,
   postScripturePuzzleSession,
   postScripturePuzzleHint,
   postScripturePuzzleAnswer,
+  getCharacterGuessLevels,
   postCharacterGuessSession,
   postCharacterHint,
   postCharacterGuessAnswer,
+  getStoryOrderLevels,
   postStoryOrderSession,
   postStoryOrderAnswer,
+  getWordSearchLevels,
   postWordSearchSession,
   postWordSearchFound,
   getDailyChallenge,
   postDailyChallengeAnswer,
 } from "../controllers/miniGameController";
 import {
+  verseMatchLevelMapQuerySchema,
   startVerseMatchSchema,
   completeVerseMatchSchema,
+  flashCardLevelMapQuerySchema,
   startFlashCardSchema,
   completeFlashCardSchema,
+  scripturePuzzleLevelsQuerySchema,
   startScripturePuzzleSchema,
   scripturePuzzleHintSchema,
   scripturePuzzleAnswerSchema,
+  characterGuessLevelsQuerySchema,
   startCharacterGuessSchema,
   characterHintSchema,
   characterGuessAnswerSchema,
+  storyOrderLevelsQuerySchema,
   startStoryOrderSchema,
   storyOrderAnswerSchema,
+  wordSearchLevelsQuerySchema,
   startWordSearchSchema,
   wordSearchFoundSchema,
   dailyChallengeQuerySchema,
@@ -56,6 +68,24 @@ import {
  *     description: One shared question per calendar day
  */
 const router = Router();
+
+/**
+ * @swagger
+ * /games/verse-match/level-map:
+ *   get:
+ *     tags: [MatchTheVerse]
+ *     summary: Get this player's current level position (no discrete per-level content to list, unlike the "collection" games)
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Current level and max level
+ */
+router.get("/verse-match/level-map", validateQuery(verseMatchLevelMapQuerySchema), getVerseMatchLevelMapController);
 
 /**
  * @swagger
@@ -103,6 +133,24 @@ router.post("/verse-match/complete", validateBody(completeVerseMatchSchema), pos
 
 /**
  * @swagger
+ * /games/flashcards/level-map:
+ *   get:
+ *     tags: [FlashCards]
+ *     summary: Get this player's current level position (no discrete per-level content to list, unlike the "collection" games)
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Current level and max level
+ */
+router.get("/flashcards/level-map", validateQuery(flashCardLevelMapQuerySchema), getFlashCardLevelMapController);
+
+/**
+ * @swagger
  * /games/flashcards/sessions:
  *   post:
  *     tags: [FlashCards]
@@ -144,6 +192,24 @@ router.post("/flashcards/sessions", validateBody(startFlashCardSchema), postFlas
  *               $ref: '#/components/schemas/FlashCardCompleteResponse'
  */
 router.post("/flashcards/complete", validateBody(completeFlashCardSchema), postFlashCardComplete);
+
+/**
+ * @swagger
+ * /games/scripture-puzzle/levels:
+ *   get:
+ *     tags: [ScripturePuzzle]
+ *     summary: List all Scripture Puzzle levels with lock/completion status for a player
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Levels with progress
+ */
+router.get("/scripture-puzzle/levels", validateQuery(scripturePuzzleLevelsQuerySchema), getScripturePuzzleLevels);
 
 /**
  * @swagger
@@ -213,6 +279,24 @@ router.post("/scripture-puzzle/answers", validateBody(scripturePuzzleAnswerSchem
 
 /**
  * @swagger
+ * /games/characters/levels:
+ *   get:
+ *     tags: [CharacterGuess]
+ *     summary: List all Character Guess levels with lock/completion status for a player
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Levels with progress
+ */
+router.get("/characters/levels", validateQuery(characterGuessLevelsQuerySchema), getCharacterGuessLevels);
+
+/**
+ * @swagger
  * /games/characters/sessions:
  *   post:
  *     tags: [CharacterGuess]
@@ -279,6 +363,24 @@ router.post("/characters/answers", validateBody(characterGuessAnswerSchema), pos
 
 /**
  * @swagger
+ * /games/stories/levels:
+ *   get:
+ *     tags: [StoryChallenge]
+ *     summary: List all Story Challenge levels with lock/completion status for a player
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Levels with progress
+ */
+router.get("/stories/levels", validateQuery(storyOrderLevelsQuerySchema), getStoryOrderLevels);
+
+/**
+ * @swagger
  * /games/stories/sessions:
  *   post:
  *     tags: [StoryChallenge]
@@ -320,6 +422,24 @@ router.post("/stories/sessions", validateBody(startStoryOrderSchema), postStoryO
  *               $ref: '#/components/schemas/StoryOrderAnswerResponse'
  */
 router.post("/stories/answers", validateBody(storyOrderAnswerSchema), postStoryOrderAnswer);
+
+/**
+ * @swagger
+ * /games/word-search/levels:
+ *   get:
+ *     tags: [WordSearch]
+ *     summary: List all Word Search levels with lock/completion status for a player
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Levels with progress
+ */
+router.get("/word-search/levels", validateQuery(wordSearchLevelsQuerySchema), getWordSearchLevels);
 
 /**
  * @swagger

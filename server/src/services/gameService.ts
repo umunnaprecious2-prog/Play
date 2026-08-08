@@ -100,7 +100,33 @@ export async function getPlayerProfile(playerId: string) {
   return player;
 }
 
-export async function startQuizSession(input: { playerId: string; categorySlug?: string; difficultySlug?: string; questionCount: number }) {
+const TRIVIA_MAX_LEVEL = 20;
+
+// Trivia reuses this same quiz session infrastructure (gameMode stays "quiz"
+// so nothing about Quick Practice's existing behavior changes), tagged with
+// metadata.mode = "trivia" so its rounds can be counted separately for the
+// level map. Previously round-tracking lived only in the browser
+// (lib/player.ts's getNextTriviaRound), which incremented on every page
+// load rather than every completion -- this makes it server-authoritative.
+export async function getTriviaLevelMap(playerId: string) {
+  const completedCount = await prisma.gameSession.count({
+    where: {
+      playerId,
+      gameMode: "quiz",
+      status: "COMPLETED",
+      metadata: { path: ["mode"], equals: "trivia" },
+    },
+  });
+  return { currentLevel: Math.min(completedCount + 1, TRIVIA_MAX_LEVEL), maxLevel: TRIVIA_MAX_LEVEL };
+}
+
+export async function startQuizSession(input: {
+  playerId: string;
+  categorySlug?: string;
+  difficultySlug?: string;
+  questionCount: number;
+  mode?: string;
+}) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
 
   if (!player) {
@@ -130,6 +156,7 @@ export async function startQuizSession(input: { playerId: string; categorySlug?:
       metadata: {
         categorySlug: input.categorySlug ?? null,
         difficultySlug: input.difficultySlug ?? null,
+        mode: input.mode ?? null,
       },
     },
   });

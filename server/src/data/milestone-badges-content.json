@@ -1,0 +1,33 @@
+{
+  "sourceName": "milestone-badges-content.json",
+  "badges": [
+    {
+      "slug": "milestone-5-levels",
+      "name": "Getting Started",
+      "description": "Complete 5 levels across any games.",
+      "levelsCompletedThreshold": 5,
+      "sortOrder": 1
+    },
+    {
+      "slug": "milestone-10-levels",
+      "name": "Steady Climber",
+      "description": "Complete 10 levels across any games.",
+      "levelsCompletedThreshold": 10,
+      "sortOrder": 2
+    },
+    {
+      "slug": "milestone-25-levels",
+      "name": "Dedicated Learner",
+      "description": "Complete 25 levels across any games.",
+      "levelsCompletedThreshold": 25,
+      "sortOrder": 3
+    },
+    {
+      "slug": "milestone-50-levels",
+      "name": "Bible Adventurer",
+      "description": "Complete 50 levels across any games.",
+      "levelsCompletedThreshold": 50,
+      "sortOrder": 4
+    }
+  ]
+}

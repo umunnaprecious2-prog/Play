@@ -1,7 +1,9 @@
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
+import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
 
+const GAME_MODE = "word_search";
 const POINTS_PER_WORD = 10;
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const DIRECTIONS = [
@@ -123,6 +125,15 @@ async function pickNextPuzzle(playerId: string) {
   return allPuzzles[randomInt(allPuzzles.length)];
 }
 
+export async function listWordSearchLevels(playerId: string) {
+  const puzzles = await prisma.wordSearchPuzzle.findMany({ where: { isActive: true } });
+  return listLevels(
+    playerId,
+    GAME_MODE,
+    puzzles.map((puzzle) => ({ id: puzzle.id, slug: puzzle.slug, title: puzzle.title, sortOrder: puzzle.sortOrder })),
+  );
+}
+
 export async function startWordSearchSession(input: { playerId: string; puzzleSlug?: string }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
@@ -133,6 +144,20 @@ export async function startWordSearchSession(input: { playerId: string; puzzleSl
 
   if (!puzzle || !puzzle.isActive) {
     throw AppError.notFound("No word search puzzles available yet");
+  }
+
+  const allPuzzles = await prisma.wordSearchPuzzle.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } });
+  const levelNumber = allPuzzles.findIndex((item) => item.id === puzzle.id) + 1;
+
+  if (input.puzzleSlug) {
+    const items = allPuzzles.map((item) => ({ id: item.id, slug: item.slug, title: item.title, sortOrder: item.sortOrder }));
+    const unlocked = await isContentUnlocked(player.id, GAME_MODE, puzzle.id, items);
+
+    if (!unlocked) {
+      throw AppError.forbidden("Complete the previous level to unlock this one");
+    }
+
+    await recordAttempt(player.id, GAME_MODE, puzzle.id);
   }
 
   const { grid, placements } = generateGrid(puzzle.words, puzzle.gridSize);
@@ -148,7 +173,9 @@ export async function startWordSearchSession(input: { playerId: string; puzzleSl
 
   return {
     session: { id: session.id, totalQuestions: session.totalQuestions },
-    puzzle: { id: puzzle.id, title: puzzle.title, gridSize: puzzle.gridSize, words: puzzle.words },
+    puzzle: { id: puzzle.id, slug: puzzle.slug, title: puzzle.title, gridSize: puzzle.gridSize, words: puzzle.words },
+    levelNumber,
+    maxLevel: allPuzzles.length,
     grid,
   };
 }
@@ -205,6 +232,19 @@ export async function submitFoundWord(input: { sessionId: string; word: string; 
     },
   });
 
+  let nextLevelSlug: string | null = null;
+
+  if (isComplete) {
+    const puzzleId = (metadata as { puzzleId?: string }).puzzleId;
+
+    if (puzzleId) {
+      const allPuzzles = await prisma.wordSearchPuzzle.findMany({ where: { isActive: true } });
+      const items = allPuzzles.map((item) => ({ id: item.id, slug: item.slug, title: item.title, sortOrder: item.sortOrder }));
+      const unlockResult = await markCompleteAndUnlockNext(updatedPlayer.id, GAME_MODE, puzzleId, completedSession.score, items);
+      nextLevelSlug = unlockResult.nextSlug;
+    }
+  }
+
   const rewards = isComplete ? await awardProgressRewards(updatedPlayer.id) : { badgesUnlocked: [], avatarsUnlocked: [] };
 
   if (isComplete) {
@@ -224,6 +264,7 @@ export async function submitFoundWord(input: { sessionId: string; word: string; 
     wordsFound: nextFoundWords.length,
     totalWords: session.totalQuestions,
     isComplete,
+    nextLevelSlug,
     player: updatedPlayer,
     rewards,
   };

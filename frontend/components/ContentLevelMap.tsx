@@ -4,11 +4,34 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
 import { SnakeLevelMap, type SnakeLevelNode } from "./SnakeLevelMap";
-import type { Level } from "../lib/types";
 
-export function LevelMap() {
+type ContentLevel = {
+  id: string;
+  slug: string;
+  title: string;
+  levelNumber: number;
+  isUnlocked: boolean;
+  isCompleted: boolean;
+  bestScore: number;
+  attempts: number;
+};
+
+type ContentLevelMapProps = {
+  endpoint: string;
+  basePath: string;
+  title: string;
+  subtitle?: string;
+  accent?: "sunrise" | "sky" | "meadow" | "royal" | "gold";
+};
+
+// Thin data-fetching wrapper around SnakeLevelMap for every "collection"
+// game (each level = one fixed piece of content, backed by the shared
+// contentProgressService.ts endpoints). Reused by Word Search, Scripture
+// Puzzle, Character Guess, and Story Challenge instead of 4 copies of the
+// same fetch/loading/error boilerplate.
+export function ContentLevelMap({ endpoint, basePath, title, subtitle, accent }: ContentLevelMapProps) {
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
-  const [levels, setLevels] = useState<Level[] | null>(null);
+  const [levels, setLevels] = useState<ContentLevel[] | null>(null);
   const [isLoadingLevels, setIsLoadingLevels] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +44,7 @@ export function LevelMap() {
     setIsLoadingLevels(true);
     setError(null);
 
-    apiFetch<{ success: boolean; data: Level[] }>(`/games/levels?playerId=${encodeURIComponent(playerId)}`)
+    apiFetch<{ success: boolean; data: ContentLevel[] }>(`${endpoint}?playerId=${encodeURIComponent(playerId)}`)
       .then((response) => {
         if (!cancelled) {
           setLevels(response.data);
@@ -41,7 +64,7 @@ export function LevelMap() {
     return () => {
       cancelled = true;
     };
-  }, [playerId]);
+  }, [playerId, endpoint]);
 
   if (isPlayerLoading || isLoadingLevels) {
     return (
@@ -64,18 +87,10 @@ export function LevelMap() {
     id: level.id,
     slug: level.slug,
     levelNumber: level.levelNumber,
-    label: `Level ${level.levelNumber}: ${level.name}`,
+    label: `Level ${level.levelNumber}`,
     isUnlocked: level.isUnlocked,
     isCompleted: level.isCompleted,
   }));
 
-  return (
-    <SnakeLevelMap
-      title="Bible Quiz Levels"
-      subtitle="Complete a level to unlock the next one."
-      levels={nodes}
-      basePath="/levels"
-      accent="sunrise"
-    />
-  );
+  return <SnakeLevelMap title={title} subtitle={subtitle} levels={nodes} basePath={basePath} accent={accent} />;
 }

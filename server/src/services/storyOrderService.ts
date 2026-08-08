@@ -1,7 +1,9 @@
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
+import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
 
+const GAME_MODE = "story_order";
 const POINTS = 10;
 
 function shuffle<T>(items: T[]): T[] {
@@ -43,12 +45,32 @@ async function pickNextStory(playerId: string) {
   });
 }
 
-export async function startStoryOrderSession(input: { playerId: string }) {
+async function levelItems() {
+  const stories = await prisma.bibleStory.findMany({ where: { isActive: true } });
+  return stories.map((story) => ({ id: story.id, slug: story.slug, title: story.title, sortOrder: story.sortOrder }));
+}
+
+export async function listStoryOrderLevels(playerId: string) {
+  return listLevels(playerId, GAME_MODE, await levelItems());
+}
+
+export async function startStoryOrderSession(input: { playerId: string; storySlug?: string }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
-  const story = await pickNextStory(input.playerId);
+  const story = input.storySlug
+    ? await prisma.bibleStory.findUnique({ where: { slug: input.storySlug }, include: { events: { orderBy: { correctOrder: "asc" } } } })
+    : await pickNextStory(input.playerId);
   if (!story || story.events.length === 0) throw AppError.notFound("No stories available yet");
+
+  const items = await levelItems();
+  const levelNumber = [...items].sort((a, b) => a.sortOrder - b.sortOrder).findIndex((item) => item.id === story.id) + 1;
+
+  if (input.storySlug) {
+    const unlocked = await isContentUnlocked(player.id, GAME_MODE, story.id, items);
+    if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
+    await recordAttempt(player.id, GAME_MODE, story.id);
+  }
 
   const session = await prisma.gameSession.create({
     data: { playerId: player.id, gameMode: "story_order", totalQuestions: 1, metadata: { storyId: story.id } },
@@ -56,7 +78,9 @@ export async function startStoryOrderSession(input: { playerId: string }) {
 
   return {
     session,
-    story: { id: story.id, title: story.title },
+    story: { id: story.id, slug: story.slug, title: story.title },
+    levelNumber,
+    maxLevel: items.length,
     shuffledEvents: shuffle(story.events.map((event) => ({ id: event.id, text: event.text }))),
   };
 }
@@ -98,6 +122,19 @@ export async function submitStoryOrder(input: { sessionId: string; storyId: stri
     },
   });
 
+  let nextLevelSlug: string | null = null;
+
+  if (isCorrect) {
+    const unlockResult = await markCompleteAndUnlockNext(
+      updatedPlayer.id,
+      GAME_MODE,
+      input.storyId,
+      completedSession.score,
+      await levelItems(),
+    );
+    nextLevelSlug = unlockResult.nextSlug;
+  }
+
   const rewards = await awardProgressRewards(updatedPlayer.id);
   await logProgress({
     playerId: updatedPlayer.id,
@@ -112,6 +149,6 @@ export async function submitStoryOrder(input: { sessionId: string; storyId: stri
     session: completedSession,
     player: updatedPlayer,
     rewards,
-    result: { isCorrect, pointsEarned, correctOrderIds, isComplete: true },
+    result: { isCorrect, pointsEarned, correctOrderIds, isComplete: true, nextLevelSlug },
   };
 }

@@ -1,7 +1,9 @@
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
+import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
 
+const GAME_MODE = "character_guess";
 const DEFAULT_ROUND_COUNT = 5;
 const POINTS = 10;
 const POINTS_PER_HINT = 2;
@@ -45,24 +47,58 @@ async function pickNextCharacters(playerId: string, roundCount: number) {
   return ordered.slice(0, roundCount);
 }
 
-export async function startCharacterGuessSession(input: { playerId: string; roundCount?: number }) {
+async function levelItems() {
+  const characters = await prisma.bibleCharacter.findMany({ where: { isActive: true } });
+  return characters.map((character) => ({ id: character.id, slug: character.slug, title: character.name, sortOrder: character.sortOrder }));
+}
+
+export async function listCharacterGuessLevels(playerId: string) {
+  return listLevels(playerId, GAME_MODE, await levelItems());
+}
+
+export async function startCharacterGuessSession(input: { playerId: string; roundCount?: number; characterSlug?: string }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
-  const roundCount = Math.min(Math.max(input.roundCount ?? DEFAULT_ROUND_COUNT, 1), 10);
+  let characters;
+  let levelInfo: { levelNumber: number; maxLevel: number } | null = null;
 
-  const characters = await pickNextCharacters(input.playerId, roundCount);
+  if (input.characterSlug) {
+    const character = await prisma.bibleCharacter.findUnique({ where: { slug: input.characterSlug } });
+    if (!character || !character.isActive) throw AppError.notFound("Character not found");
+
+    const items = await levelItems();
+    const unlocked = await isContentUnlocked(player.id, GAME_MODE, character.id, items);
+    if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
+
+    await recordAttempt(player.id, GAME_MODE, character.id);
+    levelInfo = {
+      levelNumber: [...items].sort((a, b) => a.sortOrder - b.sortOrder).findIndex((item) => item.id === character.id) + 1,
+      maxLevel: items.length,
+    };
+    characters = [character];
+  } else {
+    const roundCount = Math.min(Math.max(input.roundCount ?? DEFAULT_ROUND_COUNT, 1), 10);
+    characters = await pickNextCharacters(input.playerId, roundCount);
+  }
 
   if (characters.length === 0) {
     throw AppError.notFound("No characters available yet");
   }
 
   const session = await prisma.gameSession.create({
-    data: { playerId: player.id, gameMode: "character_guess", totalQuestions: characters.length, metadata: {} },
+    data: {
+      playerId: player.id,
+      gameMode: "character_guess",
+      totalQuestions: characters.length,
+      metadata: input.characterSlug ? { levelCharacterId: characters[0].id } : {},
+    },
   });
 
   return {
     session,
+    levelNumber: levelInfo?.levelNumber ?? null,
+    maxLevel: levelInfo?.maxLevel ?? null,
     rounds: shuffle(characters).map((character) => ({
       characterId: character.id,
       firstClue: character.clues[0] ?? "A figure from the Bible.",
@@ -151,6 +187,20 @@ export async function submitCharacterGuess(input: { sessionId: string; character
     },
   });
 
+  let nextLevelSlug: string | null = null;
+  const levelCharacterId = (session.metadata as { levelCharacterId?: string } | null)?.levelCharacterId;
+
+  if (isComplete && isCorrect && levelCharacterId) {
+    const unlockResult = await markCompleteAndUnlockNext(
+      updatedPlayer.id,
+      GAME_MODE,
+      levelCharacterId,
+      completedSession.score,
+      await levelItems(),
+    );
+    nextLevelSlug = unlockResult.nextSlug;
+  }
+
   const rewards = await awardProgressRewards(updatedPlayer.id);
   await logProgress({
     playerId: updatedPlayer.id,
@@ -165,6 +215,6 @@ export async function submitCharacterGuess(input: { sessionId: string; character
     session: completedSession,
     player: updatedPlayer,
     rewards,
-    result: { isCorrect, pointsEarned, hintsUsed, correctName: character.name, isComplete },
+    result: { isCorrect, pointsEarned, hintsUsed, correctName: character.name, isComplete, nextLevelSlug },
   };
 }

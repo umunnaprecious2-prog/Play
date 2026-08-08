@@ -1,6 +1,11 @@
-import { ContentLevelMap } from "../../components/ContentLevelMap";
+"use client";
 
-export default function WhoAmILevelsPage() {
+import { useParams } from "next/navigation";
+import { CharacterGuess } from "../../../components/CharacterGuess";
+
+export default function WhoAmILevelPage() {
+  const params = useParams<{ levelSlug: string }>();
+
   return (
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
@@ -8,11 +13,11 @@ export default function WhoAmILevelsPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gold-600">Who Am I?</p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">Guess the Bible character</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            One clue at a time, then guess as soon as you know. Pick a level below to start.
+            One clue at a time. Guess as soon as you know, or use a hint to reveal another clue for -2 points.
           </p>
         </header>
 
-        <ContentLevelMap endpoint="/games/characters/levels" basePath="/who-am-i" title="Who Am I? Levels" accent="gold" />
+        <CharacterGuess levelSlug={params.levelSlug} />
       </div>
     </main>
   );

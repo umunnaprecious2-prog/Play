@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
@@ -15,12 +17,15 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-export function StoryChallenge() {
+export function StoryChallenge({ levelSlug }: { levelSlug: string }) {
+  const router = useRouter();
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [storyId, setStoryId] = useState<string | null>(null);
   const [title, setTitle] = useState<string | null>(null);
   const [events, setEvents] = useState<StoryEventCard[] | null>(null);
+  const [levelNumber, setLevelNumber] = useState<number | null>(null);
+  const [maxLevel, setMaxLevel] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,16 +39,24 @@ export function StoryChallenge() {
     let cancelled = false;
     setIsLoading(true);
 
-    apiFetch<{ success: boolean; data: { session: { id: string }; story: { id: string; title: string }; shuffledEvents: StoryEventCard[] } }>(
-      "/games/stories/sessions",
-      { method: "POST", body: JSON.stringify({ playerId }) },
-    )
+    apiFetch<{
+      success: boolean;
+      data: {
+        session: { id: string };
+        story: { id: string; title: string };
+        shuffledEvents: StoryEventCard[];
+        levelNumber: number;
+        maxLevel: number;
+      };
+    }>("/games/stories/sessions", { method: "POST", body: JSON.stringify({ playerId, storySlug: levelSlug }) })
       .then((response) => {
         if (!cancelled) {
           setSessionId(response.data.session.id);
           setStoryId(response.data.story.id);
           setTitle(response.data.story.title);
           setEvents(shuffle(response.data.shuffledEvents));
+          setLevelNumber(response.data.levelNumber);
+          setMaxLevel(response.data.maxLevel);
         }
       })
       .catch((fetchError: unknown) => {
@@ -56,7 +69,7 @@ export function StoryChallenge() {
     return () => {
       cancelled = true;
     };
-  }, [playerId]);
+  }, [playerId, levelSlug]);
 
   function move(index: number, direction: -1 | 1) {
     if (!events) return;
@@ -114,17 +127,24 @@ export function StoryChallenge() {
         levelScore={result.pointsEarned}
         xpEarned={result.pointsEarned}
         totalScore={totalXp}
-        continueLabel="Next Story"
-        onContinue={() => window.location.reload()}
+        continueLabel={result.nextLevelSlug ? "Next Level" : "Back to Levels"}
+        onContinue={() => router.push((result.nextLevelSlug ? `/story-challenge/${result.nextLevelSlug}` : "/story-challenge") as Route)}
       />
     );
   }
 
   return (
     <section className="grid gap-5 rounded-[1.75rem] border border-white/80 bg-white/80 p-6 shadow-soft backdrop-blur">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-2xl font-black text-slate-900">{title}</h2>
-        <span className="rounded-full bg-royal-50 px-4 py-2 text-sm font-semibold text-royal-700">Put the events in order</span>
+        <div className="flex flex-wrap gap-3">
+          {levelNumber ? (
+            <span className="rounded-full bg-gold-50 px-4 py-2 text-sm font-semibold text-gold-700">
+              Level {levelNumber}/{maxLevel}
+            </span>
+          ) : null}
+          <span className="rounded-full bg-royal-50 px-4 py-2 text-sm font-semibold text-royal-700">Put the events in order</span>
+        </div>
       </div>
 
       <div className="grid gap-3">

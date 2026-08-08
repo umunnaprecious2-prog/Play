@@ -1,6 +1,15 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
-import { createPlayerProfile, getPlayerProgress, getPlayerProfile, startMemoryVerseSession, startQuizSession, submitMemoryVerseAnswer, submitQuizAnswer } from "../services/gameService";
+import {
+  createPlayerProfile,
+  getPlayerProgress,
+  getPlayerProfile,
+  getTriviaLevelMap,
+  startMemoryVerseSession,
+  startQuizSession,
+  submitMemoryVerseAnswer,
+  submitQuizAnswer,
+} from "../services/gameService";
 
 export const postPlayer = asyncHandler(async (req: Request, res: Response) => {
   const { nickname, avatarSlug } = req.body;
@@ -15,6 +24,11 @@ export const getPlayer = asyncHandler(async (req: Request, res: Response) => {
 
 export const getPlayerProgressHandler = asyncHandler(async (req: Request, res: Response) => {
   res.json({ success: true, data: await getPlayerProgress(String(req.params.playerId)) });
+});
+
+export const getTriviaLevelMapController = asyncHandler(async (req: Request, res: Response) => {
+  const playerId = String(req.query.playerId || "");
+  res.json({ success: true, data: await getTriviaLevelMap(playerId) });
 });
 
 export const postQuizSession = asyncHandler(async (req: Request, res: Response) => {

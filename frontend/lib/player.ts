@@ -33,25 +33,10 @@ export function setStoredNickname(nickname: string) {
   window.localStorage.setItem(NICKNAME_KEY, nickname);
 }
 
-const TRIVIA_ROUND_KEY = "play.triviaRound";
-const MAX_TRIVIA_ROUND = 20;
-
-// Bible Trivia has no per-puzzle identity to track server-side (it draws
-// randomly from the shared question pool). Round progress, used to ramp
-// difficulty over 20 rounds, is tracked locally instead, the same way
-// player identity itself is.
-export function getNextTriviaRound(): number {
-  if (typeof window === "undefined") {
-    return 1;
-  }
-
-  const stored = Number(window.localStorage.getItem(TRIVIA_ROUND_KEY) ?? "0");
-  const current = Number.isFinite(stored) && stored > 0 ? stored : 0;
-  const next = Math.min(current + 1, MAX_TRIVIA_ROUND);
-  window.localStorage.setItem(TRIVIA_ROUND_KEY, String(next));
-  return next;
-}
-
+// Bible Trivia's round number is now server-authoritative (derived from
+// completed trivia sessions, see gameService.ts's getTriviaLevelMap) rather
+// than tracked here in localStorage -- kept only as the difficulty-mapping
+// helper, since that's a pure function with no state of its own.
 export function triviaDifficultyForRound(round: number): "easy" | "medium" | "hard" {
   if (round <= 7) return "easy";
   if (round <= 14) return "medium";

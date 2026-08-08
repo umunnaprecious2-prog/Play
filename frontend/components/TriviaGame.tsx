@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
-import { getNextTriviaRound, triviaDifficultyForRound } from "../lib/player";
+import { triviaDifficultyForRound } from "../lib/player";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
 import type { GameAnswerResult, QuizQuestion } from "../lib/types";
 
@@ -18,6 +19,7 @@ type TriviaSession = {
 type AnsweredEntry = GameAnswerResult & { selectedText: string; timedOut: boolean };
 
 export function TriviaGame() {
+  const router = useRouter();
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
   const [session, setSession] = useState<TriviaSession | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState(false);
@@ -39,15 +41,32 @@ export function TriviaGame() {
     setIsLoadingSession(true);
     setSessionError(null);
 
-    const currentRound = getNextTriviaRound();
-    setRound(currentRound);
+    // Round is server-authoritative (derived from completed trivia sessions),
+    // not tracked in localStorage -- the old client-side counter incremented
+    // on every page load, not every completion.
+    apiFetch<{ success: boolean; data: { currentLevel: number; maxLevel: number } }>(
+      `/games/trivia/level-map?playerId=${encodeURIComponent(playerId)}`,
+    )
+      .then((levelResponse) => {
+        if (cancelled) return;
+        const currentRound = levelResponse.data.currentLevel;
+        setRound(currentRound);
 
-    apiFetch<{ success: boolean; data: { session: { id: string }; questions: QuizQuestion[] } }>("/games/quiz/sessions", {
-      method: "POST",
-      body: JSON.stringify({ playerId, questionCount: QUESTION_COUNT, difficultySlug: triviaDifficultyForRound(currentRound) }),
-    })
+        return apiFetch<{ success: boolean; data: { session: { id: string }; questions: QuizQuestion[] } }>(
+          "/games/quiz/sessions",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              playerId,
+              questionCount: QUESTION_COUNT,
+              difficultySlug: triviaDifficultyForRound(currentRound),
+              mode: "trivia",
+            }),
+          },
+        );
+      })
       .then((response) => {
-        if (!cancelled) {
+        if (!cancelled && response) {
           setSession({ sessionId: response.data.session.id, questions: response.data.questions });
         }
       })
@@ -162,8 +181,8 @@ export function TriviaGame() {
         levelScore={totalScore}
         xpEarned={totalScore}
         totalScore={totalXp}
-        continueLabel="Next Round"
-        onContinue={() => window.location.reload()}
+        continueLabel="Back to Levels"
+        onContinue={() => router.push("/trivia")}
       />
     );
   }

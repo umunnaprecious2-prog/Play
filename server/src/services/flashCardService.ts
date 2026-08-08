@@ -6,6 +6,13 @@ const DEFAULT_DECK_SIZE = 12;
 const POINTS_PER_KNOWN_CARD = 5;
 const MAX_LEVEL = 20;
 
+export async function getFlashCardLevelMap(playerId: string) {
+  const completedCount = await prisma.gameSession.count({
+    where: { playerId, gameMode: "flash_cards", status: "COMPLETED" },
+  });
+  return { currentLevel: Math.min(completedCount + 1, MAX_LEVEL), maxLevel: MAX_LEVEL };
+}
+
 function shuffle<T>(items: T[]): T[] {
   const copy = [...items];
   for (let index = copy.length - 1; index > 0; index -= 1) {

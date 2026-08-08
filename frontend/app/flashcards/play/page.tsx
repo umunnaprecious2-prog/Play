@@ -1,6 +1,6 @@
-import { ProceduralLevelMap } from "../../components/ProceduralLevelMap";
+import { FlashCards } from "../../../components/FlashCards";
 
-export default function FlashCardsLevelsPage() {
+export default function FlashCardsPlayPage() {
   return (
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
@@ -8,16 +8,12 @@ export default function FlashCardsLevelsPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sunrise-600">Flash Cards</p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">Quick verse recall practice</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            Difficulty ramps up as you go, 20 levels in all. Pick up where you left off below.
+            See a reference, try to recall the verse, then flip the card to check yourself. Every verse is quoted
+            exactly from the King James Version.
           </p>
         </header>
 
-        <ProceduralLevelMap
-          endpoint="/games/flashcards/level-map"
-          basePath="/flashcards"
-          title="Flash Cards Levels"
-          accent="sunrise"
-        />
+        <FlashCards />
       </div>
     </main>
   );

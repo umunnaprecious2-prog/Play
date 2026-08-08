@@ -1,6 +1,7 @@
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { calculateLevel, updateStreak } from "../utils/gameMath";
+import { awardProgressRewards } from "./rewardService";
 
 const POINTS_PER_QUESTION = 10;
 const POINTS_PER_HINT = 2;
@@ -17,57 +18,6 @@ function shuffle<T>(items: T[]): T[] {
   }
 
   return copy;
-}
-
-async function awardProgressRewards(playerId: string) {
-  const player = await prisma.playerProfile.findUnique({ where: { id: playerId } });
-
-  if (!player) {
-    throw AppError.notFound("Player profile not found");
-  }
-
-  const badges = await prisma.badge.findMany({
-    where: {
-      isActive: true,
-      xpThreshold: { lte: player.xp },
-      streakDaysNeeded: { lte: player.streakDays },
-    },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
-
-  const unlockedBadges = await prisma.playerBadge.findMany({ where: { playerId } });
-  const unlockedBadgeIds = new Set(unlockedBadges.map((badge) => badge.badgeId));
-  const badgesToUnlock = badges.filter((badge) => !unlockedBadgeIds.has(badge.id));
-
-  if (badgesToUnlock.length > 0) {
-    await prisma.playerBadge.createMany({
-      data: badgesToUnlock.map((badge) => ({ playerId, badgeId: badge.id })),
-      skipDuplicates: true,
-    });
-  }
-
-  const avatarItems = await prisma.avatarItem.findMany({
-    where: {
-      isActive: true,
-      unlockXp: { lte: player.xp },
-      unlockLevel: { lte: player.level },
-      unlockStreakDays: { lte: player.streakDays },
-    },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
-
-  const unlockedAvatars = await prisma.playerAvatarUnlock.findMany({ where: { playerId } });
-  const unlockedAvatarIds = new Set(unlockedAvatars.map((avatar) => avatar.avatarItemId));
-  const avatarsToUnlock = avatarItems.filter((avatar) => !unlockedAvatarIds.has(avatar.id));
-
-  if (avatarsToUnlock.length > 0) {
-    await prisma.playerAvatarUnlock.createMany({
-      data: avatarsToUnlock.map((avatar) => ({ playerId, avatarItemId: avatar.id })),
-      skipDuplicates: true,
-    });
-  }
-
-  return { badgesUnlocked: badgesToUnlock, avatarsUnlocked: avatarsToUnlock };
 }
 
 export async function listLevelsForPlayer(playerId: string) {

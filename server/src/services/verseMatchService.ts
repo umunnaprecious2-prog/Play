@@ -2,7 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
 
-const PAIRS_PER_LEVEL = 20;
+const PAIRS_PER_LEVEL = 60;
 const POINTS_PER_PAIR = 10;
 const MAX_LEVEL = 20;
 
@@ -22,8 +22,8 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-// Every level always serves a full 20 pairs (matching every other game's
-// 20-per-level standard) -- difficulty still escalates across the 20 levels,
+// Every level always serves a full 60 pairs (20 pages of 3 pairs each in the
+// frontend's grouped UI) -- difficulty still escalates across the 20 levels,
 // but only via which verses are drawn from, never by giving fewer pairs.
 // The level is derived from how many rounds this player has already
 // completed. Early levels draw only from the shortest (easiest) verses;
@@ -40,8 +40,8 @@ async function pickLevelVerses(playerId: string, requestedPairCount?: number) {
   const pairCount = Math.min(requestedPairCount ?? PAIRS_PER_LEVEL, allVerses.length);
 
   // The difficulty window must always contain at least pairCount verses, or
-  // a low level would silently serve fewer than 20 pairs despite pairCount
-  // saying 20 -- exactly the bug this replaces.
+  // a low level would silently serve fewer than PAIRS_PER_LEVEL pairs despite
+  // pairCount asking for the full amount -- exactly the bug this replaces.
   const minWindow = Math.max(pairCount, PAIRS_PER_LEVEL);
   const windowSize = Math.min(
     allVerses.length,

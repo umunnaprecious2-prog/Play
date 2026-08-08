@@ -35,7 +35,7 @@ export const scripturePuzzleLevelsQuerySchema = z.object({
 
 export const startScripturePuzzleSchema = z.object({
   playerId: z.string().min(1),
-  verseSlug: z.string().min(1).optional(),
+  categorySlug: z.string().min(1).optional(),
 });
 
 export const scripturePuzzleHintSchema = z.object({

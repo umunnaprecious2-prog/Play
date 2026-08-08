@@ -9,13 +9,14 @@ import { LevelCompleteScreen } from "./LevelCompleteScreen";
 import type { ScripturePuzzleAnswerResult, ScripturePuzzleHintResult } from "../lib/types";
 
 type PuzzleTile = { id: string; word: string };
+type VerseItem = { id: string; slug: string; reference: string; scrambledWords: string[] };
 
 export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
   const router = useRouter();
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [verseId, setVerseId] = useState<string | null>(null);
-  const [reference, setReference] = useState<string | null>(null);
+  const [verses, setVerses] = useState<VerseItem[] | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [pool, setPool] = useState<PuzzleTile[]>([]);
   const [placed, setPlaced] = useState<PuzzleTile[]>([]);
   const [levelNumber, setLevelNumber] = useState<number | null>(null);
@@ -26,7 +27,9 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
   const [hintsUsed, setHintsUsed] = useState(0);
   const [isHinting, setIsHinting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [result, setResult] = useState<ScripturePuzzleAnswerResult | null>(null);
+  const [answer, setAnswer] = useState<ScripturePuzzleAnswerResult | null>(null);
+  const [levelResult, setLevelResult] = useState<ScripturePuzzleAnswerResult | null>(null);
+  const [sessionScore, setSessionScore] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
 
   useEffect(() => {
@@ -37,20 +40,13 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
 
     apiFetch<{
       success: boolean;
-      data: {
-        session: { id: string };
-        verse: { id: string; reference: string };
-        scrambledWords: string[];
-        levelNumber: number;
-        maxLevel: number;
-      };
-    }>("/games/scripture-puzzle/sessions", { method: "POST", body: JSON.stringify({ playerId, verseSlug: levelSlug }) })
+      data: { session: { id: string }; verses: VerseItem[]; levelNumber: number; maxLevel: number };
+    }>("/games/scripture-puzzle/sessions", { method: "POST", body: JSON.stringify({ playerId, categorySlug: levelSlug }) })
       .then((response) => {
         if (!cancelled) {
           setSessionId(response.data.session.id);
-          setVerseId(response.data.verse.id);
-          setReference(response.data.verse.reference);
-          setPool(response.data.scrambledWords.map((word, index) => ({ id: `${index}-${word}`, word })));
+          setVerses(response.data.verses);
+          setPool(response.data.verses[0].scrambledWords.map((word, index) => ({ id: `${index}-${word}`, word })));
           setLevelNumber(response.data.levelNumber);
           setMaxLevel(response.data.maxLevel);
         }
@@ -67,26 +63,28 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
     };
   }, [playerId, levelSlug]);
 
+  const verse = verses?.[currentIndex];
+
   function moveToPlaced(tile: PuzzleTile) {
-    if (result) return;
+    if (answer) return;
     setPool((current) => current.filter((item) => item.id !== tile.id));
     setPlaced((current) => [...current, tile]);
   }
 
   function moveToPool(tile: PuzzleTile) {
-    if (result) return;
+    if (answer) return;
     setPlaced((current) => current.filter((item) => item.id !== tile.id));
     setPool((current) => [...current, tile]);
   }
 
   async function requestHint() {
-    if (!sessionId || !verseId || isHinting || hintsUsed >= 2) return;
+    if (!sessionId || !verse || isHinting || hintsUsed >= 2) return;
     setIsHinting(true);
 
     try {
       const response = await apiFetch<{ success: boolean; data: ScripturePuzzleHintResult }>("/games/scripture-puzzle/hints", {
         method: "POST",
-        body: JSON.stringify({ sessionId, verseId }),
+        body: JSON.stringify({ sessionId, verseId: verse.id }),
       });
       setHintsUsed(response.data.hintNumber);
     } catch (hintError) {
@@ -97,7 +95,7 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
   }
 
   async function submitPuzzle() {
-    if (!sessionId || !verseId || isSubmitting || pool.length > 0) return;
+    if (!sessionId || !verse || isSubmitting || pool.length > 0) return;
     setIsSubmitting(true);
 
     try {
@@ -106,15 +104,29 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
         data: { result: ScripturePuzzleAnswerResult; player?: { xp: number } };
       }>("/games/scripture-puzzle/answers", {
         method: "POST",
-        body: JSON.stringify({ sessionId, verseId, orderedWords: placed.map((tile) => tile.word) }),
+        body: JSON.stringify({ sessionId, verseId: verse.id, orderedWords: placed.map((tile) => tile.word) }),
       });
-      setResult(response.data.result);
+      setAnswer(response.data.result);
+      setSessionScore((value) => value + response.data.result.pointsEarned);
       if (response.data.player) setTotalXp(response.data.player.xp);
+      if (response.data.result.isComplete) setLevelResult(response.data.result);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Could not submit your answer");
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function goToNextVerse() {
+    if (!verses) return;
+    const nextIndex = currentIndex + 1;
+    const next = verses[nextIndex];
+    if (!next) return;
+    setCurrentIndex(nextIndex);
+    setPool(next.scrambledWords.map((word, index) => ({ id: `${index}-${word}`, word })));
+    setPlaced([]);
+    setHintsUsed(0);
+    setAnswer(null);
   }
 
   if (isPlayerLoading || isLoading) {
@@ -125,7 +137,7 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
     );
   }
 
-  if (playerError || error || !sessionId) {
+  if (playerError || error || !sessionId || !verse || !verses) {
     return (
       <section className="grid gap-3 rounded-[1.75rem] border border-white/70 bg-white/80 p-6 shadow-soft">
         <h2 className="text-2xl font-black text-slate-900">Scripture Puzzle isn&apos;t ready yet</h2>
@@ -134,20 +146,21 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
     );
   }
 
-  if (result) {
-    const stars = !result.isCorrect ? 0 : result.hintsUsed === 0 ? 3 : result.hintsUsed === 1 ? 2 : 1;
+  if (levelResult) {
+    const ratio = verses.length > 0 ? sessionScore / (verses.length * POINTS_MAX) : 0;
+    const stars = ratio >= 0.9 ? 3 : ratio >= 0.6 ? 2 : ratio > 0 ? 1 : 0;
 
     return (
       <LevelCompleteScreen
-        label={result.isCorrect ? "PUZZLE SOLVED" : "PUZZLE COMPLETE"}
-        passed={result.isCorrect}
+        label={levelResult.nextLevelSlug || levelResult.isCorrect ? "LEVEL COMPLETE" : "LEVEL CHALLENGE"}
+        passed={Boolean(levelResult.nextLevelSlug)}
         stars={stars}
-        levelScore={result.pointsEarned}
-        xpEarned={result.pointsEarned}
+        levelScore={sessionScore}
+        xpEarned={sessionScore}
         totalScore={totalXp}
-        continueLabel={result.nextLevelSlug ? "Next Level" : "Back to Levels"}
+        continueLabel={levelResult.nextLevelSlug ? "Next Level" : "Back to Levels"}
         onContinue={() =>
-          router.push((result.nextLevelSlug ? `/scripture-puzzle/${result.nextLevelSlug}` : "/scripture-puzzle") as Route)
+          router.push((levelResult.nextLevelSlug ? `/scripture-puzzle/${levelResult.nextLevelSlug}` : "/scripture-puzzle") as Route)
         }
         onBackToLevels={() => router.push("/scripture-puzzle")}
       />
@@ -164,7 +177,10 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
               Level {levelNumber}/{maxLevel}
             </span>
           ) : null}
-          <span className="rounded-full bg-royal-50 px-4 py-2 text-sm font-semibold text-royal-700">{reference} (KJV)</span>
+          <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
+            Verse {currentIndex + 1} of {verses.length}
+          </span>
+          <span className="rounded-full bg-royal-50 px-4 py-2 text-sm font-semibold text-royal-700">{verse.reference} (KJV)</span>
         </div>
       </div>
 
@@ -200,24 +216,44 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
         ))}
       </div>
 
+      {answer ? (
+        <div className={`rounded-2xl px-4 py-4 text-base font-semibold ${answer.isCorrect ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-800"}`}>
+          {answer.isCorrect ? `Correct! +${answer.pointsEarned} points.` : `Not quite. The verse is: "${answer.correctText}"`}
+        </div>
+      ) : null}
+
       <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={requestHint}
-          disabled={isHinting || hintsUsed >= 2}
-          className="rounded-full bg-amber-400 px-5 py-3 text-sm font-bold text-amber-950 transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          💡 {2 - hintsUsed > 0 ? `Hint (-2 pts) · ${2 - hintsUsed} left` : "No hints left"}
-        </button>
-        <button
-          type="button"
-          onClick={submitPuzzle}
-          disabled={pool.length > 0 || isSubmitting}
-          className="rounded-full bg-royal-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-royal-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {isSubmitting ? "Checking..." : "Check My Answer"}
-        </button>
+        {!answer ? (
+          <>
+            <button
+              type="button"
+              onClick={requestHint}
+              disabled={isHinting || hintsUsed >= 2}
+              className="rounded-full bg-amber-400 px-5 py-3 text-sm font-bold text-amber-950 transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              💡 {2 - hintsUsed > 0 ? `Hint (-2 pts) · ${2 - hintsUsed} left` : "No hints left"}
+            </button>
+            <button
+              type="button"
+              onClick={submitPuzzle}
+              disabled={pool.length > 0 || isSubmitting}
+              className="rounded-full bg-royal-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-royal-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? "Checking..." : "Check My Answer"}
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={goToNextVerse}
+            className="rounded-full bg-royal-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-royal-700"
+          >
+            Next Verse →
+          </button>
+        )}
       </div>
     </section>
   );
 }
+
+const POINTS_MAX = 10;

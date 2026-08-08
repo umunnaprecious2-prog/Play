@@ -5,6 +5,10 @@ import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt
 
 const GAME_MODE = "story_order";
 const POINTS = 10;
+// Levels reuse the same 8 categories Bible Quiz Levels, Character Guess,
+// and Scripture Puzzle use. Each level pulls up to this many stories from
+// its category -- real, multi-story work to unlock the next level.
+const MAX_STORIES_PER_LEVEL = 20;
 
 function shuffle<T>(items: T[]): T[] {
   const copy = [...items];
@@ -15,10 +19,9 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-// Serves stories in sortOrder (authored roughly simplest/most well-known
-// first) and skips ones this player has already solved, so the challenge
-// naturally gets harder as they progress. Falls back to a random pick once
-// everything has been solved at least once.
+// Serves a single story shortest-first-solved-skip (a proxy for difficulty)
+// -- used only for the legacy non-level "quick practice" path (no
+// categorySlug given).
 async function pickNextStory(playerId: string) {
   const allStories = await prisma.bibleStory.findMany({
     where: { isActive: true },
@@ -45,43 +48,86 @@ async function pickNextStory(playerId: string) {
   });
 }
 
+// Levels = categories that actually have at least one story.
+async function levelCategories() {
+  const categories = await prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } });
+  const counts = await prisma.bibleStory.groupBy({
+    by: ["categoryId"],
+    where: { isActive: true, categoryId: { not: null } },
+    _count: true,
+  });
+  const countByCategory = new Map(counts.map((row) => [row.categoryId, row._count]));
+  return categories.filter((category) => (countByCategory.get(category.id) ?? 0) > 0);
+}
+
 async function levelItems() {
-  const stories = await prisma.bibleStory.findMany({ where: { isActive: true } });
-  return stories.map((story) => ({ id: story.id, slug: story.slug, title: story.title, sortOrder: story.sortOrder }));
+  const categories = await levelCategories();
+  return categories.map((category) => ({ id: category.id, slug: category.slug, title: category.name, sortOrder: category.sortOrder }));
+}
+
+async function storiesForCategory(categoryId: string) {
+  return prisma.bibleStory.findMany({
+    where: { isActive: true, categoryId },
+    orderBy: { sortOrder: "asc" },
+    take: MAX_STORIES_PER_LEVEL,
+    include: { events: { orderBy: { correctOrder: "asc" } } },
+  });
 }
 
 export async function listStoryOrderLevels(playerId: string) {
   return listLevels(playerId, GAME_MODE, await levelItems());
 }
 
-export async function startStoryOrderSession(input: { playerId: string; storySlug?: string }) {
+export async function startStoryOrderSession(input: { playerId: string; categorySlug?: string }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
-  const story = input.storySlug
-    ? await prisma.bibleStory.findUnique({ where: { slug: input.storySlug }, include: { events: { orderBy: { correctOrder: "asc" } } } })
-    : await pickNextStory(input.playerId);
-  if (!story || story.events.length === 0) throw AppError.notFound("No stories available yet");
+  let stories;
+  let levelInfo: { levelNumber: number; maxLevel: number } | null = null;
+  let levelAnchorId: string | null = null;
 
-  const items = await levelItems();
-  const levelNumber = [...items].sort((a, b) => a.sortOrder - b.sortOrder).findIndex((item) => item.id === story.id) + 1;
+  if (input.categorySlug) {
+    const categories = await levelCategories();
+    const categoryIndex = categories.findIndex((category) => category.slug === input.categorySlug);
+    if (categoryIndex === -1) throw AppError.notFound("Level not found");
 
-  if (input.storySlug) {
-    const unlocked = await isContentUnlocked(player.id, GAME_MODE, story.id, items);
+    const category = categories[categoryIndex];
+    const items = await levelItems();
+    const unlocked = await isContentUnlocked(player.id, GAME_MODE, category.id, items);
     if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
-    await recordAttempt(player.id, GAME_MODE, story.id);
+
+    await recordAttempt(player.id, GAME_MODE, category.id);
+    levelInfo = { levelNumber: categoryIndex + 1, maxLevel: categories.length };
+    levelAnchorId = category.id;
+    stories = (await storiesForCategory(category.id)).filter((story) => story.events.length > 0);
+  } else {
+    const story = await pickNextStory(input.playerId);
+    stories = story && story.events.length > 0 ? [story] : [];
+  }
+
+  if (stories.length === 0) {
+    throw AppError.notFound("No stories available yet");
   }
 
   const session = await prisma.gameSession.create({
-    data: { playerId: player.id, gameMode: "story_order", totalQuestions: 1, metadata: { storyId: story.id } },
+    data: {
+      playerId: player.id,
+      gameMode: "story_order",
+      totalQuestions: stories.length,
+      metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
+    },
   });
 
   return {
     session,
-    story: { id: story.id, slug: story.slug, title: story.title },
-    levelNumber,
-    maxLevel: items.length,
-    shuffledEvents: shuffle(story.events.map((event) => ({ id: event.id, text: event.text }))),
+    levelNumber: levelInfo?.levelNumber ?? null,
+    maxLevel: levelInfo?.maxLevel ?? null,
+    stories: shuffle(stories).map((story) => ({
+      id: story.id,
+      slug: story.slug,
+      title: story.title,
+      shuffledEvents: shuffle(story.events.map((event) => ({ id: event.id, text: event.text }))),
+    })),
   };
 }
 
@@ -93,6 +139,11 @@ export async function submitStoryOrder(input: { sessionId: string; storyId: stri
   const events = await prisma.storyEvent.findMany({ where: { storyId: input.storyId }, orderBy: { correctOrder: "asc" } });
   if (events.length === 0) throw AppError.notFound("Story not found");
 
+  const existingAnswer = await prisma.gameSessionAnswer.findFirst({
+    where: { sessionId: session.id, questionId: input.storyId },
+  });
+  if (existingAnswer) throw AppError.badRequest("This story has already been answered");
+
   const correctOrderIds = events.map((event) => event.id);
   const isCorrect =
     input.orderedEventIds.length === correctOrderIds.length &&
@@ -101,41 +152,59 @@ export async function submitStoryOrder(input: { sessionId: string; storyId: stri
   const pointsEarned = isCorrect ? POINTS : 0;
   const starsAwarded = isCorrect ? 1 : 0;
 
+  const nextCorrect = session.correctCount + (isCorrect ? 1 : 0);
+  const nextIncorrect = session.incorrectCount + (isCorrect ? 0 : 1);
+  const totalAnswered = nextCorrect + nextIncorrect;
+  const isComplete = totalAnswered >= session.totalQuestions;
+
   const updatedPlayer = await applyPlayerReward(session.playerId, {
     xpDelta: pointsEarned,
     starsDelta: starsAwarded,
     isCorrect,
-    countsAsGamePlayed: true,
+    countsAsGamePlayed: isComplete,
+  });
+
+  await prisma.gameSessionAnswer.create({
+    data: {
+      sessionId: session.id,
+      questionId: input.storyId,
+      selectedText: input.orderedEventIds.join(","),
+      isCorrect,
+      xpAwarded: pointsEarned,
+      metadata: { correctOrderIds },
+    },
   });
 
   const completedSession = await prisma.gameSession.update({
     where: { id: session.id },
     data: {
-      status: "COMPLETED",
-      completedAt: new Date(),
-      correctCount: isCorrect ? 1 : 0,
-      incorrectCount: isCorrect ? 0 : 1,
-      xpEarned: pointsEarned,
-      starsEarned: starsAwarded,
-      score: pointsEarned,
-      currentQuestion: 1,
+      correctCount: nextCorrect,
+      incorrectCount: nextIncorrect,
+      xpEarned: session.xpEarned + pointsEarned,
+      starsEarned: session.starsEarned + starsAwarded,
+      currentQuestion: totalAnswered,
+      score: session.score + pointsEarned,
+      status: isComplete ? "COMPLETED" : "ACTIVE",
+      completedAt: isComplete ? new Date() : null,
     },
   });
 
   let nextLevelSlug: string | null = null;
+  const levelCategoryId = (session.metadata as { levelCategoryId?: string } | null)?.levelCategoryId;
+  const allCorrectInLevel = nextCorrect === session.totalQuestions;
 
-  if (isCorrect) {
+  if (isComplete && allCorrectInLevel && levelCategoryId) {
     const unlockResult = await markCompleteAndUnlockNext(
       updatedPlayer.id,
       GAME_MODE,
-      input.storyId,
+      levelCategoryId,
       completedSession.score,
       await levelItems(),
     );
     nextLevelSlug = unlockResult.nextSlug;
   }
 
-  const rewards = await awardProgressRewards(updatedPlayer.id);
+  const rewards = isComplete ? await awardProgressRewards(updatedPlayer.id) : { badgesUnlocked: [], avatarsUnlocked: [] };
   await logProgress({
     playerId: updatedPlayer.id,
     actionType: isCorrect ? "STORY_ORDER_CORRECT" : "STORY_ORDER_INCORRECT",
@@ -149,6 +218,6 @@ export async function submitStoryOrder(input: { sessionId: string; storyId: stri
     session: completedSession,
     player: updatedPlayer,
     rewards,
-    result: { isCorrect, pointsEarned, correctOrderIds, isComplete: true, nextLevelSlug },
+    result: { isCorrect, pointsEarned, correctOrderIds, isComplete, nextLevelSlug },
   };
 }

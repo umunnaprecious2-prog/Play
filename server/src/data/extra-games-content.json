@@ -438,6 +438,435 @@
         { "text": "Saul is blinded and led into the city, where he fasts for three days." },
         { "text": "Ananias visits Saul, his sight is restored, and he is baptized." }
       ]
+    },
+    {
+      "slug": "cain-and-abel",
+      "title": "Cain and Abel",
+      "categorySlug": "genesis",
+      "sortOrder": 21,
+      "events": [
+        { "text": "Cain and Abel each bring an offering to the LORD." },
+        { "text": "God is pleased with Abel's offering but not with Cain's." },
+        { "text": "God warns Cain that sin is crouching at his door." },
+        { "text": "Cain kills Abel out in the field out of jealousy." },
+        { "text": "The LORD confronts Cain and sends him away as a wanderer." }
+      ]
+    },
+    {
+      "slug": "jacob-and-esaus-birthright",
+      "title": "Jacob and Esau's Birthright",
+      "categorySlug": "genesis",
+      "sortOrder": 22,
+      "events": [
+        { "text": "Esau sells his birthright to Jacob for a bowl of stew." },
+        { "text": "Isaac, now old and blind, prepares to bless his firstborn." },
+        { "text": "Jacob disguises himself as Esau and receives the blessing instead." },
+        { "text": "Esau discovers the deception and vows to kill Jacob." },
+        { "text": "Rebekah sends Jacob away to her brother Laban in Haran." }
+      ]
+    },
+    {
+      "slug": "jacob-wrestles-with-the-angel",
+      "title": "Jacob Wrestles with the Angel",
+      "categorySlug": "genesis",
+      "sortOrder": 23,
+      "events": [
+        { "text": "Jacob sends his family and possessions across the ford of Jabbok." },
+        { "text": "Jacob is left alone, and a man wrestles with him until daybreak." },
+        { "text": "The man touches Jacob's hip socket, putting it out of joint." },
+        { "text": "Jacob refuses to let go until he receives a blessing." },
+        { "text": "The man renames Jacob 'Israel' because he has struggled with God." }
+      ]
+    },
+    {
+      "slug": "joseph-rises-to-power-in-egypt",
+      "title": "Joseph Rises to Power in Egypt",
+      "categorySlug": "genesis",
+      "sortOrder": 24,
+      "events": [
+        { "text": "Joseph is falsely accused and thrown into prison in Egypt." },
+        { "text": "Joseph correctly interprets the dreams of Pharaoh's cupbearer and baker." },
+        { "text": "Two years later, Joseph is brought to interpret Pharaoh's own dreams." },
+        { "text": "Joseph explains the dreams mean seven years of plenty then famine." },
+        { "text": "Pharaoh sets Joseph over all the land of Egypt to prepare for the famine." }
+      ]
+    },
+    {
+      "slug": "moses-and-the-burning-bush",
+      "title": "Moses and the Burning Bush",
+      "categorySlug": "exodus",
+      "sortOrder": 25,
+      "events": [
+        { "text": "Moses is tending Jethro's flock near Horeb, the mountain of God." },
+        { "text": "Moses sees a bush that is burning but is not consumed." },
+        { "text": "God calls to Moses out of the bush and tells him to remove his sandals." },
+        { "text": "God reveals His name and tells Moses to deliver Israel from Egypt." },
+        { "text": "Moses returns to Egypt to confront Pharaoh, as God commanded." }
+      ]
+    },
+    {
+      "slug": "the-golden-calf",
+      "title": "The Golden Calf",
+      "categorySlug": "exodus",
+      "sortOrder": 26,
+      "events": [
+        { "text": "Moses delays on the mountain receiving the law from God." },
+        { "text": "The people grow impatient and ask Aaron to make them a god." },
+        { "text": "Aaron gathers their gold and fashions a golden calf." },
+        { "text": "Moses comes down, sees the idol, and breaks the stone tablets in anger." },
+        { "text": "Moses burns the calf and confronts the people for their sin." }
+      ]
+    },
+    {
+      "slug": "manna-and-quail-in-the-wilderness",
+      "title": "Manna and Quail in the Wilderness",
+      "categorySlug": "exodus",
+      "sortOrder": 27,
+      "events": [
+        { "text": "The people complain of hunger in the wilderness of Sin." },
+        { "text": "God promises Moses He will rain bread from heaven." },
+        { "text": "Each morning, a fine flaky substance called manna covers the ground." },
+        { "text": "In the evening, quail cover the camp for meat to eat." },
+        { "text": "The people gather manna daily, as God commanded, for forty years." }
+      ]
+    },
+    {
+      "slug": "water-from-the-rock",
+      "title": "Water from the Rock",
+      "categorySlug": "exodus",
+      "sortOrder": 28,
+      "events": [
+        { "text": "The people camp at Rephidim, where there is no water to drink." },
+        { "text": "The people quarrel with Moses and complain of thirst." },
+        { "text": "God tells Moses to strike the rock at Horeb with his staff." },
+        { "text": "Moses strikes the rock in the sight of the elders of Israel." },
+        { "text": "Water flows out of the rock for the people to drink." }
+      ]
+    },
+    {
+      "slug": "the-tabernacle-is-built",
+      "title": "The Tabernacle Is Built",
+      "categorySlug": "exodus",
+      "sortOrder": 29,
+      "events": [
+        { "text": "God gives Moses the exact pattern for the tabernacle on the mountain." },
+        { "text": "The people bring freewill offerings of gold, silver, and fine linen." },
+        { "text": "Skilled craftsmen, filled with God's Spirit, construct the tabernacle." },
+        { "text": "Moses sets up the finished tabernacle exactly as the LORD commanded." },
+        { "text": "The glory of the LORD fills the tabernacle in a cloud." }
+      ]
+    },
+    {
+      "slug": "solomons-wise-judgment",
+      "title": "Solomon's Wise Judgment",
+      "categorySlug": "kings",
+      "sortOrder": 30,
+      "events": [
+        { "text": "Two women come before Solomon, each claiming the same living baby." },
+        { "text": "Solomon calls for a sword to divide the child in two." },
+        { "text": "The true mother begs Solomon to give the baby to the other woman instead." },
+        { "text": "The false claimant agrees the child should be divided." },
+        { "text": "Solomon gives the baby to the woman who showed true compassion." }
+      ]
+    },
+    {
+      "slug": "elijah-fed-by-ravens",
+      "title": "Elijah Fed by Ravens",
+      "categorySlug": "kings",
+      "sortOrder": 31,
+      "events": [
+        { "text": "Elijah announces to Ahab that a drought will strike the land." },
+        { "text": "God sends Elijah to hide by the brook Cherith." },
+        { "text": "Ravens bring Elijah bread and meat morning and evening." },
+        { "text": "The brook eventually dries up because there is no rain." },
+        { "text": "God sends Elijah on to a widow in Zarephath to be fed." }
+      ]
+    },
+    {
+      "slug": "the-fall-of-jerusalem",
+      "title": "The Fall of Jerusalem",
+      "categorySlug": "kings",
+      "sortOrder": 32,
+      "events": [
+        { "text": "King Nebuchadnezzar of Babylon lays siege to Jerusalem." },
+        { "text": "A severe famine grips the city during the long siege." },
+        { "text": "The Babylonian army breaks through the city walls." },
+        { "text": "The temple and the king's house are burned with fire." },
+        { "text": "The people of Jerusalem are carried away captive to Babylon." }
+      ]
+    },
+    {
+      "slug": "josiah-finds-the-book-of-the-law",
+      "title": "Josiah Finds the Book of the Law",
+      "categorySlug": "kings",
+      "sortOrder": 33,
+      "events": [
+        { "text": "King Josiah orders repairs to the temple in Jerusalem." },
+        { "text": "The high priest Hilkiah finds the book of the law in the temple." },
+        { "text": "The book is brought and read aloud to King Josiah." },
+        { "text": "Josiah tears his clothes, realizing how far the people have strayed." },
+        { "text": "Josiah leads the nation in renewing its covenant with God." }
+      ]
+    },
+    {
+      "slug": "elijah-taken-up-to-heaven",
+      "title": "Elijah Taken Up to Heaven",
+      "categorySlug": "prophets",
+      "sortOrder": 34,
+      "events": [
+        { "text": "Elijah and Elisha travel together, knowing Elijah will soon be taken." },
+        { "text": "Elijah asks Elisha what he wants before he is taken away." },
+        { "text": "Elisha asks for a double portion of Elijah's spirit." },
+        { "text": "A chariot and horses of fire suddenly appear between them." },
+        { "text": "Elijah is taken up to heaven in a whirlwind, and Elisha takes his mantle." }
+      ]
+    },
+    {
+      "slug": "isaiahs-vision-of-the-lord",
+      "title": "Isaiah's Vision of the Lord",
+      "categorySlug": "prophets",
+      "sortOrder": 35,
+      "events": [
+        { "text": "Isaiah sees the Lord high and lifted up, seated on a throne." },
+        { "text": "Seraphim above the throne cry, 'Holy, holy, holy is the LORD.'" },
+        { "text": "Isaiah cries out that he is a man of unclean lips." },
+        { "text": "A seraph touches Isaiah's mouth with a live coal from the altar." },
+        { "text": "Isaiah hears the Lord asking whom to send, and volunteers to go." }
+      ]
+    },
+    {
+      "slug": "ezekiels-valley-of-dry-bones",
+      "title": "Ezekiel's Valley of Dry Bones",
+      "categorySlug": "prophets",
+      "sortOrder": 36,
+      "events": [
+        { "text": "God sets Ezekiel down in a valley full of very dry bones." },
+        { "text": "God asks Ezekiel if the bones can live, and tells him to prophesy." },
+        { "text": "As Ezekiel prophesies, the bones rattle together and grow flesh." },
+        { "text": "Ezekiel prophesies again, and breath enters the bodies." },
+        { "text": "The bodies come alive and stand up, a vast army." }
+      ]
+    },
+    {
+      "slug": "daniel-interprets-the-writing-on-the-wall",
+      "title": "Daniel Interprets the Writing on the Wall",
+      "categorySlug": "prophets",
+      "sortOrder": 37,
+      "events": [
+        { "text": "King Belshazzar holds a great feast using vessels taken from the temple." },
+        { "text": "A hand suddenly appears and writes on the wall of the palace." },
+        { "text": "None of the king's wise men can read or explain the writing." },
+        { "text": "Daniel is brought in and reads the words: numbered, weighed, divided." },
+        { "text": "Daniel explains the kingdom will be taken from Belshazzar that very night." }
+      ]
+    },
+    {
+      "slug": "the-baptism-of-jesus",
+      "title": "The Baptism of Jesus",
+      "categorySlug": "jesus",
+      "sortOrder": 38,
+      "events": [
+        { "text": "John the Baptist preaches and baptizes people in the Jordan River." },
+        { "text": "Jesus comes from Galilee to be baptized by John." },
+        { "text": "John hesitates, saying he needs to be baptized by Jesus instead." },
+        { "text": "Jesus is baptized, and the Spirit descends on Him like a dove." },
+        { "text": "A voice from heaven declares, 'This is my beloved Son.'" }
+      ]
+    },
+    {
+      "slug": "jesus-calms-the-storm",
+      "title": "Jesus Calms the Storm",
+      "categorySlug": "jesus",
+      "sortOrder": 39,
+      "events": [
+        { "text": "Jesus and His disciples set out across the sea by boat." },
+        { "text": "A furious storm arises, and waves begin filling the boat." },
+        { "text": "The disciples wake Jesus, who has been sleeping, in fear." },
+        { "text": "Jesus rebukes the wind and says to the sea, 'Peace, be still.'" },
+        { "text": "The wind ceases and there is a great calm." }
+      ]
+    },
+    {
+      "slug": "the-transfiguration",
+      "title": "The Transfiguration",
+      "categorySlug": "jesus",
+      "sortOrder": 40,
+      "events": [
+        { "text": "Jesus takes Peter, James, and John up a high mountain." },
+        { "text": "Jesus is transfigured, His face shining like the sun." },
+        { "text": "Moses and Elijah appear, talking with Jesus." },
+        { "text": "Peter offers to build three shelters, still speaking as a cloud overshadows them." },
+        { "text": "A voice from the cloud declares, 'This is my beloved Son; hear him.'" }
+      ]
+    },
+    {
+      "slug": "the-last-supper",
+      "title": "The Last Supper",
+      "categorySlug": "jesus",
+      "sortOrder": 41,
+      "events": [
+        { "text": "Jesus sends His disciples ahead to prepare the Passover meal." },
+        { "text": "Jesus and the twelve disciples gather to eat together." },
+        { "text": "Jesus breaks bread and shares the cup, saying they represent Him." },
+        { "text": "Jesus tells the disciples that one of them will betray Him." },
+        { "text": "After singing a hymn, they go out to the Mount of Olives." }
+      ]
+    },
+    {
+      "slug": "jesus-heals-the-paralytic",
+      "title": "Jesus Heals the Paralytic",
+      "categorySlug": "miracles",
+      "sortOrder": 42,
+      "events": [
+        { "text": "Four friends carry a paralyzed man to see Jesus." },
+        { "text": "They cannot get through the crowd, so they open the roof above Jesus." },
+        { "text": "They lower the man down on his mat in front of Jesus." },
+        { "text": "Jesus tells the man his sins are forgiven, then heals his body too." },
+        { "text": "The man rises, takes up his mat, and walks home." }
+      ]
+    },
+    {
+      "slug": "jesus-raises-lazarus",
+      "title": "Jesus Raises Lazarus",
+      "categorySlug": "miracles",
+      "sortOrder": 43,
+      "events": [
+        { "text": "Lazarus falls sick in Bethany while Jesus delays His arrival." },
+        { "text": "Jesus arrives to find Lazarus has been in the tomb four days." },
+        { "text": "Jesus weeps, and asks for the stone to be rolled away." },
+        { "text": "Jesus prays aloud and calls, 'Lazarus, come forth.'" },
+        { "text": "Lazarus comes out of the tomb, still wrapped in grave clothes." }
+      ]
+    },
+    {
+      "slug": "jesus-walks-on-water",
+      "title": "Jesus Walks on Water",
+      "categorySlug": "miracles",
+      "sortOrder": 44,
+      "events": [
+        { "text": "Jesus sends the disciples ahead by boat and goes up to pray alone." },
+        { "text": "A strong wind arises, and the boat is far from land by night." },
+        { "text": "Jesus comes toward them, walking on the sea." },
+        { "text": "Peter steps out of the boat but begins to sink in fear." },
+        { "text": "Jesus catches Peter, and the wind ceases once they are in the boat." }
+      ]
+    },
+    {
+      "slug": "the-healing-of-bartimaeus",
+      "title": "The Healing of Bartimaeus",
+      "categorySlug": "miracles",
+      "sortOrder": 45,
+      "events": [
+        { "text": "Blind Bartimaeus sits begging beside the road near Jericho." },
+        { "text": "He hears that Jesus is passing by and cries out for mercy." },
+        { "text": "The crowd tells him to be quiet, but he cries out even louder." },
+        { "text": "Jesus stops and calls Bartimaeus to come to Him." },
+        { "text": "Jesus heals his eyes, and Bartimaeus follows Him on the road." }
+      ]
+    },
+    {
+      "slug": "the-good-samaritan",
+      "title": "The Good Samaritan",
+      "categorySlug": "parables",
+      "sortOrder": 46,
+      "events": [
+        { "text": "A traveler is beaten by robbers and left half dead on the road." },
+        { "text": "A priest sees the man and passes by on the other side." },
+        { "text": "A Levite also sees him and passes by on the other side." },
+        { "text": "A Samaritan stops, bandages his wounds, and cares for him." },
+        { "text": "The Samaritan pays an innkeeper to continue looking after him." }
+      ]
+    },
+    {
+      "slug": "the-sower-and-the-seed",
+      "title": "The Sower and the Seed",
+      "categorySlug": "parables",
+      "sortOrder": 47,
+      "events": [
+        { "text": "A sower goes out to sow seed across his field." },
+        { "text": "Some seed falls on the path and is eaten by birds." },
+        { "text": "Some seed falls on rocky ground and withers under the sun." },
+        { "text": "Some seed falls among thorns and is choked out." },
+        { "text": "Some seed falls on good ground and produces a great harvest." }
+      ]
+    },
+    {
+      "slug": "the-lost-sheep",
+      "title": "The Lost Sheep",
+      "categorySlug": "parables",
+      "sortOrder": 48,
+      "events": [
+        { "text": "A shepherd has a hundred sheep and notices one is missing." },
+        { "text": "He leaves the ninety-nine to search for the one lost sheep." },
+        { "text": "He searches until he finds it." },
+        { "text": "He joyfully carries the sheep home on his shoulders." },
+        { "text": "He calls his friends together to celebrate finding what was lost." }
+      ]
+    },
+    {
+      "slug": "the-parable-of-the-talents",
+      "title": "The Parable of the Talents",
+      "categorySlug": "parables",
+      "sortOrder": 49,
+      "events": [
+        { "text": "A master entrusts talents to three servants before going on a journey." },
+        { "text": "Two servants put their talents to work and double what they were given." },
+        { "text": "The third servant digs a hole and buries his talent in the ground." },
+        { "text": "The master returns and settles accounts with each servant." },
+        { "text": "The master rewards the two faithful servants and rebukes the unfaithful one." }
+      ]
+    },
+    {
+      "slug": "pentecost",
+      "title": "Pentecost",
+      "categorySlug": "apostles",
+      "sortOrder": 50,
+      "events": [
+        { "text": "The disciples are gathered together in one place in Jerusalem." },
+        { "text": "A sound like a rushing mighty wind fills the whole house." },
+        { "text": "Tongues like fire appear and rest on each of them." },
+        { "text": "They are filled with the Holy Ghost and speak in other tongues." },
+        { "text": "Peter stands and preaches, and about three thousand souls are added that day." }
+      ]
+    },
+    {
+      "slug": "peter-and-john-heal-a-lame-man",
+      "title": "Peter and John Heal a Lame Man",
+      "categorySlug": "apostles",
+      "sortOrder": 51,
+      "events": [
+        { "text": "A man lame from birth is carried daily to beg at the temple gate." },
+        { "text": "Peter and John pass by, and the man asks them for money." },
+        { "text": "Peter says he has no silver or gold, but gives what he has." },
+        { "text": "Peter heals him in the name of Jesus Christ of Nazareth." },
+        { "text": "The man walks, leaps, and enters the temple praising God." }
+      ]
+    },
+    {
+      "slug": "peters-escape-from-prison",
+      "title": "Peter's Escape from Prison",
+      "categorySlug": "apostles",
+      "sortOrder": 52,
+      "events": [
+        { "text": "Herod arrests Peter and puts him under heavy guard in prison." },
+        { "text": "The church prays earnestly to God for Peter without ceasing." },
+        { "text": "An angel appears in the cell, and Peter's chains fall off." },
+        { "text": "The angel leads Peter past the guards, and the iron gate opens by itself." },
+        { "text": "Peter realizes he is truly free and goes to the house where believers are praying." }
+      ]
+    },
+    {
+      "slug": "paul-and-silas-in-prison-at-philippi",
+      "title": "Paul and Silas in Prison at Philippi",
+      "categorySlug": "apostles",
+      "sortOrder": 53,
+      "events": [
+        { "text": "Paul and Silas are beaten and thrown into prison at Philippi." },
+        { "text": "At midnight, Paul and Silas pray and sing hymns to God." },
+        { "text": "A great earthquake shakes the prison, and all the doors fly open." },
+        { "text": "The jailer, fearing the prisoners have escaped, is about to kill himself." },
+        { "text": "Paul stops him, and the jailer and his household believe and are baptized." }
+      ]
     }
   ]
 }

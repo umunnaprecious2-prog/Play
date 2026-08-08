@@ -76,7 +76,7 @@ export const storyOrderLevelsQuerySchema = z.object({
 
 export const startStoryOrderSchema = z.object({
   playerId: z.string().min(1),
-  storySlug: z.string().min(1).optional(),
+  categorySlug: z.string().min(1).optional(),
 });
 
 export const storyOrderAnswerSchema = z.object({

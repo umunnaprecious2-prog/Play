@@ -1,0 +1,672 @@
+{
+  "sourceName": "story-challenge-20-per-level-batch1",
+  "categories": [
+    { "slug": "genesis", "name": "Genesis", "description": "Creation, beginnings, and the early patriarchs", "sortOrder": 1 },
+    { "slug": "exodus", "name": "Exodus", "description": "Moses, the plagues, and the journey out of Egypt", "sortOrder": 2 },
+    { "slug": "kings", "name": "Kings", "description": "Saul, David, Solomon, and the kings of Israel and Judah", "sortOrder": 3 },
+    { "slug": "prophets", "name": "Prophets", "description": "Elijah, Elisha, Daniel, Isaiah, and God's messengers", "sortOrder": 4 },
+    { "slug": "parables", "name": "Parables", "description": "The stories Jesus told to teach truth", "sortOrder": 5 },
+    { "slug": "jesus", "name": "Jesus", "description": "The life and teachings of Jesus", "sortOrder": 6 },
+    { "slug": "miracles", "name": "Miracles", "description": "The wonders Jesus performed", "sortOrder": 7 },
+    { "slug": "apostles", "name": "Apostles", "description": "Peter, Paul, John, and the early church", "sortOrder": 8 }
+  ],
+  "stories": [
+    { "slug": "creation-of-the-world", "title": "Creation of the World", "categorySlug": "genesis", "sortOrder": 9, "events": [
+      { "text": "God creates light and separates it from darkness." },
+      { "text": "God forms the sky, land, seas, and plants." },
+      { "text": "God places the sun, moon, and stars in the heavens." },
+      { "text": "God fills the sea and sky with living creatures, then land animals." },
+      { "text": "God creates man and woman in His own image." },
+      { "text": "God rests on the seventh day and blesses it." }
+    ] },
+    { "slug": "adam-and-eve-in-the-garden", "title": "Adam and Eve in the Garden", "categorySlug": "genesis", "sortOrder": 10, "events": [
+      { "text": "God places Adam in the Garden of Eden to tend it." },
+      { "text": "God forms Eve from Adam's rib to be his companion." },
+      { "text": "A serpent tempts Eve to eat fruit from the forbidden tree." },
+      { "text": "Adam and Eve eat the fruit and realize they are naked." },
+      { "text": "God confronts them, and they are sent out of the garden." }
+    ] },
+    { "slug": "god-calls-abram", "title": "God Calls Abram", "categorySlug": "genesis", "sortOrder": 11, "events": [
+      { "text": "God tells Abram to leave his country and his father's house." },
+      { "text": "God promises to make Abram into a great nation." },
+      { "text": "Abram takes his wife Sarai and his nephew Lot and departs." },
+      { "text": "They travel through Canaan, and Abram builds altars to the LORD." }
+    ] },
+    { "slug": "the-promise-of-a-son", "title": "The Promise of a Son to Abraham and Sarah", "categorySlug": "genesis", "sortOrder": 12, "events": [
+      { "text": "Three visitors come to Abraham's tent in the heat of the day." },
+      { "text": "They promise that Sarah will have a son within the year." },
+      { "text": "Sarah, listening at the tent door, laughs in disbelief." },
+      { "text": "The LORD asks, \"Is any thing too hard for the LORD?\"" },
+      { "text": "In time, Sarah gives birth to Isaac, just as promised." }
+    ] },
+    { "slug": "hagar-and-ishmael-in-the-wilderness", "title": "Hagar and Ishmael in the Wilderness", "categorySlug": "genesis", "sortOrder": 13, "events": [
+      { "text": "Sarah sends Hagar and her son Ishmael away into the wilderness." },
+      { "text": "Their water runs out, and Hagar despairs for her son's life." },
+      { "text": "An angel of God calls to Hagar from heaven." },
+      { "text": "God opens her eyes, and she sees a well of water." },
+      { "text": "God is with Ishmael as he grows up in the wilderness." }
+    ] },
+    { "slug": "the-destruction-of-sodom-and-gomorrah", "title": "The Destruction of Sodom and Gomorrah", "categorySlug": "genesis", "sortOrder": 14, "events": [
+      { "text": "Two angels come to Sodom and are welcomed by Lot." },
+      { "text": "The angels warn Lot to flee the city with his family." },
+      { "text": "Lot, his wife, and daughters escape as fire and brimstone fall." },
+      { "text": "Lot's wife looks back and becomes a pillar of salt." }
+    ] },
+    { "slug": "isaac-and-rebekah", "title": "Isaac and Rebekah", "categorySlug": "genesis", "sortOrder": 15, "events": [
+      { "text": "Abraham sends his servant to find a wife for Isaac." },
+      { "text": "The servant prays for a sign at a well outside the city." },
+      { "text": "Rebekah offers water to the servant and his camels, fulfilling the sign." },
+      { "text": "Rebekah agrees to travel back with the servant to marry Isaac." },
+      { "text": "Isaac loves Rebekah, and she becomes his wife." }
+    ] },
+    { "slug": "jacobs-ladder", "title": "Jacob's Ladder", "categorySlug": "genesis", "sortOrder": 16, "events": [
+      { "text": "Jacob flees from his brother Esau and stops to sleep at Bethel." },
+      { "text": "He dreams of a ladder reaching from earth to heaven, with angels on it." },
+      { "text": "The LORD stands above it and renews His promise to Jacob." },
+      { "text": "Jacob wakes in awe and sets up a stone as a pillar to mark the place." }
+    ] },
+    { "slug": "jacobs-marriages", "title": "Jacob's Marriages to Rachel and Leah", "categorySlug": "genesis", "sortOrder": 17, "events": [
+      { "text": "Jacob meets Rachel at a well and falls in love with her." },
+      { "text": "He agrees to work seven years for Laban to marry Rachel." },
+      { "text": "Laban deceives Jacob, giving him Leah instead on the wedding night." },
+      { "text": "Jacob works seven more years and finally marries Rachel too." }
+    ] },
+    { "slug": "joseph-interprets-pharaohs-dreams", "title": "Joseph Interprets Pharaoh's Dreams", "categorySlug": "genesis", "sortOrder": 18, "events": [
+      { "text": "Pharaoh has troubling dreams that none of his wise men can explain." },
+      { "text": "Joseph is brought from prison to interpret the dreams." },
+      { "text": "Joseph explains that seven years of plenty will be followed by seven years of famine." },
+      { "text": "Pharaoh sets Joseph over all the land of Egypt to prepare for the famine." }
+    ] },
+    { "slug": "joseph-reveals-himself", "title": "Joseph Reveals Himself to His Brothers", "categorySlug": "genesis", "sortOrder": 19, "events": [
+      { "text": "Joseph's brothers come to Egypt to buy grain during the famine." },
+      { "text": "Joseph tests his brothers, hiding his identity at first." },
+      { "text": "Unable to hold back any longer, Joseph reveals who he is." },
+      { "text": "Joseph forgives his brothers and weeps with them." }
+    ] },
+    { "slug": "jacobs-family-moves-to-egypt", "title": "Jacob's Family Moves to Egypt", "categorySlug": "genesis", "sortOrder": 20, "events": [
+      { "text": "Joseph sends for his father Jacob to come to Egypt." },
+      { "text": "God speaks to Jacob in a vision, telling him not to fear going to Egypt." },
+      { "text": "Jacob's whole family travels down to Egypt to be with Joseph." },
+      { "text": "Pharaoh gives them the land of Goshen to settle in." }
+    ] },
+
+    { "slug": "baby-moses-in-the-basket", "title": "Baby Moses in the Basket", "categorySlug": "exodus", "sortOrder": 9, "events": [
+      { "text": "Pharaoh orders that every Hebrew baby boy be thrown into the Nile." },
+      { "text": "Moses' mother hides him for three months, then places him in a basket on the river." },
+      { "text": "Pharaoh's daughter finds the basket and adopts Moses as her own." },
+      { "text": "Moses' own mother is hired to nurse him as a baby." }
+    ] },
+    { "slug": "moses-flees-to-midian", "title": "Moses Flees to Midian", "categorySlug": "exodus", "sortOrder": 10, "events": [
+      { "text": "Moses sees an Egyptian beating a Hebrew slave and kills the Egyptian." },
+      { "text": "Fearing Pharaoh, Moses flees to the land of Midian." },
+      { "text": "Moses helps the daughters of a priest water their flocks at a well." },
+      { "text": "Moses marries Zipporah and becomes a shepherd in Midian." }
+    ] },
+    { "slug": "moses-confronts-pharaoh", "title": "Moses Confronts Pharaoh", "categorySlug": "exodus", "sortOrder": 11, "events": [
+      { "text": "God sends Moses and Aaron to demand Pharaoh let Israel go." },
+      { "text": "Pharaoh refuses and makes the Israelites' labor even harder." },
+      { "text": "Moses returns again and again as each plague strikes Egypt." },
+      { "text": "After the tenth plague, Pharaoh finally lets Israel go." }
+    ] },
+    { "slug": "the-first-passover", "title": "The First Passover", "categorySlug": "exodus", "sortOrder": 12, "events": [
+      { "text": "God instructs each Israelite family to select a lamb without blemish." },
+      { "text": "They mark their doorposts with the lamb's blood." },
+      { "text": "The angel of death passes over the marked houses that night." },
+      { "text": "Israel eats the meal in haste, ready to leave Egypt." }
+    ] },
+    { "slug": "the-ten-commandments-at-sinai", "title": "The Ten Commandments Given at Sinai", "categorySlug": "exodus", "sortOrder": 13, "events": [
+      { "text": "Israel camps at the foot of Mount Sinai." },
+      { "text": "God calls Moses up the mountain amid thunder, lightning, and smoke." },
+      { "text": "God gives Moses the Ten Commandments written on stone tablets." },
+      { "text": "Moses comes down the mountain to teach the people God's law." }
+    ] },
+    { "slug": "aarons-rod-buds", "title": "Aaron's Rod Buds", "categorySlug": "exodus", "sortOrder": 14, "events": [
+      { "text": "The leader of each tribe brings a rod to be placed before the LORD." },
+      { "text": "Aaron's rod, representing the tribe of Levi, is placed among them." },
+      { "text": "Overnight, Aaron's rod buds, blossoms, and produces almonds." },
+      { "text": "The budded rod confirms Aaron as God's chosen priest." }
+    ] },
+    { "slug": "the-bronze-serpent", "title": "The Bronze Serpent in the Wilderness", "categorySlug": "exodus", "sortOrder": 15, "events": [
+      { "text": "The people grow impatient and speak against God and Moses." },
+      { "text": "The LORD sends venomous snakes among the people." },
+      { "text": "The people confess their sin and ask Moses to pray for them." },
+      { "text": "God tells Moses to make a bronze serpent, and all who look upon it live." }
+    ] },
+    { "slug": "balaam-and-the-talking-donkey", "title": "Balaam and the Talking Donkey", "categorySlug": "exodus", "sortOrder": 16, "events": [
+      { "text": "King Balak hires the prophet Balaam to curse Israel." },
+      { "text": "On the way, Balaam's donkey sees an angel blocking the road and refuses to move." },
+      { "text": "The LORD opens the donkey's mouth, and it speaks to Balaam." },
+      { "text": "Balaam's eyes are opened to see the angel, and he blesses Israel instead of cursing them." }
+    ] },
+    { "slug": "korahs-rebellion", "title": "Korah's Rebellion", "categorySlug": "exodus", "sortOrder": 17, "events": [
+      { "text": "Korah and his followers rise up against Moses' leadership." },
+      { "text": "Moses tells the people to separate themselves from Korah's tents." },
+      { "text": "The ground opens beneath Korah and his household, swallowing them." },
+      { "text": "The rest of Israel sees and fears the LORD's judgment." }
+    ] },
+    { "slug": "the-twelve-spies-and-unbelief", "title": "The Twelve Spies and Israel's Unbelief", "categorySlug": "exodus", "sortOrder": 18, "events": [
+      { "text": "Moses sends twelve spies to explore the land of Canaan." },
+      { "text": "Ten spies bring back a fearful report of giants in the land." },
+      { "text": "Joshua and Caleb alone urge the people to trust God and go in." },
+      { "text": "Because of their unbelief, Israel wanders in the wilderness forty years." }
+    ] },
+    { "slug": "the-death-of-moses", "title": "The Death of Moses", "categorySlug": "exodus", "sortOrder": 19, "events": [
+      { "text": "God tells Moses to climb Mount Nebo to view the Promised Land." },
+      { "text": "The LORD shows Moses the whole land from the mountaintop." },
+      { "text": "Moses dies there at the age of a hundred and twenty." },
+      { "text": "The LORD buries him, and no one knows the place of his grave." }
+    ] },
+    { "slug": "crossing-the-jordan-river", "title": "Crossing the Jordan River into Canaan", "categorySlug": "exodus", "sortOrder": 20, "events": [
+      { "text": "Joshua leads Israel to the edge of the flooded Jordan River." },
+      { "text": "The priests carrying the Ark of the Covenant step into the water." },
+      { "text": "The water stops flowing, and the riverbed dries up before them." },
+      { "text": "All Israel crosses over on dry ground into the Promised Land." },
+      { "text": "Twelve stones are set up at Gilgal to remember the crossing." }
+    ] },
+
+    { "slug": "ruth-and-naomi", "title": "Ruth and Naomi", "categorySlug": "kings", "sortOrder": 9, "events": [
+      { "text": "Naomi loses her husband and both sons while living in Moab." },
+      { "text": "Ruth chooses to stay with Naomi rather than return to her own people." },
+      { "text": "Ruth gleans grain in the field of Boaz, a relative of Naomi's husband." },
+      { "text": "Boaz marries Ruth, and she becomes the great-grandmother of King David." }
+    ] },
+    { "slug": "gideon-and-the-fleece", "title": "Gideon and the Fleece", "categorySlug": "kings", "sortOrder": 10, "events": [
+      { "text": "An angel calls Gideon to deliver Israel from the Midianites." },
+      { "text": "Gideon asks for a sign, laying out a fleece of wool overnight." },
+      { "text": "The fleece is wet with dew while the ground stays dry." },
+      { "text": "Gideon asks for the opposite sign, and God grants it too." }
+    ] },
+    { "slug": "samson-and-delilah", "title": "Samson and Delilah", "categorySlug": "kings", "sortOrder": 11, "events": [
+      { "text": "Samson, a Nazirite of great strength, falls in love with Delilah." },
+      { "text": "The Philistines bribe Delilah to discover the secret of his strength." },
+      { "text": "Delilah persuades Samson to reveal that his strength lies in his uncut hair." },
+      { "text": "His hair is cut while he sleeps, and the Philistines capture him." }
+    ] },
+    { "slug": "david-and-jonathans-friendship", "title": "David and Jonathan's Friendship", "categorySlug": "kings", "sortOrder": 12, "events": [
+      { "text": "Jonathan, Saul's son, becomes close friends with David." },
+      { "text": "Jonathan gives David his robe, armor, and weapons as a sign of covenant." },
+      { "text": "Jonathan warns David of Saul's growing jealousy and plans to kill him." },
+      { "text": "The two friends part in sorrow, promising loyalty to each other's families." }
+    ] },
+    { "slug": "david-spares-sauls-life", "title": "David Spares Saul's Life", "categorySlug": "kings", "sortOrder": 13, "events": [
+      { "text": "Saul pursues David with an army into the wilderness." },
+      { "text": "Saul enters a cave to rest, not knowing David is hiding inside." },
+      { "text": "David secretly cuts off a corner of Saul's robe instead of killing him." },
+      { "text": "David shows Saul the piece of robe, proving he means no harm." }
+    ] },
+    { "slug": "david-and-bathsheba", "title": "David and Bathsheba", "categorySlug": "kings", "sortOrder": 14, "events": [
+      { "text": "David sees Bathsheba bathing and sends for her." },
+      { "text": "David arranges for her husband Uriah to be killed in battle." },
+      { "text": "The prophet Nathan confronts David with a parable exposing his sin." },
+      { "text": "David repents deeply, and God forgives him though consequences remain." }
+    ] },
+    { "slug": "absaloms-rebellion", "title": "Absalom's Rebellion", "categorySlug": "kings", "sortOrder": 15, "events": [
+      { "text": "Absalom, David's son, wins the hearts of the people and declares himself king." },
+      { "text": "David flees Jerusalem to escape his son's rebellion." },
+      { "text": "In battle, Absalom's hair catches in a tree, and Joab kills him." },
+      { "text": "David mourns deeply for his rebellious son." }
+    ] },
+    { "slug": "the-kingdom-divides", "title": "The Kingdom Divides Under Rehoboam", "categorySlug": "kings", "sortOrder": 16, "events": [
+      { "text": "Solomon dies, and his son Rehoboam becomes king." },
+      { "text": "The people ask Rehoboam to lighten Solomon's heavy burdens." },
+      { "text": "Rehoboam follows harsh advice and threatens to rule even more severely." },
+      { "text": "Ten tribes rebel and follow Jeroboam, splitting the kingdom in two." }
+    ] },
+    { "slug": "the-queen-of-sheba-visits-solomon", "title": "The Queen of Sheba Visits Solomon", "categorySlug": "kings", "sortOrder": 17, "events": [
+      { "text": "The Queen of Sheba hears of Solomon's great wisdom and wealth." },
+      { "text": "She travels a great distance to test him with hard questions." },
+      { "text": "Solomon answers all her questions, and she sees his wisdom firsthand." },
+      { "text": "She praises the God of Israel and gives Solomon many gifts." }
+    ] },
+    { "slug": "nehemiah-rebuilds-the-wall", "title": "Nehemiah Rebuilds the Wall", "categorySlug": "kings", "sortOrder": 18, "events": [
+      { "text": "Nehemiah hears that Jerusalem's walls lie broken and burned." },
+      { "text": "He asks the king for permission to return and rebuild them." },
+      { "text": "Despite mockery and threats from enemies, the people work together." },
+      { "text": "The wall is completed in just fifty-two days." }
+    ] },
+    { "slug": "jehoshaphats-victory-through-praise", "title": "Jehoshaphat's Victory Through Praise", "categorySlug": "kings", "sortOrder": 19, "events": [
+      { "text": "A great army comes against King Jehoshaphat of Judah." },
+      { "text": "Jehoshaphat calls the nation to fast and seek the LORD." },
+      { "text": "He appoints singers to march ahead of the army, praising God." },
+      { "text": "As they sing, the enemy armies turn on each other and are destroyed." }
+    ] },
+    { "slug": "hezekiahs-illness-and-healing", "title": "Hezekiah's Illness and Healing", "categorySlug": "kings", "sortOrder": 20, "events": [
+      { "text": "King Hezekiah becomes deathly ill, and Isaiah tells him to prepare to die." },
+      { "text": "Hezekiah prays earnestly, weeping before the LORD." },
+      { "text": "God hears his prayer and promises fifteen more years of life." },
+      { "text": "As a sign, God moves the sun's shadow backward ten steps." }
+    ] },
+
+    { "slug": "elisha-and-the-widows-oil", "title": "Elisha and the Widow's Oil", "categorySlug": "prophets", "sortOrder": 8, "events": [
+      { "text": "A widow cries out to Elisha because creditors want to take her sons as slaves." },
+      { "text": "Elisha asks what she has left, and she says only a small jar of oil." },
+      { "text": "He tells her to borrow many empty jars and pour her oil into them." },
+      { "text": "The oil miraculously fills every jar, and she sells it to pay her debts." }
+    ] },
+    { "slug": "elisha-and-the-shunammite-womans-son", "title": "Elisha and the Shunammite Woman's Son", "categorySlug": "prophets", "sortOrder": 9, "events": [
+      { "text": "A woman from Shunem prepares a room for Elisha whenever he passes through." },
+      { "text": "Elisha promises her that she will have a son, and she does." },
+      { "text": "Years later, the boy suddenly dies of a severe headache." },
+      { "text": "Elisha comes and stretches himself over the boy, and he comes back to life." }
+    ] },
+    { "slug": "naaman-healed-of-leprosy", "title": "Naaman Healed of Leprosy", "categorySlug": "prophets", "sortOrder": 10, "events": [
+      { "text": "Naaman, a great commander, suffers from leprosy." },
+      { "text": "A servant girl tells him of a prophet in Israel who could heal him." },
+      { "text": "Elisha instructs Naaman to wash seven times in the Jordan River." },
+      { "text": "Naaman obeys, and his skin becomes clean like a child's." }
+    ] },
+    { "slug": "elisha-and-the-floating-axe-head", "title": "Elisha and the Floating Axe Head", "categorySlug": "prophets", "sortOrder": 11, "events": [
+      { "text": "A group of prophets is cutting timber by the Jordan River." },
+      { "text": "One man's borrowed axe head falls into the water and sinks." },
+      { "text": "Elisha throws a stick into the water at the spot." },
+      { "text": "The iron axe head floats to the surface." }
+    ] },
+    { "slug": "elijah-flees-to-horeb", "title": "Elijah Flees to Mount Horeb", "categorySlug": "prophets", "sortOrder": 12, "events": [
+      { "text": "Queen Jezebel threatens Elijah's life after his victory on Mount Carmel." },
+      { "text": "Elijah flees into the wilderness, exhausted and afraid." },
+      { "text": "An angel feeds him, and he travels forty days to Mount Horeb." },
+      { "text": "God speaks to Elijah not in wind or fire, but in a still small voice." }
+    ] },
+    { "slug": "elijah-anoints-elisha", "title": "Elijah Anoints Elisha", "categorySlug": "prophets", "sortOrder": 13, "events": [
+      { "text": "God tells Elijah to find Elisha and anoint him as his successor." },
+      { "text": "Elijah finds Elisha plowing a field with oxen." },
+      { "text": "Elijah throws his mantle over Elisha's shoulders." },
+      { "text": "Elisha leaves his oxen behind and follows Elijah to serve him." }
+    ] },
+    { "slug": "micaiahs-true-prophecy", "title": "Micaiah's True Prophecy Against False Prophets", "categorySlug": "prophets", "sortOrder": 14, "events": [
+      { "text": "King Ahab gathers four hundred prophets who promise him victory in battle." },
+      { "text": "King Jehoshaphat asks if there is a true prophet of the LORD to consult." },
+      { "text": "Micaiah is brought in and, unlike the others, prophesies Ahab's defeat." },
+      { "text": "Ahab ignores the warning, goes to battle, and is killed as Micaiah foretold." }
+    ] },
+    { "slug": "jeremiah-thrown-into-the-cistern", "title": "Jeremiah Thrown into the Cistern", "categorySlug": "prophets", "sortOrder": 15, "events": [
+      { "text": "Jeremiah's warnings to surrender to Babylon anger the king's officials." },
+      { "text": "They lower Jeremiah into a muddy, empty cistern to silence him." },
+      { "text": "Ebed-melech, a royal official, pleads with the king for Jeremiah's life." },
+      { "text": "Jeremiah is pulled out of the cistern with ropes and rags." }
+    ] },
+    { "slug": "jeremiah-and-the-potters-house", "title": "Jeremiah and the Potter's House", "categorySlug": "prophets", "sortOrder": 16, "events": [
+      { "text": "God tells Jeremiah to go down to the potter's house." },
+      { "text": "Jeremiah watches the potter reshape a marred piece of clay on the wheel." },
+      { "text": "The LORD explains that He can reshape Israel just as the potter reshapes the clay." },
+      { "text": "Jeremiah delivers this message of warning and hope to the people." }
+    ] },
+    { "slug": "ezekiel-eats-the-scroll", "title": "Ezekiel Eats the Scroll", "categorySlug": "prophets", "sortOrder": 17, "events": [
+      { "text": "God shows Ezekiel a scroll filled with words of lamentation and woe." },
+      { "text": "God commands Ezekiel to eat the scroll before speaking to Israel." },
+      { "text": "Ezekiel eats it, and it tastes as sweet as honey in his mouth." },
+      { "text": "He is sent to speak God's words to a rebellious nation." }
+    ] },
+    { "slug": "hosea-and-gomer", "title": "Hosea and Gomer", "categorySlug": "prophets", "sortOrder": 18, "events": [
+      { "text": "God tells Hosea to marry Gomer, a woman who would be unfaithful." },
+      { "text": "Gomer leaves Hosea and falls into hardship and slavery." },
+      { "text": "God tells Hosea to buy her back and love her again." },
+      { "text": "Hosea's redeeming love pictures God's faithful love for unfaithful Israel." }
+    ] },
+    { "slug": "amos-and-the-plumbline", "title": "Amos and the Plumbline", "categorySlug": "prophets", "sortOrder": 19, "events": [
+      { "text": "Amos, a shepherd called to prophesy, receives a vision from God." },
+      { "text": "The LORD stands beside a wall holding a plumbline." },
+      { "text": "God explains that He is measuring Israel against His standard of justice." },
+      { "text": "Amos warns that Israel has failed to measure up and judgment is coming." }
+    ] },
+    { "slug": "habakkuks-watch-and-gods-answer", "title": "Habakkuk's Watch and God's Answer", "categorySlug": "prophets", "sortOrder": 20, "events": [
+      { "text": "Habakkuk questions God about why evil goes unpunished in Judah." },
+      { "text": "God answers that He is raising up the Chaldeans to bring judgment." },
+      { "text": "Habakkuk climbs his watchtower to wait for the LORD's reply." },
+      { "text": "God assures him that the just shall live by faith, and Habakkuk responds with a song of trust." }
+    ] },
+
+    { "slug": "the-lost-coin", "title": "The Lost Coin", "categorySlug": "parables", "sortOrder": 6, "events": [
+      { "text": "A woman has ten silver coins and loses one of them." },
+      { "text": "She lights a lamp and sweeps the house carefully to search for it." },
+      { "text": "She searches diligently until she finds the lost coin." },
+      { "text": "She calls her friends and neighbors together to rejoice with her." }
+    ] },
+    { "slug": "the-two-sons", "title": "The Parable of the Two Sons", "categorySlug": "parables", "sortOrder": 7, "events": [
+      { "text": "A father asks his first son to go work in the vineyard." },
+      { "text": "The first son refuses at first, but later changes his mind and goes." },
+      { "text": "The father asks his second son the same, and he agrees but never goes." },
+      { "text": "Jesus asks which son truly did his father's will." }
+    ] },
+    { "slug": "the-persistent-widow", "title": "The Persistent Widow and the Judge", "categorySlug": "parables", "sortOrder": 8, "events": [
+      { "text": "A widow repeatedly comes to an unjust judge seeking justice." },
+      { "text": "The judge, who fears neither God nor man, keeps refusing her." },
+      { "text": "Because she keeps bothering him, he finally grants her request." },
+      { "text": "Jesus teaches that God will surely answer His people who cry out to Him." }
+    ] },
+    { "slug": "the-pharisee-and-the-tax-collector", "title": "The Pharisee and the Tax Collector", "categorySlug": "parables", "sortOrder": 9, "events": [
+      { "text": "Two men go up to the temple to pray." },
+      { "text": "The Pharisee prays proudly, thanking God he is not like other sinners." },
+      { "text": "The tax collector stands far off, beating his chest and asking for mercy." },
+      { "text": "Jesus says the humble tax collector, not the proud Pharisee, went home justified." }
+    ] },
+    { "slug": "the-rich-fool", "title": "The Rich Fool", "categorySlug": "parables", "sortOrder": 10, "events": [
+      { "text": "A rich man's land produces an abundant harvest." },
+      { "text": "He decides to tear down his barns and build bigger ones to store it all." },
+      { "text": "He tells himself to relax, eat, drink, and be merry for years to come." },
+      { "text": "God calls him a fool, for his life will be required of him that very night." }
+    ] },
+    { "slug": "the-rich-man-and-lazarus", "title": "The Rich Man and Lazarus", "categorySlug": "parables", "sortOrder": 11, "events": [
+      { "text": "A rich man lives in luxury while a poor beggar named Lazarus lies at his gate." },
+      { "text": "Both men die; Lazarus is carried to Abraham's side, and the rich man is tormented." },
+      { "text": "The rich man begs for relief and for someone to warn his brothers." },
+      { "text": "Abraham explains that they already have Moses and the prophets to listen to." }
+    ] },
+    { "slug": "the-wise-and-foolish-builders", "title": "The Wise and Foolish Builders", "categorySlug": "parables", "sortOrder": 12, "events": [
+      { "text": "A wise man builds his house on a foundation of solid rock." },
+      { "text": "A foolish man builds his house on sand instead." },
+      { "text": "Rain falls, floods rise, and winds beat against both houses." },
+      { "text": "The house on the rock stands firm, but the house on the sand collapses." }
+    ] },
+    { "slug": "the-ten-virgins", "title": "The Parable of the Ten Virgins", "categorySlug": "parables", "sortOrder": 13, "events": [
+      { "text": "Ten virgins take their lamps to wait for the bridegroom." },
+      { "text": "Five are wise and bring extra oil; five are foolish and do not." },
+      { "text": "The bridegroom is delayed, and all of them fall asleep." },
+      { "text": "At midnight the cry comes, and only those with enough oil are ready to enter." }
+    ] },
+    { "slug": "the-unforgiving-servant", "title": "The Unforgiving Servant", "categorySlug": "parables", "sortOrder": 14, "events": [
+      { "text": "A king forgives a servant an enormous debt he could never repay." },
+      { "text": "That same servant finds a fellow servant who owes him a small amount." },
+      { "text": "He refuses to forgive the small debt and has the man thrown in prison." },
+      { "text": "The king hears of this and hands the unforgiving servant over to be punished." }
+    ] },
+    { "slug": "the-workers-in-the-vineyard", "title": "The Workers in the Vineyard", "categorySlug": "parables", "sortOrder": 15, "events": [
+      { "text": "A landowner hires workers for his vineyard early in the morning." },
+      { "text": "He goes out again at various hours and hires more workers." },
+      { "text": "At the end of the day, he pays every worker the same generous wage." },
+      { "text": "Those hired first grumble, but the owner says he has been fair and generous." }
+    ] },
+    { "slug": "the-parable-of-the-mustard-seed", "title": "The Parable of the Mustard Seed", "categorySlug": "parables", "sortOrder": 16, "events": [
+      { "text": "Jesus compares the kingdom of heaven to a tiny mustard seed." },
+      { "text": "A man plants the seed in his field." },
+      { "text": "Though it is the smallest of seeds, it grows into a large tree." },
+      { "text": "Birds of the air come and nest in its branches." }
+    ] },
+    { "slug": "the-parable-of-the-yeast", "title": "The Parable of the Yeast", "categorySlug": "parables", "sortOrder": 17, "events": [
+      { "text": "Jesus compares the kingdom of heaven to yeast." },
+      { "text": "A woman takes the yeast and mixes it into a large amount of flour." },
+      { "text": "The yeast works quietly and invisibly through the dough." },
+      { "text": "In time, the yeast leavens the entire batch." }
+    ] },
+    { "slug": "the-great-wedding-feast", "title": "The Great Wedding Feast", "categorySlug": "parables", "sortOrder": 18, "events": [
+      { "text": "A king prepares a wedding feast for his son and sends out invitations." },
+      { "text": "The invited guests make excuses and refuse to come." },
+      { "text": "The king sends his servants into the streets to invite anyone they find." },
+      { "text": "The wedding hall is filled with guests, both good and bad." }
+    ] },
+    { "slug": "the-parable-of-the-growing-seed", "title": "The Parable of the Growing Seed", "categorySlug": "parables", "sortOrder": 19, "events": [
+      { "text": "A man scatters seed on the ground." },
+      { "text": "He sleeps and rises night and day while the seed sprouts and grows." },
+      { "text": "He does not know exactly how it happens, but the earth produces grain by itself." },
+      { "text": "When the grain is ripe, he puts in the sickle to harvest it." }
+    ] },
+    { "slug": "the-parable-of-the-net", "title": "The Parable of the Net", "categorySlug": "parables", "sortOrder": 20, "events": [
+      { "text": "Jesus compares the kingdom of heaven to a net cast into the sea." },
+      { "text": "The net gathers fish of every kind." },
+      { "text": "When it is full, the fishermen pull it ashore." },
+      { "text": "They collect the good fish into baskets and throw the bad ones away." }
+    ] },
+
+    { "slug": "the-visit-of-the-wise-men", "title": "The Visit of the Wise Men", "categorySlug": "jesus", "sortOrder": 8, "events": [
+      { "text": "Wise men from the East see a star and follow it toward Jerusalem." },
+      { "text": "They ask King Herod where the newborn King of the Jews can be found." },
+      { "text": "The star leads them to the house where the young child Jesus is." },
+      { "text": "They worship Him and present gifts of gold, frankincense, and myrrh." }
+    ] },
+    { "slug": "the-flight-to-egypt", "title": "The Flight to Egypt", "categorySlug": "jesus", "sortOrder": 9, "events": [
+      { "text": "An angel warns Joseph in a dream that Herod seeks to kill the child." },
+      { "text": "Joseph takes Mary and Jesus and flees by night to Egypt." },
+      { "text": "Herod, enraged, orders the deaths of infant boys in Bethlehem." },
+      { "text": "After Herod dies, an angel tells Joseph it is safe to return." }
+    ] },
+    { "slug": "jesus-in-the-temple-at-twelve", "title": "Jesus in the Temple at Age Twelve", "categorySlug": "jesus", "sortOrder": 10, "events": [
+      { "text": "Jesus' family travels to Jerusalem for the Passover feast." },
+      { "text": "On the journey home, Mary and Joseph realize Jesus is missing." },
+      { "text": "They find Him in the temple, sitting among the teachers, listening and asking questions." },
+      { "text": "Jesus returns home with them and grows in wisdom and favor." }
+    ] },
+    { "slug": "jesus-temptation-in-the-wilderness", "title": "Jesus' Temptation in the Wilderness", "categorySlug": "jesus", "sortOrder": 11, "events": [
+      { "text": "The Spirit leads Jesus into the wilderness to fast for forty days." },
+      { "text": "The devil tempts Jesus to turn stones into bread." },
+      { "text": "The devil tempts Jesus to throw Himself from the temple." },
+      { "text": "The devil offers Jesus all the kingdoms of the world if He will worship him." },
+      { "text": "Jesus resists each temptation with Scripture, and the devil leaves Him." }
+    ] },
+    { "slug": "jesus-calls-his-first-disciples", "title": "Jesus Calls His First Disciples", "categorySlug": "jesus", "sortOrder": 12, "events": [
+      { "text": "Jesus sees Peter and Andrew casting their nets into the sea." },
+      { "text": "He calls out to them to follow Him and become fishers of men." },
+      { "text": "They immediately leave their nets and follow Him." },
+      { "text": "Jesus calls James and John, who leave their boat and father to follow too." }
+    ] },
+    { "slug": "jesus-cleanses-the-temple", "title": "Jesus Cleanses the Temple", "categorySlug": "jesus", "sortOrder": 13, "events": [
+      { "text": "Jesus enters the temple and finds merchants and money changers there." },
+      { "text": "He is angered that His Father's house has become a marketplace." },
+      { "text": "He overturns their tables and drives them out." },
+      { "text": "He declares that the temple should be a house of prayer." }
+    ] },
+    { "slug": "jesus-and-the-woman-at-the-well", "title": "Jesus and the Woman at the Well", "categorySlug": "jesus", "sortOrder": 14, "events": [
+      { "text": "Jesus stops to rest at a well in Samaria at midday." },
+      { "text": "A Samaritan woman comes to draw water, and Jesus asks her for a drink." },
+      { "text": "Jesus offers her living water and reveals He knows all about her life." },
+      { "text": "She believes He is the Christ and tells her whole town about Him." }
+    ] },
+    { "slug": "the-triumphal-entry", "title": "The Triumphal Entry into Jerusalem", "categorySlug": "jesus", "sortOrder": 15, "events": [
+      { "text": "Jesus sends disciples to bring a young donkey for Him to ride." },
+      { "text": "He rides into Jerusalem as crowds spread their cloaks on the road." },
+      { "text": "The people wave palm branches and shout, \"Hosanna!\"" },
+      { "text": "Jesus enters the city, fulfilling the prophecy of a humble king." }
+    ] },
+    { "slug": "jesus-washes-the-disciples-feet", "title": "Jesus Washes the Disciples' Feet", "categorySlug": "jesus", "sortOrder": 16, "events": [
+      { "text": "During supper, Jesus rises and wraps a towel around His waist." },
+      { "text": "He pours water into a basin and begins washing His disciples' feet." },
+      { "text": "Peter protests, but Jesus explains the meaning of His humble act." },
+      { "text": "Jesus tells them to follow His example and serve one another." }
+    ] },
+    { "slug": "jesus-arrest-in-gethsemane", "title": "Jesus' Arrest in Gethsemane", "categorySlug": "jesus", "sortOrder": 17, "events": [
+      { "text": "Jesus prays in agony in the Garden of Gethsemane." },
+      { "text": "Judas arrives with soldiers and betrays Jesus with a kiss." },
+      { "text": "Peter draws a sword and cuts off a servant's ear, but Jesus heals him." },
+      { "text": "Jesus is arrested, and the disciples flee." }
+    ] },
+    { "slug": "peters-denial-of-jesus", "title": "Peter's Denial of Jesus", "categorySlug": "jesus", "sortOrder": 18, "events": [
+      { "text": "Peter follows at a distance as Jesus is taken to the high priest's house." },
+      { "text": "A servant girl recognizes Peter and says he was with Jesus." },
+      { "text": "Peter denies knowing Jesus three times before a rooster crows." },
+      { "text": "Peter remembers Jesus' words and weeps bitterly." }
+    ] },
+    { "slug": "the-road-to-emmaus", "title": "Jesus Appears on the Road to Emmaus", "categorySlug": "jesus", "sortOrder": 19, "events": [
+      { "text": "Two disciples walk toward Emmaus, discussing Jesus' death in sorrow." },
+      { "text": "The risen Jesus joins them, but they do not recognize Him." },
+      { "text": "He explains from the Scriptures all that was written about Him." },
+      { "text": "When He breaks bread with them, their eyes are opened and they recognize Him." }
+    ] },
+    { "slug": "the-ascension-of-jesus", "title": "The Ascension of Jesus", "categorySlug": "jesus", "sortOrder": 20, "events": [
+      { "text": "Jesus gathers His disciples on a mountain near Bethany." },
+      { "text": "He commissions them to be His witnesses to the ends of the earth." },
+      { "text": "As they watch, He is lifted up and a cloud takes Him from their sight." },
+      { "text": "Two angels tell them Jesus will return in the same way He left." }
+    ] },
+
+    { "slug": "water-into-wine-at-cana", "title": "Water into Wine at Cana", "categorySlug": "miracles", "sortOrder": 6, "events": [
+      { "text": "Jesus and His disciples attend a wedding feast in Cana." },
+      { "text": "The wine runs out, and Mary tells Jesus of the need." },
+      { "text": "Jesus tells the servants to fill six stone jars with water." },
+      { "text": "The water becomes the finest wine, and the guests are amazed." }
+    ] },
+    { "slug": "the-miraculous-catch-of-fish", "title": "The Miraculous Catch of Fish", "categorySlug": "miracles", "sortOrder": 7, "events": [
+      { "text": "Peter and his companions have fished all night and caught nothing." },
+      { "text": "Jesus tells Peter to let down his nets one more time." },
+      { "text": "The nets fill with so many fish that they begin to break." },
+      { "text": "Peter falls at Jesus' feet, amazed and humbled." }
+    ] },
+    { "slug": "healing-the-centurions-servant", "title": "Healing the Centurion's Servant", "categorySlug": "miracles", "sortOrder": 8, "events": [
+      { "text": "A Roman centurion's servant lies sick and near death." },
+      { "text": "The centurion sends word asking Jesus to heal him." },
+      { "text": "He tells Jesus He need only speak the word, and it will be done." },
+      { "text": "Jesus marvels at his faith, and the servant is healed that same hour." }
+    ] },
+    { "slug": "healing-the-man-with-a-withered-hand", "title": "Healing the Man with a Withered Hand", "categorySlug": "miracles", "sortOrder": 9, "events": [
+      { "text": "Jesus enters the synagogue on the Sabbath and sees a man with a withered hand." },
+      { "text": "Religious leaders watch to see if Jesus will heal on the Sabbath." },
+      { "text": "Jesus tells the man to stretch out his hand." },
+      { "text": "The man's hand is completely restored." }
+    ] },
+    { "slug": "healing-the-woman-with-the-issue-of-blood", "title": "Healing the Woman with the Issue of Blood", "categorySlug": "miracles", "sortOrder": 10, "events": [
+      { "text": "A woman who had bled for twelve years pushes through a crowd toward Jesus." },
+      { "text": "She touches the edge of His cloak, believing it will heal her." },
+      { "text": "She is instantly healed, and Jesus feels power go out from Him." },
+      { "text": "Jesus tells her that her faith has made her well." }
+    ] },
+    { "slug": "raising-jairus-daughter", "title": "Raising Jairus' Daughter", "categorySlug": "miracles", "sortOrder": 11, "events": [
+      { "text": "Jairus, a synagogue leader, begs Jesus to heal his dying daughter." },
+      { "text": "Word comes that the girl has already died." },
+      { "text": "Jesus tells Jairus not to fear, only to believe." },
+      { "text": "Jesus takes her hand, and she rises, alive and well." }
+    ] },
+    { "slug": "casting-out-the-legion-of-demons", "title": "Casting Out the Legion of Demons", "categorySlug": "miracles", "sortOrder": 12, "events": [
+      { "text": "Jesus meets a man possessed by many demons, living among the tombs." },
+      { "text": "The demons identify themselves as \"Legion\" and beg not to be sent away." },
+      { "text": "Jesus permits them to enter a herd of pigs nearby." },
+      { "text": "The herd rushes into the sea, and the man is found calm and in his right mind." }
+    ] },
+    { "slug": "healing-the-ten-lepers", "title": "Healing the Ten Lepers", "categorySlug": "miracles", "sortOrder": 13, "events": [
+      { "text": "Ten men with leprosy call out to Jesus for mercy from a distance." },
+      { "text": "Jesus tells them to go show themselves to the priests." },
+      { "text": "As they go, all ten are cleansed of their leprosy." },
+      { "text": "Only one returns to thank Jesus, and Jesus notes the other nine did not." }
+    ] },
+    { "slug": "healing-the-man-born-blind", "title": "Healing the Man Born Blind", "categorySlug": "miracles", "sortOrder": 14, "events": [
+      { "text": "Jesus sees a man who has been blind since birth." },
+      { "text": "He makes mud with spit and anoints the man's eyes." },
+      { "text": "He tells the man to wash in the Pool of Siloam." },
+      { "text": "The man washes and comes back seeing." }
+    ] },
+    { "slug": "the-feeding-of-the-4000", "title": "The Feeding of the 4,000", "categorySlug": "miracles", "sortOrder": 15, "events": [
+      { "text": "A great crowd has been with Jesus three days with nothing to eat." },
+      { "text": "The disciples find only seven loaves and a few small fish." },
+      { "text": "Jesus gives thanks, breaks the bread, and the disciples distribute it." },
+      { "text": "Everyone eats and is satisfied, with seven baskets of leftovers gathered." }
+    ] },
+    { "slug": "healing-the-deaf-and-mute-man", "title": "Healing the Deaf and Mute Man", "categorySlug": "miracles", "sortOrder": 16, "events": [
+      { "text": "People bring Jesus a man who is deaf and can hardly speak." },
+      { "text": "Jesus takes him aside privately from the crowd." },
+      { "text": "He touches the man's ears and tongue and says, \"Be opened.\"" },
+      { "text": "The man's ears are opened, and he speaks plainly." }
+    ] },
+    { "slug": "the-coin-in-the-fishs-mouth", "title": "The Coin in the Fish's Mouth", "categorySlug": "miracles", "sortOrder": 17, "events": [
+      { "text": "Tax collectors ask Peter whether Jesus pays the temple tax." },
+      { "text": "Jesus tells Peter to go cast a hook into the sea." },
+      { "text": "He says the first fish caught will have a coin in its mouth." },
+      { "text": "Peter finds the coin exactly as Jesus said and pays the tax for them both." }
+    ] },
+    { "slug": "the-cursing-of-the-fig-tree", "title": "The Cursing of the Fig Tree", "categorySlug": "miracles", "sortOrder": 18, "events": [
+      { "text": "Jesus, hungry, approaches a fig tree full of leaves but no fruit." },
+      { "text": "He curses the tree, saying no one will eat fruit from it again." },
+      { "text": "The next day, the disciples find the tree withered from the roots." },
+      { "text": "Jesus uses the moment to teach them about faith and prayer." }
+    ] },
+    { "slug": "healing-a-demon-possessed-boy", "title": "Healing a Demon-Possessed Boy", "categorySlug": "miracles", "sortOrder": 19, "events": [
+      { "text": "A father brings his son, tormented by a spirit, to Jesus' disciples, but they cannot heal him." },
+      { "text": "The father brings the boy to Jesus and begs for help, if He is able." },
+      { "text": "Jesus rebukes the spirit, and it leaves the boy." },
+      { "text": "The disciples later ask privately why they could not cast it out, and Jesus speaks of prayer and faith." }
+    ] },
+    { "slug": "healing-at-the-pool-of-bethesda", "title": "Healing at the Pool of Bethesda", "categorySlug": "miracles", "sortOrder": 20, "events": [
+      { "text": "A man who had been sick for thirty-eight years lies by the pool of Bethesda." },
+      { "text": "Jesus asks him if he wants to be made well." },
+      { "text": "The man explains he has no one to help him into the healing waters." },
+      { "text": "Jesus tells him to rise, take up his bed, and walk, and he is instantly healed." }
+    ] },
+
+    { "slug": "ananias-and-sapphira", "title": "Ananias and Sapphira", "categorySlug": "apostles", "sortOrder": 6, "events": [
+      { "text": "Ananias and his wife Sapphira sell a piece of property." },
+      { "text": "They secretly keep back part of the money while claiming to give it all." },
+      { "text": "Peter confronts Ananias, who falls down dead upon hearing the truth exposed." },
+      { "text": "Sapphira arrives later, repeats the same lie, and also falls down dead." }
+    ] },
+    { "slug": "stephens-martyrdom", "title": "Stephen's Martyrdom", "categorySlug": "apostles", "sortOrder": 7, "events": [
+      { "text": "Stephen, full of the Spirit, preaches boldly before the Jewish council." },
+      { "text": "He recounts Israel's history and accuses the council of resisting the Spirit." },
+      { "text": "Enraged, the council drags Stephen out of the city and stones him." },
+      { "text": "Stephen prays for his killers' forgiveness as he dies, becoming the first Christian martyr." }
+    ] },
+    { "slug": "philip-and-the-ethiopian-eunuch", "title": "Philip and the Ethiopian Eunuch", "categorySlug": "apostles", "sortOrder": 8, "events": [
+      { "text": "An angel sends Philip to a desert road, where he meets an Ethiopian official." },
+      { "text": "The official is reading from the prophet Isaiah but doesn't understand it." },
+      { "text": "Philip explains that the passage points to Jesus." },
+      { "text": "The official believes and asks to be baptized right there beside the road." }
+    ] },
+    { "slug": "peters-vision-of-the-sheet", "title": "Peter's Vision of the Sheet", "categorySlug": "apostles", "sortOrder": 9, "events": [
+      { "text": "Peter falls into a trance while praying on a rooftop." },
+      { "text": "He sees a great sheet lowered from heaven, full of all kinds of animals." },
+      { "text": "A voice tells him to kill and eat, but Peter refuses, calling them unclean." },
+      { "text": "The voice tells him not to call unclean what God has made clean." }
+    ] },
+    { "slug": "cornelius-the-centurions-conversion", "title": "Cornelius the Centurion's Conversion", "categorySlug": "apostles", "sortOrder": 10, "events": [
+      { "text": "Cornelius, a devout Roman centurion, is told in a vision to send for Peter." },
+      { "text": "Peter, guided by his own vision, agrees to visit Cornelius's house." },
+      { "text": "Peter preaches the gospel to Cornelius and his household." },
+      { "text": "The Holy Spirit falls on them, and they are baptized as the first Gentile believers." }
+    ] },
+    { "slug": "the-jerusalem-council", "title": "The Jerusalem Council", "categorySlug": "apostles", "sortOrder": 11, "events": [
+      { "text": "A dispute arises over whether Gentile believers must follow the law of Moses." },
+      { "text": "Paul and Barnabas travel to Jerusalem to discuss the matter with the apostles." },
+      { "text": "Peter and James speak, agreeing that salvation is by grace, not the law." },
+      { "text": "The council sends a letter freeing Gentile believers from that requirement." }
+    ] },
+    { "slug": "pauls-first-missionary-journey", "title": "Paul's First Missionary Journey Begins", "categorySlug": "apostles", "sortOrder": 12, "events": [
+      { "text": "The Holy Spirit sets apart Paul and Barnabas for a special work." },
+      { "text": "The church at Antioch fasts, prays, and sends them out." },
+      { "text": "They sail to Cyprus and then travel through Asia Minor preaching the gospel." },
+      { "text": "They appoint elders in every church they establish along the way." }
+    ] },
+    { "slug": "paul-at-the-areopagus", "title": "Paul at the Areopagus in Athens", "categorySlug": "apostles", "sortOrder": 13, "events": [
+      { "text": "Paul is troubled by the many idols he sees throughout Athens." },
+      { "text": "He is invited to speak before the philosophers at the Areopagus." },
+      { "text": "He references an altar \"to the unknown god\" to introduce the true God." },
+      { "text": "Some mock him, but others believe and follow him." }
+    ] },
+    { "slug": "the-riot-in-ephesus", "title": "The Riot in Ephesus", "categorySlug": "apostles", "sortOrder": 14, "events": [
+      { "text": "Paul's preaching turns many away from worshiping the goddess Diana." },
+      { "text": "A silversmith named Demetrius stirs up anger over lost business making idols." },
+      { "text": "A great crowd fills the theater, shouting in confusion for hours." },
+      { "text": "The city clerk calms the crowd and disperses them." }
+    ] },
+    { "slug": "eutychus-falls-from-the-window", "title": "Eutychus Falls from the Window", "categorySlug": "apostles", "sortOrder": 15, "events": [
+      { "text": "Paul preaches a very long sermon late into the night." },
+      { "text": "A young man named Eutychus, sitting in a window, falls asleep." },
+      { "text": "He falls three stories to the ground and is found dead." },
+      { "text": "Paul embraces him, and he is restored to life, to everyone's relief." }
+    ] },
+    { "slug": "pauls-shipwreck-to-rome", "title": "Paul's Shipwreck on the Way to Rome", "categorySlug": "apostles", "sortOrder": 16, "events": [
+      { "text": "Paul, a prisoner, sails toward Rome to stand trial before Caesar." },
+      { "text": "A violent storm tosses the ship for many days." },
+      { "text": "An angel assures Paul that everyone aboard will survive." },
+      { "text": "The ship runs aground, and all passengers safely reach the island of Malta." }
+    ] },
+    { "slug": "paul-bitten-by-a-viper-on-malta", "title": "Paul Bitten by a Viper on Malta", "categorySlug": "apostles", "sortOrder": 17, "events": [
+      { "text": "Paul gathers sticks to help build a fire for the shipwrecked survivors." },
+      { "text": "A viper, driven out by the heat, fastens itself on his hand." },
+      { "text": "The islanders expect Paul to swell up and die." },
+      { "text": "Paul shakes off the snake and suffers no harm, amazing everyone." }
+    ] },
+    { "slug": "barnabas-and-paul-sent-from-antioch", "title": "Barnabas and Paul Sent Out from Antioch", "categorySlug": "apostles", "sortOrder": 18, "events": [
+      { "text": "The believers at Antioch are worshiping and fasting together." },
+      { "text": "The Holy Spirit says, \"Separate me Barnabas and Saul for the work.\"" },
+      { "text": "The church fasts, prays, and lays hands on them." },
+      { "text": "Barnabas and Paul are sent out to spread the gospel to new regions." }
+    ] },
+    { "slug": "the-choosing-of-the-seven-deacons", "title": "The Choosing of the Seven Deacons", "categorySlug": "apostles", "sortOrder": 19, "events": [
+      { "text": "A dispute arises over the daily distribution of food to widows." },
+      { "text": "The apostles decide to appoint others to oversee this important work." },
+      { "text": "The church chooses seven men full of the Spirit and wisdom, including Stephen." },
+      { "text": "The apostles pray and lay hands on them, and the church continues to grow." }
+    ] },
+    { "slug": "james-martyred-by-herod", "title": "James, Brother of John, Martyred by Herod", "categorySlug": "apostles", "sortOrder": 20, "events": [
+      { "text": "King Herod begins to persecute members of the church." },
+      { "text": "He arrests James, the brother of John, one of the twelve apostles." },
+      { "text": "Herod has James put to death with the sword." },
+      { "text": "Seeing this pleased some, Herod goes on to arrest Peter as well." }
+    ] }
+  ]
+}

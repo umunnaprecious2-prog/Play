@@ -27,7 +27,7 @@ export const startMemoryVerseSessionSchema = z.object({
   playerId: z.string().min(1),
   categorySlug: z.string().min(1).optional(),
   difficultySlug: z.string().min(1).optional(),
-  verseCount: z.number().int().min(1).max(20).optional().default(3),
+  verseCount: z.number().int().min(1).max(20).optional().default(20),
 });
 
 export const submitMemoryVerseAnswerSchema = z.object({

@@ -12,6 +12,7 @@ type AnsweredState = Record<string, GameAnswerResult>;
 
 type MemoryVerseSession = {
   sessionId: string;
+  level: number;
   verses: VerseItem[];
 };
 
@@ -34,13 +35,13 @@ export function MemoryVersePreview() {
     setIsLoadingSession(true);
     setSessionError(null);
 
-    apiFetch<{ success: boolean; data: { session: { id: string }; verses: VerseItem[] } }>("/games/memory-verse/sessions", {
-      method: "POST",
-      body: JSON.stringify({ playerId: id, verseCount: 3 }),
-    })
+    apiFetch<{ success: boolean; data: { session: { id: string }; level: number; verses: VerseItem[] } }>(
+      "/games/memory-verse/sessions",
+      { method: "POST", body: JSON.stringify({ playerId: id }) },
+    )
       .then((response) => {
         if (!cancelled) {
-          setSession({ sessionId: response.data.session.id, verses: response.data.verses });
+          setSession({ sessionId: response.data.session.id, level: response.data.level, verses: response.data.verses });
         }
       })
       .catch((error: unknown) => {
@@ -173,9 +174,12 @@ export function MemoryVersePreview() {
           <h2 className="text-2xl font-black text-slate-900">Memory verse practice</h2>
           <p className="mt-1 text-sm text-slate-600">Short verses, simple prompts, and positive feedback.</p>
         </div>
-        <span className="rounded-full bg-meadow-50 px-4 py-2 text-sm font-semibold text-meadow-700">
-          {currentIndex + 1}/{verses.length}
-        </span>
+        <div className="flex flex-wrap gap-3">
+          <span className="rounded-full bg-gold-50 px-4 py-2 text-sm font-semibold text-gold-700">Level {session.level}/10</span>
+          <span className="rounded-full bg-meadow-50 px-4 py-2 text-sm font-semibold text-meadow-700">
+            {currentIndex + 1}/{verses.length}
+          </span>
+        </div>
       </div>
 
       <div className="rounded-[1.5rem] bg-meadow-50 p-6 shadow-lg">

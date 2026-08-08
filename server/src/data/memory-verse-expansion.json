@@ -1,0 +1,653 @@
+{
+  "sourceName": "memory-verse-expansion-71",
+  "categories": [
+    {
+      "slug": "memory-verses",
+      "name": "Memory Verses",
+      "description": "A dedicated pool of well-known, easy-to-memorize King James Version verses for Memory Verse practice.",
+      "sortOrder": 73,
+      "isActive": true
+    }
+  ],
+  "verses": [
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 23:4",
+      "text": "Yea, though I walk through the valley of the shadow of death, I will fear no evil: for thou art with me; thy rod and thy staff they comfort me.",
+      "translation": "KJV",
+      "memoryHint": "The Lord walking with us through the darkest valley.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 27:1",
+      "text": "The LORD is my light and my salvation; whom shall I fear? the LORD is the strength of my life; of whom shall I be afraid?",
+      "translation": "KJV",
+      "memoryHint": "The Lord as light and salvation, nothing to fear.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 34:8",
+      "text": "O taste and see that the LORD is good: blessed is the man that trusteth in him.",
+      "translation": "KJV",
+      "memoryHint": "Tasting and seeing that the Lord is good.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 34:18",
+      "text": "The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit.",
+      "translation": "KJV",
+      "memoryHint": "The Lord being near the brokenhearted.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 37:4",
+      "text": "Delight thyself also in the LORD; and he shall give thee the desires of thine heart.",
+      "translation": "KJV",
+      "memoryHint": "Delighting in the Lord and the desires of the heart.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 46:10",
+      "text": "Be still, and know that I am God: I will be exalted among the heathen, I will be exalted in the earth.",
+      "translation": "KJV",
+      "memoryHint": "Being still and knowing God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 55:22",
+      "text": "Cast thy burden upon the LORD, and he shall sustain thee: he shall never suffer the righteous to be moved.",
+      "translation": "KJV",
+      "memoryHint": "Casting your burden on the Lord.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 56:3",
+      "text": "What time I am afraid, I will trust in thee.",
+      "translation": "KJV",
+      "memoryHint": "Trusting God in times of fear.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 62:1",
+      "text": "Truly my soul waiteth upon God: from him cometh my salvation.",
+      "translation": "KJV",
+      "memoryHint": "The soul waiting quietly upon God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 90:12",
+      "text": "So teach us to number our days, that we may apply our hearts unto wisdom.",
+      "translation": "KJV",
+      "memoryHint": "Asking God to teach us to number our days.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 91:1",
+      "text": "He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty.",
+      "translation": "KJV",
+      "memoryHint": "Dwelling in the secret place of the Most High.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 100:5",
+      "text": "For the LORD is good; his mercy is everlasting; and his truth endureth to all generations.",
+      "translation": "KJV",
+      "memoryHint": "The Lord's goodness and enduring mercy.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 118:24",
+      "text": "This is the day which the LORD hath made; we will rejoice and be glad in it.",
+      "translation": "KJV",
+      "memoryHint": "Rejoicing in the day the Lord has made.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 119:11",
+      "text": "Thy word have I hid in mine heart, that I might not sin against thee.",
+      "translation": "KJV",
+      "memoryHint": "Hiding God's word in the heart.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 121:1",
+      "text": "I will lift up mine eyes unto the hills, from whence cometh my help.",
+      "translation": "KJV",
+      "memoryHint": "Lifting up eyes to the hills for help.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "2 Corinthians 12:9",
+      "text": "And he said unto me, My grace is sufficient for thee: for my strength is made perfect in weakness. Most gladly therefore will I rather glory in my infirmities, that the power of Christ may rest upon me.",
+      "translation": "KJV",
+      "memoryHint": "God's grace being sufficient in weakness.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Galatians 2:20",
+      "text": "I am crucified with Christ: nevertheless I live; yet not I, but Christ liveth in me: and the life which I now live in the flesh I live by the faith of the Son of God, who loved me, and gave himself for me.",
+      "translation": "KJV",
+      "memoryHint": "Living by faith in the Son of God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Galatians 6:9",
+      "text": "And let us not be weary in well doing: for in due season we shall reap, if we faint not.",
+      "translation": "KJV",
+      "memoryHint": "Not growing weary in doing good.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Ephesians 2:10",
+      "text": "For we are his workmanship, created in Christ Jesus unto good works, which God hath before ordained that we should walk in them.",
+      "translation": "KJV",
+      "memoryHint": "Being God's workmanship, created for good works.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Ephesians 4:32",
+      "text": "And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ’s sake hath forgiven you.",
+      "translation": "KJV",
+      "memoryHint": "Being kind and forgiving to one another.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Ephesians 6:11",
+      "text": "Put on the whole armour of God, that ye may be able to stand against the wiles of the devil.",
+      "translation": "KJV",
+      "memoryHint": "Putting on the whole armor of God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Philippians 1:6",
+      "text": "Being confident of this very thing, that he which hath begun a good work in you will perform it until the day of Jesus Christ:",
+      "translation": "KJV",
+      "memoryHint": "God completing the good work He began.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Philippians 4:6",
+      "text": "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.",
+      "translation": "KJV",
+      "memoryHint": "Not being anxious, but praying about everything.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Philippians 4:7",
+      "text": "And the peace of God, which passeth all understanding, shall keep your hearts and minds through Christ Jesus.",
+      "translation": "KJV",
+      "memoryHint": "The peace of God guarding hearts and minds.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Colossians 3:2",
+      "text": "Set your affection on things above, not on things on the earth.",
+      "translation": "KJV",
+      "memoryHint": "Setting your mind on things above.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "2 Timothy 3:16",
+      "text": "All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness:",
+      "translation": "KJV",
+      "memoryHint": "All Scripture being given by inspiration of God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Hebrews 4:12",
+      "text": "For the word of God is quick, and powerful, and sharper than any twoedged sword, piercing even to the dividing asunder of soul and spirit, and of the joints and marrow, and is a discerner of the thoughts and intents of the heart.",
+      "translation": "KJV",
+      "memoryHint": "The word of God being living and active.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Hebrews 11:6",
+      "text": "But without faith it is impossible to please him: for he that cometh to God must believe that he is, and that he is a rewarder of them that diligently seek him.",
+      "translation": "KJV",
+      "memoryHint": "Faith being necessary to please God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Hebrews 13:5",
+      "text": "Let your conversation be without covetousness; and be content with such things as ye have: for he hath said, I will never leave thee, nor forsake thee.",
+      "translation": "KJV",
+      "memoryHint": "God promising never to leave or forsake us.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "James 1:12",
+      "text": "Blessed is the man that endureth temptation: for when he is tried, he shall receive the crown of life, which the Lord hath promised to them that love him.",
+      "translation": "KJV",
+      "memoryHint": "Blessing for the one who endures trials.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 130:5",
+      "text": "I wait for the LORD, my soul doth wait, and in his word do I hope.",
+      "translation": "KJV",
+      "memoryHint": "Waiting for the Lord and hoping in His word.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 139:14",
+      "text": "I will praise thee; for I am fearfully and wonderfully made: marvellous are thy works; and that my soul knoweth right well.",
+      "translation": "KJV",
+      "memoryHint": "Being fearfully and wonderfully made.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 145:18",
+      "text": "The LORD is nigh unto all them that call upon him, to all that call upon him in truth.",
+      "translation": "KJV",
+      "memoryHint": "The Lord being near to those who call on Him.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Psalm 147:3",
+      "text": "He healeth the broken in heart, and bindeth up their wounds.",
+      "translation": "KJV",
+      "memoryHint": "God healing the brokenhearted.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 3:6",
+      "text": "In all thy ways acknowledge him, and he shall direct thy paths.",
+      "translation": "KJV",
+      "memoryHint": "Acknowledging God in all your ways.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 4:23",
+      "text": "Keep thy heart with all diligence; for out of it are the issues of life.",
+      "translation": "KJV",
+      "memoryHint": "Guarding the heart above all else.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 9:10",
+      "text": "The fear of the LORD is the beginning of wisdom: and the knowledge of the holy is understanding.",
+      "translation": "KJV",
+      "memoryHint": "The fear of the Lord as the beginning of wisdom.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 16:3",
+      "text": "Commit thy works unto the LORD, and thy thoughts shall be established.",
+      "translation": "KJV",
+      "memoryHint": "Committing your work to the Lord.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 17:17",
+      "text": "A friend loveth at all times, and a brother is born for adversity.",
+      "translation": "KJV",
+      "memoryHint": "A friend loving at all times.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 18:10",
+      "text": "The name of the LORD is a strong tower: the righteous runneth into it, and is safe.",
+      "translation": "KJV",
+      "memoryHint": "The name of the Lord as a strong tower.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 22:1",
+      "text": "A good name is rather to be chosen than great riches, and loving favour rather than silver and gold.",
+      "translation": "KJV",
+      "memoryHint": "A good name being better than riches.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 27:1",
+      "text": "Boast not thyself of to morrow; for thou knowest not what a day may bring forth.",
+      "translation": "KJV",
+      "memoryHint": "Not boasting about tomorrow.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 27:17",
+      "text": "Iron sharpeneth iron; so a man sharpeneth the countenance of his friend.",
+      "translation": "KJV",
+      "memoryHint": "Iron sharpening iron, friend sharpening friend.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Proverbs 31:25",
+      "text": "Strength and honour are her clothing; and she shall rejoice in time to come.",
+      "translation": "KJV",
+      "memoryHint": "Strength and honor as a woman's clothing.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Ecclesiastes 3:11",
+      "text": "He hath made every thing beautiful in his time: also he hath set the world in their heart, so that no man can find out the work that God maketh from the beginning to the end.",
+      "translation": "KJV",
+      "memoryHint": "God making everything beautiful in its time.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Isaiah 9:6",
+      "text": "For unto us a child is born, unto us a son is given: and the government shall be upon his shoulder: and his name shall be called Wonderful, Counsellor, The mighty God, The everlasting Father, The Prince of Peace.",
+      "translation": "KJV",
+      "memoryHint": "The child born, the Son given, His many names.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Isaiah 26:3",
+      "text": "Thou wilt keep him in perfect peace, whose mind is stayed on thee: because he trusteth in thee.",
+      "translation": "KJV",
+      "memoryHint": "Perfect peace for the mind fixed on God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Isaiah 40:31",
+      "text": "But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint.",
+      "translation": "KJV",
+      "memoryHint": "Renewed strength for those who wait on the Lord.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Isaiah 41:13",
+      "text": "For I the LORD thy God will hold thy right hand, saying unto thee, Fear not; I will help thee.",
+      "translation": "KJV",
+      "memoryHint": "God holding your right hand.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Isaiah 43:2",
+      "text": "When thou passest through the waters, I will be with thee; and through the rivers, they shall not overflow thee: when thou walkest through the fire, thou shalt not be burned; neither shall the flame kindle upon thee.",
+      "translation": "KJV",
+      "memoryHint": "God's presence through the waters and the fire.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Isaiah 53:5",
+      "text": "But he was wounded for our transgressions, he was bruised for our iniquities: the chastisement of our peace was upon him; and with his stripes we are healed.",
+      "translation": "KJV",
+      "memoryHint": "Wounded for our transgressions, healed by His stripes.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Isaiah 55:8",
+      "text": "For my thoughts are not your thoughts, neither are your ways my ways, saith the LORD.",
+      "translation": "KJV",
+      "memoryHint": "God's thoughts being higher than our thoughts.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Jeremiah 17:7",
+      "text": "Blessed is the man that trusteth in the LORD, and whose hope the LORD is.",
+      "translation": "KJV",
+      "memoryHint": "Blessed is the one who trusts in the Lord.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Jeremiah 31:3",
+      "text": "The LORD hath appeared of old unto me, saying, Yea, I have loved thee with an everlasting love: therefore with lovingkindness have I drawn thee.",
+      "translation": "KJV",
+      "memoryHint": "God's everlasting love drawing us with kindness.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Jeremiah 33:3",
+      "text": "Call unto me, and I will answer thee, and shew thee great and mighty things, which thou knowest not.",
+      "translation": "KJV",
+      "memoryHint": "Calling on God to show great and mighty things.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Lamentations 3:23",
+      "text": "They are new every morning: great is thy faithfulness.",
+      "translation": "KJV",
+      "memoryHint": "God's mercies being new every morning.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Micah 7:8",
+      "text": "Rejoice not against me, O mine enemy: when I fall, I shall arise; when I sit in darkness, the LORD shall be a light unto me.",
+      "translation": "KJV",
+      "memoryHint": "Rising again after falling, the Lord as light.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Habakkuk 3:19",
+      "text": "The LORD God is my strength, and he will make my feet like hinds’ feet, and he will make me to walk upon mine high places. To the chief singer on my stringed instruments.",
+      "translation": "KJV",
+      "memoryHint": "The Lord as strength, feet like a deer's.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Matthew 5:16",
+      "text": "Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven.",
+      "translation": "KJV",
+      "memoryHint": "Letting your light shine before others.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Matthew 6:34",
+      "text": "Take therefore no thought for the morrow: for the morrow shall take thought for the things of itself. Sufficient unto the day is the evil thereof.",
+      "translation": "KJV",
+      "memoryHint": "Not worrying about tomorrow.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Matthew 7:7",
+      "text": "Ask, and it shall be given you; seek, and ye shall find; knock, and it shall be opened unto you:",
+      "translation": "KJV",
+      "memoryHint": "Ask, seek, knock, and it will be given.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Matthew 11:29",
+      "text": "Take my yoke upon you, and learn of me; for I am meek and lowly in heart: and ye shall find rest unto your souls.",
+      "translation": "KJV",
+      "memoryHint": "Taking Jesus's yoke and finding rest.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Matthew 18:20",
+      "text": "For where two or three are gathered together in my name, there am I in the midst of them.",
+      "translation": "KJV",
+      "memoryHint": "Jesus present where two or three gather in His name.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Matthew 28:20",
+      "text": "Teaching them to observe all things whatsoever I have commanded you: and, lo, I am with you alway, even unto the end of the world. Amen.",
+      "translation": "KJV",
+      "memoryHint": "Jesus promising to be with us always.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Mark 11:24",
+      "text": "Therefore I say unto you, What things soever ye desire, when ye pray, believe that ye receive them, and ye shall havethem.",
+      "translation": "KJV",
+      "memoryHint": "Believing in prayer and receiving.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Mark 12:30",
+      "text": "And thou shalt love the Lord thy God with all thy heart, and with all thy soul, and with all thy mind, and with all thy strength: this is the first commandment.",
+      "translation": "KJV",
+      "memoryHint": "Loving the Lord with all your heart, soul, mind, and strength.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Luke 1:37",
+      "text": "For with God nothing shall be impossible.",
+      "translation": "KJV",
+      "memoryHint": "Nothing being impossible with God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "Luke 6:31",
+      "text": "And as ye would that men should do to you, do ye also to them likewise.",
+      "translation": "KJV",
+      "memoryHint": "Treating others as you want to be treated.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "John 1:12",
+      "text": "But as many as received him, to them gave he power to become the sons of God, even to them that believe on his name:",
+      "translation": "KJV",
+      "memoryHint": "Receiving Christ and becoming a child of God.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "John 3:17",
+      "text": "For God sent not his Son into the world to condemn the world; but that the world through him might be saved.",
+      "translation": "KJV",
+      "memoryHint": "God sending His Son to save, not condemn, the world.",
+      "xpReward": 8,
+      "isActive": true
+    },
+    {
+      "categorySlug": "memory-verses",
+      "reference": "John 8:12",
+      "text": "Then spake Jesus again unto them, saying, I am the light of the world: he that followeth me shall not walk in darkness, but shall have the light of life.",
+      "translation": "KJV",
+      "memoryHint": "Jesus as the light of the world.",
+      "xpReward": 8,
+      "isActive": true
+    }
+  ]
+}

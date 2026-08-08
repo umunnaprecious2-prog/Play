@@ -318,22 +318,70 @@ export async function getPlayerProgress(playerId: string) {
   };
 }
 
-export async function startMemoryVerseSession(input: { playerId: string; categorySlug?: string; difficultySlug?: string; verseCount: number }) {
-  const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
+const MEMORY_VERSE_VERSES_PER_LEVEL = 20;
+const MEMORY_VERSE_MAX_LEVEL = 10;
 
-  if (!player) {
-    throw AppError.notFound("Player profile not found");
-  }
+// Memory Verse's level is derived the same way as Match the Verse / Flash
+// Cards: how many rounds this player has already completed, capped at the
+// max level. 10 levels x 20 verses/level = the full 200-verse memory-verse
+// pool getting used across a full playthrough. Every level always serves a
+// full 20 verses -- difficulty still escalates across the 10 levels via
+// which verses are drawn from (shortest/easiest first), never by giving
+// fewer verses. Mirrors verseMatchService's pickLevelVerses / flashCardService's
+// pickLevelDeck pattern.
+async function pickMemoryVerseLevel(input: {
+  playerId: string;
+  categorySlug?: string;
+  difficultySlug?: string;
+  requestedVerseCount?: number;
+}) {
+  const completedCount = await prisma.gameSession.count({
+    where: { playerId: input.playerId, gameMode: "memory_verse", status: "COMPLETED" },
+  });
+  const level = Math.min(completedCount + 1, MEMORY_VERSE_MAX_LEVEL);
 
-  const verses = await prisma.bibleVerse.findMany({
+  const allVerses = await prisma.bibleVerse.findMany({
     where: {
       isActive: true,
       ...(input.categorySlug ? { category: { slug: input.categorySlug } } : {}),
       ...(input.difficultySlug ? { difficulty: { slug: input.difficultySlug } } : {}),
     },
     include: { category: true, difficulty: true },
-    take: input.verseCount,
-    orderBy: { createdAt: "desc" },
+  });
+  const sortedByDifficulty = [...allVerses].sort((a, b) => a.text.length - b.text.length);
+
+  const verseCount = Math.min(input.requestedVerseCount ?? MEMORY_VERSE_VERSES_PER_LEVEL, allVerses.length);
+
+  // The difficulty window must always contain at least verseCount verses, or
+  // a low level would silently serve fewer than 20 despite verseCount saying
+  // 20 -- the same bug already fixed for Match the Verse and Flash Cards.
+  const minWindow = Math.max(verseCount, MEMORY_VERSE_VERSES_PER_LEVEL);
+  const windowSize = Math.min(
+    allVerses.length,
+    minWindow + Math.floor(((level - 1) * Math.max(allVerses.length - minWindow, 0)) / (MEMORY_VERSE_MAX_LEVEL - 1)),
+  );
+  const pool = sortedByDifficulty.slice(0, windowSize);
+
+  return { level, verses: shuffle(pool).slice(0, verseCount) };
+}
+
+export async function startMemoryVerseSession(input: {
+  playerId: string;
+  categorySlug?: string;
+  difficultySlug?: string;
+  verseCount?: number;
+}) {
+  const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
+
+  if (!player) {
+    throw AppError.notFound("Player profile not found");
+  }
+
+  const { level, verses } = await pickMemoryVerseLevel({
+    playerId: input.playerId,
+    categorySlug: input.categorySlug,
+    difficultySlug: input.difficultySlug,
+    requestedVerseCount: input.verseCount,
   });
 
   if (verses.length === 0) {
@@ -348,12 +396,14 @@ export async function startMemoryVerseSession(input: { playerId: string; categor
       metadata: {
         categorySlug: input.categorySlug ?? null,
         difficultySlug: input.difficultySlug ?? null,
+        level,
       },
     },
   });
 
   return {
     session,
+    level,
     verses: verses.map((verse) => ({
       id: verse.id,
       slug: verse.slug,

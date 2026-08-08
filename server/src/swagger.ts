@@ -124,14 +124,15 @@ export const swaggerSpec = swaggerJsdoc({
             playerId: { type: "string" },
             categorySlug: { type: ["string", "null"] },
             difficultySlug: { type: ["string", "null"] },
-            verseCount: { type: "integer" },
+            verseCount: { type: "integer", description: "Optional override; defaults to 20 (this player's current level's full round)." },
           },
-          required: ["playerId", "verseCount"],
+          required: ["playerId"],
         },
         MemoryVerseSessionResponse: {
           type: "object",
           properties: {
             session: { type: "object" },
+            level: { type: "integer", description: "This player's current Memory Verse level (1-10)." },
             verses: {
               type: "array",
               items: { type: "object" },

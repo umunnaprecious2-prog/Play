@@ -149,6 +149,7 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
         onContinue={() =>
           router.push((result.nextLevelSlug ? `/scripture-puzzle/${result.nextLevelSlug}` : "/scripture-puzzle") as Route)
         }
+        onBackToLevels={() => router.push("/scripture-puzzle")}
       />
     );
   }

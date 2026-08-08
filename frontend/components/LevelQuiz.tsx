@@ -193,6 +193,7 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
           totalScore={totalXp}
           continueLabel={nextLevelSlug ? "Continue to Next Level" : "Back to Map"}
           onContinue={() => router.push(nextLevelSlug ? `/levels/${nextLevelSlug}` : "/levels")}
+          onBackToLevels={() => router.push("/levels")}
         />
         <Link href="/levels" className="justify-self-center text-sm font-semibold text-royal-600 hover:underline">
           ← Back to the level map

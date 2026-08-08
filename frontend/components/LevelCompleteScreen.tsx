@@ -7,6 +7,7 @@ type LevelCompleteScreenProps = {
   totalScore: number;
   onContinue: () => void;
   continueLabel: string;
+  onBackToLevels: () => void;
 };
 
 export function LevelCompleteScreen({
@@ -18,6 +19,7 @@ export function LevelCompleteScreen({
   totalScore,
   onContinue,
   continueLabel,
+  onBackToLevels,
 }: LevelCompleteScreenProps) {
   return (
     <section className="grid justify-items-center gap-5 rounded-[1.75rem] bg-royal-900 p-8 text-center text-white shadow-glow">
@@ -54,13 +56,22 @@ export function LevelCompleteScreen({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={onContinue}
-        className="rounded-full bg-gold-400 px-7 py-3.5 text-base font-bold text-royal-900 shadow-lg shadow-gold-500/30 transition hover:-translate-y-0.5 hover:bg-gold-300"
-      >
-        {continueLabel} →
-      </button>
+      <div className="flex flex-wrap justify-center gap-3">
+        <button
+          type="button"
+          onClick={onContinue}
+          className="rounded-full bg-gold-400 px-7 py-3.5 text-base font-bold text-royal-900 shadow-lg shadow-gold-500/30 transition hover:-translate-y-0.5 hover:bg-gold-300"
+        >
+          {continueLabel} →
+        </button>
+        <button
+          type="button"
+          onClick={onBackToLevels}
+          className="rounded-full bg-white/10 px-7 py-3.5 text-base font-bold text-white ring-1 ring-inset ring-white/20 transition hover:bg-white/20"
+        >
+          ← Back to Levels
+        </button>
+      </div>
     </section>
   );
 }

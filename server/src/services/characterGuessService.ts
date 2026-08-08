@@ -8,6 +8,12 @@ const DEFAULT_ROUND_COUNT = 5;
 const POINTS = 10;
 const POINTS_PER_HINT = 2;
 const MAX_HINTS = 2;
+// Levels are the same 8 categories Bible Quiz Levels uses (reusing that
+// proven structure rather than inventing a new one), and each level pulls
+// up to this many characters from its category -- real, multi-item work to
+// unlock the next level rather than a single lucky guess. Categories with
+// fewer than this many characters simply use however many exist.
+const MAX_CHARACTERS_PER_LEVEL = 20;
 
 function shuffle<T>(items: T[]): T[] {
   const copy = [...items];
@@ -47,36 +53,59 @@ async function pickNextCharacters(playerId: string, roundCount: number) {
   return ordered.slice(0, roundCount);
 }
 
+// Levels = categories that actually have at least one character (some
+// categories, like "parables" and "miracles", have no characters tagged and
+// are skipped rather than shown as an empty level).
+async function levelCategories() {
+  const categories = await prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } });
+  const counts = await prisma.bibleCharacter.groupBy({
+    by: ["categoryId"],
+    where: { isActive: true, categoryId: { not: null } },
+    _count: true,
+  });
+  const countByCategory = new Map(counts.map((row) => [row.categoryId, row._count]));
+  return categories.filter((category) => (countByCategory.get(category.id) ?? 0) > 0);
+}
+
 async function levelItems() {
-  const characters = await prisma.bibleCharacter.findMany({ where: { isActive: true } });
-  return characters.map((character) => ({ id: character.id, slug: character.slug, title: character.name, sortOrder: character.sortOrder }));
+  const categories = await levelCategories();
+  return categories.map((category) => ({ id: category.id, slug: category.slug, title: category.name, sortOrder: category.sortOrder }));
+}
+
+async function charactersForCategory(categoryId: string) {
+  return prisma.bibleCharacter.findMany({
+    where: { isActive: true, categoryId },
+    orderBy: { sortOrder: "asc" },
+    take: MAX_CHARACTERS_PER_LEVEL,
+  });
 }
 
 export async function listCharacterGuessLevels(playerId: string) {
   return listLevels(playerId, GAME_MODE, await levelItems());
 }
 
-export async function startCharacterGuessSession(input: { playerId: string; roundCount?: number; characterSlug?: string }) {
+export async function startCharacterGuessSession(input: { playerId: string; roundCount?: number; categorySlug?: string }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
   let characters;
   let levelInfo: { levelNumber: number; maxLevel: number } | null = null;
+  let levelAnchorId: string | null = null;
 
-  if (input.characterSlug) {
-    const character = await prisma.bibleCharacter.findUnique({ where: { slug: input.characterSlug } });
-    if (!character || !character.isActive) throw AppError.notFound("Character not found");
+  if (input.categorySlug) {
+    const categories = await levelCategories();
+    const categoryIndex = categories.findIndex((category) => category.slug === input.categorySlug);
+    if (categoryIndex === -1) throw AppError.notFound("Level not found");
 
+    const category = categories[categoryIndex];
     const items = await levelItems();
-    const unlocked = await isContentUnlocked(player.id, GAME_MODE, character.id, items);
+    const unlocked = await isContentUnlocked(player.id, GAME_MODE, category.id, items);
     if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
 
-    await recordAttempt(player.id, GAME_MODE, character.id);
-    levelInfo = {
-      levelNumber: [...items].sort((a, b) => a.sortOrder - b.sortOrder).findIndex((item) => item.id === character.id) + 1,
-      maxLevel: items.length,
-    };
-    characters = [character];
+    await recordAttempt(player.id, GAME_MODE, category.id);
+    levelInfo = { levelNumber: categoryIndex + 1, maxLevel: categories.length };
+    levelAnchorId = category.id;
+    characters = await charactersForCategory(category.id);
   } else {
     const roundCount = Math.min(Math.max(input.roundCount ?? DEFAULT_ROUND_COUNT, 1), 10);
     characters = await pickNextCharacters(input.playerId, roundCount);
@@ -91,7 +120,7 @@ export async function startCharacterGuessSession(input: { playerId: string; roun
       playerId: player.id,
       gameMode: "character_guess",
       totalQuestions: characters.length,
-      metadata: input.characterSlug ? { levelCharacterId: characters[0].id } : {},
+      metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
     },
   });
 
@@ -188,13 +217,14 @@ export async function submitCharacterGuess(input: { sessionId: string; character
   });
 
   let nextLevelSlug: string | null = null;
-  const levelCharacterId = (session.metadata as { levelCharacterId?: string } | null)?.levelCharacterId;
+  const levelCategoryId = (session.metadata as { levelCategoryId?: string } | null)?.levelCategoryId;
+  const allCorrectInLevel = nextCorrect === session.totalQuestions;
 
-  if (isComplete && isCorrect && levelCharacterId) {
+  if (isComplete && allCorrectInLevel && levelCategoryId) {
     const unlockResult = await markCompleteAndUnlockNext(
       updatedPlayer.id,
       GAME_MODE,
-      levelCharacterId,
+      levelCategoryId,
       completedSession.score,
       await levelItems(),
     );

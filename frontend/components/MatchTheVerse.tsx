@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
 import type { VerseMatchCard } from "../lib/types";
 
 export function MatchTheVerse() {
+  const router = useRouter();
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [cards, setCards] = useState<VerseMatchCard[] | null>(null);
@@ -130,7 +132,8 @@ export function MatchTheVerse() {
         xpEarned={completion.xpAwarded}
         totalScore={totalXp}
         continueLabel="Next Level"
-        onContinue={() => window.location.reload()}
+        onContinue={() => router.push("/match-the-verse/play")}
+        onBackToLevels={() => router.push("/match-the-verse")}
       />
     );
   }

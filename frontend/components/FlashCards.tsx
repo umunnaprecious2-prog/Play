@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
 import type { FlashCard } from "../lib/types";
 
 export function FlashCards() {
+  const router = useRouter();
   const { playerId, isLoading: isPlayerLoading, error: playerError } = useGuestPlayer();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [cards, setCards] = useState<FlashCard[] | null>(null);
@@ -106,7 +108,8 @@ export function FlashCards() {
         xpEarned={completion.xpAwarded}
         totalScore={totalXp}
         continueLabel="Next Level"
-        onContinue={() => window.location.reload()}
+        onContinue={() => router.push("/flashcards/play")}
+        onBackToLevels={() => router.push("/flashcards")}
       />
     );
   }

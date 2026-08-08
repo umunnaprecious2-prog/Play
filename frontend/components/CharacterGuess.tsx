@@ -40,7 +40,7 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
       data: { session: { id: string }; rounds: CharacterRound[]; levelNumber: number | null; maxLevel: number | null };
     }>("/games/characters/sessions", {
       method: "POST",
-      body: JSON.stringify({ playerId, characterSlug: levelSlug }),
+      body: JSON.stringify({ playerId, categorySlug: levelSlug }),
     })
       .then((response) => {
         if (!cancelled) {
@@ -143,6 +143,7 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
           totalScore={totalXp}
           continueLabel={nextLevelSlug ? "Next Level" : "Back to Levels"}
           onContinue={() => router.push((nextLevelSlug ? `/who-am-i/${nextLevelSlug}` : "/who-am-i") as Route)}
+          onBackToLevels={() => router.push("/who-am-i")}
         />
       );
     }

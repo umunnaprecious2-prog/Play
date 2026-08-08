@@ -181,8 +181,9 @@ export function TriviaGame() {
         levelScore={totalScore}
         xpEarned={totalScore}
         totalScore={totalXp}
-        continueLabel="Back to Levels"
-        onContinue={() => router.push("/trivia")}
+        continueLabel={round && round < 20 ? "Next Level" : "Back to Levels"}
+        onContinue={() => router.push(round && round < 20 ? "/trivia/play" : "/trivia")}
+        onBackToLevels={() => router.push("/trivia")}
       />
     );
   }

@@ -56,7 +56,7 @@ export const characterGuessLevelsQuerySchema = z.object({
 export const startCharacterGuessSchema = z.object({
   playerId: z.string().min(1),
   roundCount: z.number().int().min(1).max(10).optional(),
-  characterSlug: z.string().min(1).optional(),
+  categorySlug: z.string().min(1).optional(),
 });
 
 export const characterHintSchema = z.object({

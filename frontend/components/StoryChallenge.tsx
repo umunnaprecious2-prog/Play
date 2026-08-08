@@ -129,6 +129,7 @@ export function StoryChallenge({ levelSlug }: { levelSlug: string }) {
         totalScore={totalXp}
         continueLabel={result.nextLevelSlug ? "Next Level" : "Back to Levels"}
         onContinue={() => router.push((result.nextLevelSlug ? `/story-challenge/${result.nextLevelSlug}` : "/story-challenge") as Route)}
+        onBackToLevels={() => router.push("/story-challenge")}
       />
     );
   }

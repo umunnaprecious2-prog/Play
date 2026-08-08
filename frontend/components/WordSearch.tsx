@@ -158,6 +158,7 @@ export function WordSearch({ levelSlug }: { levelSlug: string }) {
         totalScore={totalXp}
         continueLabel={nextLevelSlug ? "Next Level" : "Back to Levels"}
         onContinue={() => router.push((nextLevelSlug ? `/word-search/${nextLevelSlug}` : "/word-search") as Route)}
+        onBackToLevels={() => router.push("/word-search")}
       />
     );
   }

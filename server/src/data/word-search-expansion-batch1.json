@@ -1,0 +1,21 @@
+{
+  "sourceName": "word-search-20-per-level-batch1",
+  "wordSearchPuzzles": [
+    {
+      "slug": "the-armor-of-god",
+      "title": "The Armor of God",
+      "gridSize": 16,
+      "sortOrder": 14,
+      "categorySlug": "apostles",
+      "words": ["TRUTH", "RIGHTEOUSNESS", "GOSPEL", "FAITH", "SALVATION", "SPIRIT", "PRAYER", "SHIELD", "HELMET", "BREASTPLATE", "BELT", "SWORD", "PEACE", "ARMOUR", "WRESTLE", "PRINCIPALITIES", "DARKNESS", "STAND", "WATCHING", "SAINTS"]
+    },
+    {
+      "slug": "the-apostles-epistles",
+      "title": "The Apostles' Epistles",
+      "gridSize": 15,
+      "sortOrder": 16,
+      "categorySlug": "apostles",
+      "words": ["ROMANS", "GALATIANS", "EPHESIANS", "PHILIPPIANS", "COLOSSIANS", "TIMOTHY", "TITUS", "PHILEMON", "HEBREWS", "JAMES", "PETER", "JOHN", "JUDE", "CORINTHIANS", "THESSALONIANS", "PAUL", "EPISTLE", "APOSTLE", "GRACE", "CHURCH"]
+    }
+  ]
+}

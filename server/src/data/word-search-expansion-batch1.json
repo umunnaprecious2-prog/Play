@@ -1,5 +1,8 @@
 {
   "sourceName": "word-search-20-per-level-batch1",
+  "categories": [
+    { "slug": "apostles", "name": "Apostles", "description": "Peter, Paul, John, and the early church", "sortOrder": 8 }
+  ],
   "wordSearchPuzzles": [
     {
       "slug": "the-armor-of-god",

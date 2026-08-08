@@ -186,7 +186,7 @@ export function MatchTheVerse() {
             <span className="rounded-full bg-gold-50 px-4 py-2 text-sm font-semibold text-gold-700">Level {level}/20</span>
           ) : null}
           <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
-            Group {groupIndex + 1} of {verseGroups.length}
+            Pairs {groupIndex * GROUP_SIZE + 1}-{Math.min((groupIndex + 1) * GROUP_SIZE, cards.length / 2)} of {cards.length / 2}
           </span>
           <span className="rounded-full bg-meadow-50 px-4 py-2 text-sm font-semibold text-meadow-700">
             {matchedVerseIds.size}/{cards.length / 2} matched

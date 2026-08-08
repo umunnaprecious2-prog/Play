@@ -1,8 +1,3 @@
-databases:
-  - name: play-db
-    plan: free
-    postgresMajorVersion: "17"
-
 services:
   # Express + Prisma API
   - type: web
@@ -15,11 +10,10 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      # Migrated off Render's managed Postgres (play-db) to Neon. Set manually in the
-      # Render dashboard (Environment tab) -- sync: false means Blueprint syncs will
-      # never overwrite it back to play-db's connection string. No credentials committed
-      # to the repo. play-db itself is left defined above and untouched until it's
-      # confirmed safe to remove.
+      # Migrated off Render's managed Postgres to Neon (the old play-db database has
+      # been deleted). Set manually in the Render dashboard (Environment tab) to the
+      # Neon direct (non-pooled) connection string -- sync: false keeps Blueprint syncs
+      # from ever touching it. No credentials committed to the repo.
       - key: DATABASE_URL
         sync: false
       # Set these two in the Render dashboard after the first deploy (Environment tab) --

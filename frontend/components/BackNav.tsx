@@ -15,7 +15,7 @@ function backTargetFor(pathname: string): string | null {
   const oneLevelUp = pathname.match(/^\/(games|levels|word-search|scripture-puzzle|who-am-i|story-challenge)\/[^/]+$/);
   if (oneLevelUp) return `/${oneLevelUp[1]}`;
 
-  const proceduralPlay = pathname.match(/^\/(match-the-verse|flashcards|trivia)\/play$/);
+  const proceduralPlay = pathname.match(/^\/(match-the-verse|flashcards|trivia|memory-verse)\/play$/);
   if (proceduralPlay) return `/${proceduralPlay[1]}`;
 
   const topLevelGamePages = [

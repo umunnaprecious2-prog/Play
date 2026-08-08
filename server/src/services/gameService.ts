@@ -321,6 +321,17 @@ export async function getPlayerProgress(playerId: string) {
 const MEMORY_VERSE_VERSES_PER_LEVEL = 20;
 const MEMORY_VERSE_MAX_LEVEL = 10;
 
+// Same level-map shape as getTriviaLevelMap / getVerseMatchLevelMap /
+// getFlashCardLevelMap -- backs the snake-ladder ProceduralLevelMap page for
+// Memory Verse (/memory-verse now shows the map, gameplay moved to
+// /memory-verse/play).
+export async function getMemoryVerseLevelMap(playerId: string) {
+  const completedCount = await prisma.gameSession.count({
+    where: { playerId, gameMode: "memory_verse", status: "COMPLETED" },
+  });
+  return { currentLevel: Math.min(completedCount + 1, MEMORY_VERSE_MAX_LEVEL), maxLevel: MEMORY_VERSE_MAX_LEVEL };
+}
+
 // Memory Verse's level is derived the same way as Match the Verse / Flash
 // Cards: how many rounds this player has already completed, capped at the
 // max level. 10 levels x 20 verses/level = the full 200-verse memory-verse

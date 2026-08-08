@@ -30,6 +30,10 @@ export const startMemoryVerseSessionSchema = z.object({
   verseCount: z.number().int().min(1).max(20).optional().default(20),
 });
 
+export const memoryVerseLevelMapQuerySchema = z.object({
+  playerId: z.string().min(1),
+});
+
 export const submitMemoryVerseAnswerSchema = z.object({
   sessionId: z.string().min(1),
   verseId: z.string().min(1),

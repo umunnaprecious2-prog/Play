@@ -3,6 +3,7 @@ import {
   postPlayer,
   getPlayer,
   getPlayerProgressHandler,
+  getMemoryVerseLevelMapController,
   getTriviaLevelMapController,
   postMemoryVerseAnswer,
   postMemoryVerseSession,
@@ -12,6 +13,7 @@ import {
 import { validateBody, validateQuery } from "../middlewares/validate";
 import {
   createPlayerSchema,
+  memoryVerseLevelMapQuerySchema,
   startMemoryVerseSessionSchema,
   startQuizSessionSchema,
   submitMemoryVerseAnswerSchema,
@@ -182,6 +184,24 @@ router.post("/quiz/answers", validateBody(submitQuizAnswerSchema), postQuizAnswe
  *               $ref: '#/components/schemas/MemoryVerseSessionResponse'
  */
 router.post("/memory-verse/sessions", validateBody(startMemoryVerseSessionSchema), postMemoryVerseSession);
+
+/**
+ * @swagger
+ * /memory-verse/level-map:
+ *   get:
+ *     tags: [MemoryVerse]
+ *     summary: Get this player's current Memory Verse level position (10 levels, 20 verses each)
+ *     parameters:
+ *       - in: query
+ *         name: playerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Current level and max level
+ */
+router.get("/memory-verse/level-map", validateQuery(memoryVerseLevelMapQuerySchema), getMemoryVerseLevelMapController);
 
 /**
  * @swagger

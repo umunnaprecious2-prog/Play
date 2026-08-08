@@ -4,6 +4,7 @@ import {
   createPlayerProfile,
   getPlayerProgress,
   getPlayerProfile,
+  getMemoryVerseLevelMap,
   getTriviaLevelMap,
   startMemoryVerseSession,
   startQuizSession,
@@ -37,6 +38,11 @@ export const postQuizSession = asyncHandler(async (req: Request, res: Response) 
 
 export const postQuizAnswer = asyncHandler(async (req: Request, res: Response) => {
   res.status(201).json({ success: true, data: await submitQuizAnswer(req.body) });
+});
+
+export const getMemoryVerseLevelMapController = asyncHandler(async (req: Request, res: Response) => {
+  const playerId = String(req.query.playerId || "");
+  res.json({ success: true, data: await getMemoryVerseLevelMap(playerId) });
 });
 
 export const postMemoryVerseSession = asyncHandler(async (req: Request, res: Response) => {

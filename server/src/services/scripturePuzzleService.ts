@@ -57,9 +57,18 @@ async function pickNextVerse(playerId: string) {
   return allVerses[Math.floor(Math.random() * allVerses.length)];
 }
 
-// Levels = categories that actually have at least one verse.
+// Levels = the original 8 thematic categories (sortOrder 1-8) that actually
+// have at least one verse. Restricted to sortOrder <= 8 to exclude the 64
+// per-book categories added for Bible Quiz Levels (no verses assigned to
+// those, so harmless today, but future-proofed anyway) and, concretely, the
+// "memory-verses" category (sortOrder 73) added later purely as a verse pool
+// for Memory Verse practice -- without this bound it also has verses and was
+// silently showing up as an unintended 7th Scripture Puzzle level.
 async function levelCategories() {
-  const categories = await prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } });
+  const categories = await prisma.category.findMany({
+    where: { isActive: true, sortOrder: { lte: 8 } },
+    orderBy: { sortOrder: "asc" },
+  });
   const counts = await prisma.bibleVerse.groupBy({
     by: ["categoryId"],
     where: { isActive: true, categoryId: { not: null } },

@@ -6,7 +6,7 @@ export const verseMatchLevelMapQuerySchema = z.object({
 
 export const startVerseMatchSchema = z.object({
   playerId: z.string().min(1),
-  pairCount: z.number().int().min(3).max(10).optional(),
+  pairCount: z.number().int().min(3).max(20).optional(),
 });
 
 export const completeVerseMatchSchema = z.object({

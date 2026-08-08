@@ -36,8 +36,8 @@ async function pickLevelVerses(playerId: string, requestedPairCount?: number) {
   const sortedByDifficulty = [...allVerses].sort((a, b) => a.text.length - b.text.length);
 
   const pairCount = requestedPairCount
-    ? Math.min(Math.max(requestedPairCount, 3), 10)
-    : Math.min(3 + Math.floor(((level - 1) * 7) / (MAX_LEVEL - 1)), 10, allVerses.length);
+    ? Math.min(Math.max(requestedPairCount, 3), 20)
+    : Math.min(3 + Math.floor(((level - 1) * 17) / (MAX_LEVEL - 1)), 20, allVerses.length);
 
   const windowSize = Math.min(allVerses.length, 5 + level);
   const pool = sortedByDifficulty.slice(0, windowSize);

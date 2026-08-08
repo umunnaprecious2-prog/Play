@@ -8,7 +8,7 @@ import { triviaDifficultyForRound } from "../lib/player";
 import { LevelCompleteScreen } from "./LevelCompleteScreen";
 import type { GameAnswerResult, QuizQuestion } from "../lib/types";
 
-const QUESTION_COUNT = 15;
+const QUESTION_COUNT = 20;
 const SECONDS_PER_QUESTION = 15;
 
 type TriviaSession = {

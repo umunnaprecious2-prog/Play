@@ -42,6 +42,7 @@ export const listLevelsQuerySchema = z.object({
 
 export const startLevelSessionSchema = z.object({
   playerId: z.string().min(1),
+  restart: z.boolean().optional(),
 });
 
 export const requestLevelHintSchema = z.object({

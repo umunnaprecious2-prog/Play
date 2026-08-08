@@ -2,6 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
 import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
+import { abandonSession, answeredItemIds, findActiveLevelSession } from "./sessionResumeService";
 
 const GAME_MODE = "character_guess";
 const DEFAULT_ROUND_COUNT = 5;
@@ -84,13 +85,19 @@ export async function listCharacterGuessLevels(playerId: string) {
   return listLevels(playerId, GAME_MODE, await levelItems());
 }
 
-export async function startCharacterGuessSession(input: { playerId: string; roundCount?: number; categorySlug?: string }) {
+export async function startCharacterGuessSession(input: {
+  playerId: string;
+  roundCount?: number;
+  categorySlug?: string;
+  restart?: boolean;
+}) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
   let characters;
   let levelInfo: { levelNumber: number; maxLevel: number } | null = null;
   let levelAnchorId: string | null = null;
+  let resumedSession: Awaited<ReturnType<typeof findActiveLevelSession>> = null;
 
   if (input.categorySlug) {
     const categories = await levelCategories();
@@ -102,10 +109,27 @@ export async function startCharacterGuessSession(input: { playerId: string; roun
     const unlocked = await isContentUnlocked(player.id, GAME_MODE, category.id, items);
     if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
 
-    await recordAttempt(player.id, GAME_MODE, category.id);
     levelInfo = { levelNumber: categoryIndex + 1, maxLevel: categories.length };
     levelAnchorId = category.id;
     characters = await charactersForCategory(category.id);
+
+    const existing = await findActiveLevelSession(player.id, GAME_MODE, "levelCategoryId", category.id);
+    if (existing) {
+      if (input.restart) {
+        await abandonSession(existing.id);
+      } else {
+        const answeredIds = await answeredItemIds(existing.id);
+        const remaining = characters.filter((character) => !answeredIds.has(character.id));
+        if (remaining.length > 0) {
+          resumedSession = existing;
+          characters = remaining;
+        }
+      }
+    }
+
+    if (!resumedSession) {
+      await recordAttempt(player.id, GAME_MODE, category.id);
+    }
   } else {
     const roundCount = Math.min(Math.max(input.roundCount ?? DEFAULT_ROUND_COUNT, 1), 10);
     characters = await pickNextCharacters(input.playerId, roundCount);
@@ -115,19 +139,22 @@ export async function startCharacterGuessSession(input: { playerId: string; roun
     throw AppError.notFound("No characters available yet");
   }
 
-  const session = await prisma.gameSession.create({
-    data: {
-      playerId: player.id,
-      gameMode: "character_guess",
-      totalQuestions: characters.length,
-      metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
-    },
-  });
+  const session =
+    resumedSession ??
+    (await prisma.gameSession.create({
+      data: {
+        playerId: player.id,
+        gameMode: "character_guess",
+        totalQuestions: characters.length,
+        metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
+      },
+    }));
 
   return {
     session,
     levelNumber: levelInfo?.levelNumber ?? null,
     maxLevel: levelInfo?.maxLevel ?? null,
+    resumed: Boolean(resumedSession),
     rounds: shuffle(characters).map((character) => ({
       characterId: character.id,
       firstClue: character.clues[0] ?? "A figure from the Bible.",

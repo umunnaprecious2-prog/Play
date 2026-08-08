@@ -17,6 +17,8 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
   const [rounds, setRounds] = useState<CharacterRound[] | null>(null);
   const [levelNumber, setLevelNumber] = useState<number | null>(null);
   const [maxLevel, setMaxLevel] = useState<number | null>(null);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [answeredOffset, setAnsweredOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,18 +31,21 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
   const [correctCount, setCorrectCount] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
 
-  useEffect(() => {
-    if (!playerId) return;
-
+  function loadSession(restart: boolean) {
     let cancelled = false;
     setIsLoading(true);
 
     apiFetch<{
       success: boolean;
-      data: { session: { id: string }; rounds: CharacterRound[]; levelNumber: number | null; maxLevel: number | null };
+      data: {
+        session: { id: string; score: number; totalQuestions: number; correctCount: number };
+        rounds: CharacterRound[];
+        levelNumber: number | null;
+        maxLevel: number | null;
+      };
     }>("/games/characters/sessions", {
       method: "POST",
-      body: JSON.stringify({ playerId, categorySlug: levelSlug }),
+      body: JSON.stringify({ playerId, categorySlug: levelSlug, restart }),
     })
       .then((response) => {
         if (!cancelled) {
@@ -48,6 +53,12 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
           setRounds(response.data.rounds);
           setLevelNumber(response.data.levelNumber);
           setMaxLevel(response.data.maxLevel);
+          setTotalQuestions(response.data.session.totalQuestions);
+          setAnsweredOffset(response.data.session.totalQuestions - response.data.rounds.length);
+          setSessionScore(response.data.session.score);
+          setCorrectCount(response.data.session.correctCount);
+          setCurrentIndex(0);
+          setRoundStates({});
         }
       })
       .catch((fetchError: unknown) => {
@@ -60,7 +71,18 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
     return () => {
       cancelled = true;
     };
+  }
+
+  useEffect(() => {
+    if (!playerId) return;
+    return loadSession(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerId, levelSlug]);
+
+  function startOver() {
+    if (!confirm("Start this level over from the first character? Your progress so far on this level will be replaced.")) return;
+    loadSession(true);
+  }
 
   const round = rounds?.[currentIndex];
   const state: RoundState = round
@@ -128,7 +150,7 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
   if (playerError || error || !rounds || !round) {
     const isFinished = rounds && currentIndex >= rounds.length;
     if (isFinished) {
-      const ratio = rounds.length > 0 ? correctCount / rounds.length : 0;
+      const ratio = totalQuestions > 0 ? correctCount / totalQuestions : 0;
       const stars = ratio >= 0.9 ? 3 : ratio >= 0.6 ? 2 : ratio > 0 ? 1 : 0;
       const lastRound = rounds[rounds.length - 1];
       const nextLevelSlug = lastRound ? roundStates[lastRound.characterId]?.answer?.nextLevelSlug : null;
@@ -166,8 +188,13 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
             </span>
           ) : null}
           <span className="rounded-full bg-gold-100 px-4 py-2 text-sm font-semibold text-gold-700">
-            Character {currentIndex + 1} of {rounds.length}
+            Character {answeredOffset + currentIndex + 1} of {totalQuestions}
           </span>
+          {answeredOffset > 0 ? (
+            <button type="button" onClick={startOver} className="text-xs font-semibold text-slate-400 underline hover:text-slate-600">
+              Start over
+            </button>
+          ) : null}
         </div>
       </div>
 

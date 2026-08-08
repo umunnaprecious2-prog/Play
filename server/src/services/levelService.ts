@@ -2,6 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { calculateLevel, updateStreak } from "../utils/gameMath";
 import { awardProgressRewards } from "./rewardService";
+import { abandonSession, answeredItemIds, findActiveLevelSession } from "./sessionResumeService";
 
 const POINTS_PER_QUESTION = 10;
 const POINTS_PER_HINT = 2;
@@ -74,7 +75,7 @@ async function isLevelUnlocked(playerId: string, category: { id: string; sortOrd
   return Boolean(progress?.isUnlocked);
 }
 
-export async function startLevelSession(input: { playerId: string; categorySlug: string }) {
+export async function startLevelSession(input: { playerId: string; categorySlug: string; restart?: boolean }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
 
   if (!player) {
@@ -104,6 +105,41 @@ export async function startLevelSession(input: { playerId: string; categorySlug:
     throw AppError.notFound("This level has no questions yet");
   }
 
+  // Resume an in-progress attempt at this exact level instead of always
+  // starting over from question one -- unless the player explicitly asked
+  // to restart, in which case the old attempt is marked abandoned.
+  const existing = await findActiveLevelSession(input.playerId, LEVEL_GAME_MODE, "categorySlug", category.slug);
+
+  if (existing) {
+    if (input.restart) {
+      await abandonSession(existing.id);
+    } else {
+      const answeredIds = await answeredItemIds(existing.id);
+      const remaining = questions.filter((question) => !answeredIds.has(question.id));
+
+      if (remaining.length > 0) {
+        return {
+          session: existing,
+          level: { slug: category.slug, name: category.name },
+          resumed: true,
+          questions: shuffle(remaining).map((question) => ({
+            id: question.id,
+            slug: question.slug,
+            prompt: question.prompt,
+            explanation: question.explanation,
+            scriptureReference: question.scriptureReference,
+            imageUrl: question.imageUrl,
+            imageAlt: question.imageAlt,
+            options: shuffle(question.options).map((option) => ({ id: option.id, text: option.text })),
+          })),
+        };
+      }
+      // Every question was already answered but the session never closed
+      // (an edge case, not the normal path) -- fall through and start fresh.
+      await abandonSession(existing.id);
+    }
+  }
+
   const session = await prisma.gameSession.create({
     data: {
       playerId: player.id,
@@ -122,6 +158,7 @@ export async function startLevelSession(input: { playerId: string; categorySlug:
   return {
     session,
     level: { slug: category.slug, name: category.name },
+    resumed: false,
     questions: shuffle(questions).map((question) => ({
       id: question.id,
       slug: question.slug,

@@ -2,6 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
 import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
+import { abandonSession, findActiveLevelSession } from "./sessionResumeService";
 
 const GAME_MODE = "word_search";
 const POINTS_PER_WORD = 10;
@@ -86,6 +87,30 @@ function generateGrid(words: string[], gridSize: number): { grid: string[][]; pl
   return { grid, placements };
 }
 
+// Rebuilds the visible letter grid purely from the word placements already
+// stored on a resumed session -- the exact original grid isn't stored (only
+// where each real word sits), so filler cells get fresh random letters.
+// That's harmless: filler letters never spelled anything to begin with.
+function rebuildGridFromPlacements(placements: Record<string, Cell[]>, gridSize: number): string[][] {
+  const grid: string[][] = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ""));
+
+  for (const [word, cells] of Object.entries(placements)) {
+    cells.forEach((cell, index) => {
+      grid[cell.row][cell.col] = word[index];
+    });
+  }
+
+  for (let row = 0; row < gridSize; row += 1) {
+    for (let col = 0; col < gridSize; col += 1) {
+      if (!grid[row][col]) {
+        grid[row][col] = ALPHABET[randomInt(ALPHABET.length)];
+      }
+    }
+  }
+
+  return grid;
+}
+
 function cellsEqual(a: Cell[], b: Cell[]) {
   if (a.length !== b.length) return false;
   const forward = a.every((cell, index) => cell.row === b[index].row && cell.col === b[index].col);
@@ -134,7 +159,7 @@ export async function listWordSearchLevels(playerId: string) {
   );
 }
 
-export async function startWordSearchSession(input: { playerId: string; puzzleSlug?: string }) {
+export async function startWordSearchSession(input: { playerId: string; puzzleSlug?: string; restart?: boolean }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
@@ -157,6 +182,33 @@ export async function startWordSearchSession(input: { playerId: string; puzzleSl
       throw AppError.forbidden("Complete the previous level to unlock this one");
     }
 
+    // Resume an in-progress puzzle instead of always regenerating a fresh
+    // grid and losing already-found words -- unless restarting was requested.
+    const existing = await findActiveLevelSession(player.id, GAME_MODE, "puzzleId", puzzle.id);
+
+    if (existing) {
+      if (input.restart) {
+        await abandonSession(existing.id);
+      } else {
+        const metadata = existing.metadata as { placements?: Record<string, Cell[]>; foundWords?: string[] };
+        if (metadata.placements) {
+          await recordAttempt(player.id, GAME_MODE, puzzle.id);
+          const foundWords = metadata.foundWords ?? [];
+          return {
+            session: { id: existing.id, totalQuestions: existing.totalQuestions, score: existing.score },
+            puzzle: { id: puzzle.id, slug: puzzle.slug, title: puzzle.title, gridSize: puzzle.gridSize, words: puzzle.words },
+            levelNumber,
+            maxLevel: allPuzzles.length,
+            grid: rebuildGridFromPlacements(metadata.placements, puzzle.gridSize),
+            // Safe to reveal the path for words already found (they're
+            // solved), unlike the full placements map for the rest.
+            foundPaths: foundWords.map((word) => ({ word, path: metadata.placements![word] })),
+            resumed: true,
+          };
+        }
+      }
+    }
+
     await recordAttempt(player.id, GAME_MODE, puzzle.id);
   }
 
@@ -172,10 +224,12 @@ export async function startWordSearchSession(input: { playerId: string; puzzleSl
   });
 
   return {
-    session: { id: session.id, totalQuestions: session.totalQuestions },
+    session: { id: session.id, totalQuestions: session.totalQuestions, score: session.score },
     puzzle: { id: puzzle.id, slug: puzzle.slug, title: puzzle.title, gridSize: puzzle.gridSize, words: puzzle.words },
     levelNumber,
     maxLevel: allPuzzles.length,
+    foundPaths: [] as { word: string; path: Cell[] }[],
+    resumed: false,
     grid,
   };
 }

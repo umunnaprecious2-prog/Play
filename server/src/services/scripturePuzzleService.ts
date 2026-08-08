@@ -2,6 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
 import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
+import { abandonSession, answeredItemIds, findActiveLevelSession } from "./sessionResumeService";
 
 const GAME_MODE = "scripture_puzzle";
 const POINTS = 10;
@@ -85,13 +86,14 @@ export async function listScripturePuzzleLevels(playerId: string) {
   return listLevels(playerId, GAME_MODE, await levelItems());
 }
 
-export async function startScripturePuzzleSession(input: { playerId: string; categorySlug?: string }) {
+export async function startScripturePuzzleSession(input: { playerId: string; categorySlug?: string; restart?: boolean }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
   let verses;
   let levelInfo: { levelNumber: number; maxLevel: number } | null = null;
   let levelAnchorId: string | null = null;
+  let resumedSession: Awaited<ReturnType<typeof findActiveLevelSession>> = null;
 
   if (input.categorySlug) {
     const categories = await levelCategories();
@@ -103,10 +105,27 @@ export async function startScripturePuzzleSession(input: { playerId: string; cat
     const unlocked = await isContentUnlocked(player.id, GAME_MODE, category.id, items);
     if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
 
-    await recordAttempt(player.id, GAME_MODE, category.id);
     levelInfo = { levelNumber: categoryIndex + 1, maxLevel: categories.length };
     levelAnchorId = category.id;
     verses = await versesForCategory(category.id);
+
+    const existing = await findActiveLevelSession(player.id, GAME_MODE, "levelCategoryId", category.id);
+    if (existing) {
+      if (input.restart) {
+        await abandonSession(existing.id);
+      } else {
+        const answeredIds = await answeredItemIds(existing.id);
+        const remaining = verses.filter((verse) => !answeredIds.has(verse.id));
+        if (remaining.length > 0) {
+          resumedSession = existing;
+          verses = remaining;
+        }
+      }
+    }
+
+    if (!resumedSession) {
+      await recordAttempt(player.id, GAME_MODE, category.id);
+    }
   } else {
     const verse = await pickNextVerse(input.playerId);
     verses = verse ? [verse] : [];
@@ -116,19 +135,22 @@ export async function startScripturePuzzleSession(input: { playerId: string; cat
     throw AppError.notFound("No verses available for a puzzle yet");
   }
 
-  const session = await prisma.gameSession.create({
-    data: {
-      playerId: player.id,
-      gameMode: "scripture_puzzle",
-      totalQuestions: verses.length,
-      metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
-    },
-  });
+  const session =
+    resumedSession ??
+    (await prisma.gameSession.create({
+      data: {
+        playerId: player.id,
+        gameMode: "scripture_puzzle",
+        totalQuestions: verses.length,
+        metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
+      },
+    }));
 
   return {
     session,
     levelNumber: levelInfo?.levelNumber ?? null,
     maxLevel: levelInfo?.maxLevel ?? null,
+    resumed: Boolean(resumedSession),
     verses: shuffle(verses).map((verse) => ({
       id: verse.id,
       slug: verse.slug,

@@ -15,6 +15,8 @@ type LevelSession = {
   sessionId: string;
   levelName: string;
   questions: LevelQuestion[];
+  totalQuestions: number;
+  answeredOffset: number;
 };
 
 type QuestionState = {
@@ -42,26 +44,27 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
   const [sessionScore, setSessionScore] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
 
-  useEffect(() => {
-    if (!playerId) {
-      return;
-    }
-
+  function loadSession(restart: boolean) {
     let cancelled = false;
     setIsLoadingSession(true);
     setSessionError(null);
 
-    apiFetch<{ success: boolean; data: { session: { id: string }; level: { name: string }; questions: LevelQuestion[] } }>(
-      `/games/levels/${categorySlug}/sessions`,
-      { method: "POST", body: JSON.stringify({ playerId }) },
-    )
+    apiFetch<{
+      success: boolean;
+      data: { session: { id: string; score: number; totalQuestions: number }; level: { name: string }; questions: LevelQuestion[] };
+    }>(`/games/levels/${categorySlug}/sessions`, { method: "POST", body: JSON.stringify({ playerId, restart }) })
       .then((response) => {
         if (!cancelled) {
           setSession({
             sessionId: response.data.session.id,
             levelName: response.data.level.name,
             questions: response.data.questions,
+            totalQuestions: response.data.session.totalQuestions,
+            answeredOffset: response.data.session.totalQuestions - response.data.questions.length,
           });
+          setSessionScore(response.data.session.score);
+          setCurrentIndex(0);
+          setQuestionStates({});
         }
       })
       .catch((error: unknown) => {
@@ -78,7 +81,23 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
     return () => {
       cancelled = true;
     };
+  }
+
+  useEffect(() => {
+    if (!playerId) {
+      return;
+    }
+
+    return loadSession(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerId, categorySlug]);
+
+  function startOver() {
+    if (!confirm("Start this level over from Question 1? Your progress so far on this level will be replaced.")) {
+      return;
+    }
+    loadSession(true);
+  }
 
   if (isPlayerLoading || isLoadingSession) {
     return (
@@ -100,7 +119,7 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
     );
   }
 
-  const { sessionId, questions, levelName } = session;
+  const { sessionId, questions, levelName, totalQuestions, answeredOffset } = session;
   const question = questions[currentIndex];
   const state = question ? questionStates[question.id] ?? { eliminatedOptionIds: [], hintsUsed: 0 } : null;
 
@@ -177,7 +196,7 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
   }
 
   if (isLevelComplete) {
-    const maxPossible = questions.length * 10;
+    const maxPossible = totalQuestions * 10;
     const ratio = maxPossible > 0 ? sessionScore / maxPossible : 0;
     const stars = ratio >= 0.9 ? 3 : ratio >= 0.7 ? 2 : ratio > 0 ? 1 : 0;
     const nextLevelSlug = currentAnswer?.nextLevelSlug;
@@ -210,9 +229,14 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="rounded-full bg-sunrise-50 px-4 py-2 text-sm font-semibold text-sunrise-700">🏅 Score: {sessionScore}</span>
         <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
-          Question {currentIndex + 1} of {questions.length}
+          Question {answeredOffset + currentIndex + 1} of {totalQuestions}
         </span>
         <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">Up to {maxPointsIfCorrect} pts</span>
+        {answeredOffset > 0 ? (
+          <button type="button" onClick={startOver} className="text-xs font-semibold text-slate-400 underline hover:text-slate-600">
+            Start level over
+          </button>
+        ) : null}
       </div>
 
       <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-lg">

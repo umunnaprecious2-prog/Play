@@ -36,6 +36,7 @@ export const scripturePuzzleLevelsQuerySchema = z.object({
 export const startScripturePuzzleSchema = z.object({
   playerId: z.string().min(1),
   categorySlug: z.string().min(1).optional(),
+  restart: z.boolean().optional(),
 });
 
 export const scripturePuzzleHintSchema = z.object({
@@ -57,6 +58,7 @@ export const startCharacterGuessSchema = z.object({
   playerId: z.string().min(1),
   roundCount: z.number().int().min(1).max(10).optional(),
   categorySlug: z.string().min(1).optional(),
+  restart: z.boolean().optional(),
 });
 
 export const characterHintSchema = z.object({
@@ -77,6 +79,7 @@ export const storyOrderLevelsQuerySchema = z.object({
 export const startStoryOrderSchema = z.object({
   playerId: z.string().min(1),
   categorySlug: z.string().min(1).optional(),
+  restart: z.boolean().optional(),
 });
 
 export const storyOrderAnswerSchema = z.object({
@@ -94,6 +97,7 @@ export const wordSearchLevelsQuerySchema = z.object({
 export const startWordSearchSchema = z.object({
   playerId: z.string().min(1),
   puzzleSlug: z.string().min(1).optional(),
+  restart: z.boolean().optional(),
 });
 
 export const wordSearchFoundSchema = z.object({

@@ -9,7 +9,10 @@ export const getLevels = asyncHandler(async (req: Request, res: Response) => {
 
 export const postLevelSession = asyncHandler(async (req: Request, res: Response) => {
   const categorySlug = String(req.params.categorySlug);
-  res.status(201).json({ success: true, data: await startLevelSession({ playerId: req.body.playerId, categorySlug }) });
+  res.status(201).json({
+    success: true,
+    data: await startLevelSession({ playerId: req.body.playerId, categorySlug, restart: req.body.restart }),
+  });
 });
 
 export const postLevelHint = asyncHandler(async (req: Request, res: Response) => {

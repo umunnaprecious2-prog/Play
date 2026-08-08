@@ -8,8 +8,8 @@ export default function LevelsPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sunrise-600">Bible Quiz</p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">Grow in the Word, one level at a time</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            Each level has 25 questions worth 10 points each. Stuck? Use a hint for -2 points, up to 2 hints per
-            question. Finish a level to unlock the next one.
+            Each level covers one book of the Bible, up to 25 questions worth 10 points each. Stuck? Use a hint for
+            -2 points, up to 2 hints per question. Finish a level to unlock the next one.
           </p>
         </header>
 

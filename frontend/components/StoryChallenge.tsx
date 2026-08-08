@@ -28,6 +28,8 @@ export function StoryChallenge({ levelSlug }: { levelSlug: string }) {
   const [events, setEvents] = useState<StoryEventCard[] | null>(null);
   const [levelNumber, setLevelNumber] = useState<number | null>(null);
   const [maxLevel, setMaxLevel] = useState<number | null>(null);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [answeredOffset, setAnsweredOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,16 +39,19 @@ export function StoryChallenge({ levelSlug }: { levelSlug: string }) {
   const [sessionScore, setSessionScore] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
 
-  useEffect(() => {
-    if (!playerId) return;
-
+  function loadSession(restart: boolean) {
     let cancelled = false;
     setIsLoading(true);
 
     apiFetch<{
       success: boolean;
-      data: { session: { id: string }; stories: StoryItem[]; levelNumber: number; maxLevel: number };
-    }>("/games/stories/sessions", { method: "POST", body: JSON.stringify({ playerId, categorySlug: levelSlug }) })
+      data: {
+        session: { id: string; score: number; totalQuestions: number };
+        stories: StoryItem[];
+        levelNumber: number;
+        maxLevel: number;
+      };
+    }>("/games/stories/sessions", { method: "POST", body: JSON.stringify({ playerId, categorySlug: levelSlug, restart }) })
       .then((response) => {
         if (!cancelled) {
           setSessionId(response.data.session.id);
@@ -54,6 +59,11 @@ export function StoryChallenge({ levelSlug }: { levelSlug: string }) {
           setEvents(shuffle(response.data.stories[0].shuffledEvents));
           setLevelNumber(response.data.levelNumber);
           setMaxLevel(response.data.maxLevel);
+          setTotalQuestions(response.data.session.totalQuestions);
+          setAnsweredOffset(response.data.session.totalQuestions - response.data.stories.length);
+          setSessionScore(response.data.session.score);
+          setCurrentIndex(0);
+          setAnswer(null);
         }
       })
       .catch((fetchError: unknown) => {
@@ -66,7 +76,18 @@ export function StoryChallenge({ levelSlug }: { levelSlug: string }) {
     return () => {
       cancelled = true;
     };
+  }
+
+  useEffect(() => {
+    if (!playerId) return;
+    return loadSession(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerId, levelSlug]);
+
+  function startOver() {
+    if (!confirm("Start this level over from the first story? Your progress so far on this level will be replaced.")) return;
+    loadSession(true);
+  }
 
   const story = stories?.[currentIndex];
 
@@ -156,9 +177,14 @@ export function StoryChallenge({ levelSlug }: { levelSlug: string }) {
             </span>
           ) : null}
           <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
-            Story {currentIndex + 1} of {stories.length}
+            Story {answeredOffset + currentIndex + 1} of {totalQuestions}
           </span>
           <span className="rounded-full bg-royal-50 px-4 py-2 text-sm font-semibold text-royal-700">Put the events in order</span>
+          {answeredOffset > 0 ? (
+            <button type="button" onClick={startOver} className="text-xs font-semibold text-slate-400 underline hover:text-slate-600">
+              Start over
+            </button>
+          ) : null}
         </div>
       </div>
 

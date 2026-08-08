@@ -21,6 +21,8 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
   const [placed, setPlaced] = useState<PuzzleTile[]>([]);
   const [levelNumber, setLevelNumber] = useState<number | null>(null);
   const [maxLevel, setMaxLevel] = useState<number | null>(null);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [answeredOffset, setAnsweredOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,16 +34,19 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
   const [sessionScore, setSessionScore] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
 
-  useEffect(() => {
-    if (!playerId) return;
-
+  function loadSession(restart: boolean) {
     let cancelled = false;
     setIsLoading(true);
 
     apiFetch<{
       success: boolean;
-      data: { session: { id: string }; verses: VerseItem[]; levelNumber: number; maxLevel: number };
-    }>("/games/scripture-puzzle/sessions", { method: "POST", body: JSON.stringify({ playerId, categorySlug: levelSlug }) })
+      data: {
+        session: { id: string; score: number; totalQuestions: number };
+        verses: VerseItem[];
+        levelNumber: number;
+        maxLevel: number;
+      };
+    }>("/games/scripture-puzzle/sessions", { method: "POST", body: JSON.stringify({ playerId, categorySlug: levelSlug, restart }) })
       .then((response) => {
         if (!cancelled) {
           setSessionId(response.data.session.id);
@@ -49,6 +54,13 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
           setPool(response.data.verses[0].scrambledWords.map((word, index) => ({ id: `${index}-${word}`, word })));
           setLevelNumber(response.data.levelNumber);
           setMaxLevel(response.data.maxLevel);
+          setTotalQuestions(response.data.session.totalQuestions);
+          setAnsweredOffset(response.data.session.totalQuestions - response.data.verses.length);
+          setSessionScore(response.data.session.score);
+          setCurrentIndex(0);
+          setPlaced([]);
+          setHintsUsed(0);
+          setAnswer(null);
         }
       })
       .catch((fetchError: unknown) => {
@@ -61,7 +73,18 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
     return () => {
       cancelled = true;
     };
+  }
+
+  useEffect(() => {
+    if (!playerId) return;
+    return loadSession(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerId, levelSlug]);
+
+  function startOver() {
+    if (!confirm("Start this level over from the first verse? Your progress so far on this level will be replaced.")) return;
+    loadSession(true);
+  }
 
   const verse = verses?.[currentIndex];
 
@@ -147,7 +170,7 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
   }
 
   if (levelResult) {
-    const ratio = verses.length > 0 ? sessionScore / (verses.length * POINTS_MAX) : 0;
+    const ratio = totalQuestions > 0 ? sessionScore / (totalQuestions * POINTS_MAX) : 0;
     const stars = ratio >= 0.9 ? 3 : ratio >= 0.6 ? 2 : ratio > 0 ? 1 : 0;
 
     return (
@@ -178,9 +201,14 @@ export function ScripturePuzzle({ levelSlug }: { levelSlug: string }) {
             </span>
           ) : null}
           <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
-            Verse {currentIndex + 1} of {verses.length}
+            Verse {answeredOffset + currentIndex + 1} of {totalQuestions}
           </span>
           <span className="rounded-full bg-royal-50 px-4 py-2 text-sm font-semibold text-royal-700">{verse.reference} (KJV)</span>
+          {answeredOffset > 0 ? (
+            <button type="button" onClick={startOver} className="text-xs font-semibold text-slate-400 underline hover:text-slate-600">
+              Start over
+            </button>
+          ) : null}
         </div>
       </div>
 

@@ -50,22 +50,21 @@ export function WordSearch({ levelSlug }: { levelSlug: string }) {
   const [sessionScore, setSessionScore] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
 
-  useEffect(() => {
-    if (!playerId) return;
-
+  function loadSession(restart: boolean) {
     let cancelled = false;
     setIsLoading(true);
 
     apiFetch<{
       success: boolean;
       data: {
-        session: { id: string };
+        session: { id: string; score: number };
         puzzle: { title: string; words: string[] };
         grid: string[][];
         levelNumber: number;
         maxLevel: number;
+        foundPaths: { word: string; path: Cell[] }[];
       };
-    }>("/games/word-search/sessions", { method: "POST", body: JSON.stringify({ playerId, puzzleSlug: levelSlug }) })
+    }>("/games/word-search/sessions", { method: "POST", body: JSON.stringify({ playerId, puzzleSlug: levelSlug, restart }) })
       .then((response) => {
         if (!cancelled) {
           setSessionId(response.data.session.id);
@@ -74,6 +73,14 @@ export function WordSearch({ levelSlug }: { levelSlug: string }) {
           setGrid(response.data.grid);
           setLevelNumber(response.data.levelNumber);
           setMaxLevel(response.data.maxLevel);
+          setSessionScore(response.data.session.score);
+          setFoundPaths(
+            response.data.foundPaths.map((entry, index) => ({
+              word: entry.word,
+              path: entry.path,
+              color: HIGHLIGHT_COLORS[index % HIGHLIGHT_COLORS.length],
+            })),
+          );
         }
       })
       .catch((fetchError: unknown) => {
@@ -86,7 +93,18 @@ export function WordSearch({ levelSlug }: { levelSlug: string }) {
     return () => {
       cancelled = true;
     };
+  }
+
+  useEffect(() => {
+    if (!playerId) return;
+    return loadSession(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerId, levelSlug]);
+
+  function startOver() {
+    if (!confirm("Start this puzzle over? Words you've already found will be reset.")) return;
+    loadSession(true);
+  }
 
   async function handleCellClick(cell: Cell) {
     if (!selectionStart) {
@@ -180,6 +198,11 @@ export function WordSearch({ levelSlug }: { levelSlug: string }) {
           <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
             {foundPaths.length}/{words.length} found
           </span>
+          {foundPaths.length > 0 ? (
+            <button type="button" onClick={startOver} className="text-xs font-semibold text-slate-400 underline hover:text-slate-600">
+              Start over
+            </button>
+          ) : null}
         </div>
       </div>
 

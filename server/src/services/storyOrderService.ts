@@ -2,6 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
 import { isContentUnlocked, listLevels, markCompleteAndUnlockNext, recordAttempt } from "./contentProgressService";
+import { abandonSession, answeredItemIds, findActiveLevelSession } from "./sessionResumeService";
 
 const GAME_MODE = "story_order";
 const POINTS = 10;
@@ -78,13 +79,14 @@ export async function listStoryOrderLevels(playerId: string) {
   return listLevels(playerId, GAME_MODE, await levelItems());
 }
 
-export async function startStoryOrderSession(input: { playerId: string; categorySlug?: string }) {
+export async function startStoryOrderSession(input: { playerId: string; categorySlug?: string; restart?: boolean }) {
   const player = await prisma.playerProfile.findUnique({ where: { id: input.playerId } });
   if (!player) throw AppError.notFound("Player profile not found");
 
   let stories;
   let levelInfo: { levelNumber: number; maxLevel: number } | null = null;
   let levelAnchorId: string | null = null;
+  let resumedSession: Awaited<ReturnType<typeof findActiveLevelSession>> = null;
 
   if (input.categorySlug) {
     const categories = await levelCategories();
@@ -96,10 +98,27 @@ export async function startStoryOrderSession(input: { playerId: string; category
     const unlocked = await isContentUnlocked(player.id, GAME_MODE, category.id, items);
     if (!unlocked) throw AppError.forbidden("Complete the previous level to unlock this one");
 
-    await recordAttempt(player.id, GAME_MODE, category.id);
     levelInfo = { levelNumber: categoryIndex + 1, maxLevel: categories.length };
     levelAnchorId = category.id;
     stories = (await storiesForCategory(category.id)).filter((story) => story.events.length > 0);
+
+    const existing = await findActiveLevelSession(player.id, GAME_MODE, "levelCategoryId", category.id);
+    if (existing) {
+      if (input.restart) {
+        await abandonSession(existing.id);
+      } else {
+        const answeredIds = await answeredItemIds(existing.id);
+        const remaining = stories.filter((story) => !answeredIds.has(story.id));
+        if (remaining.length > 0) {
+          resumedSession = existing;
+          stories = remaining;
+        }
+      }
+    }
+
+    if (!resumedSession) {
+      await recordAttempt(player.id, GAME_MODE, category.id);
+    }
   } else {
     const story = await pickNextStory(input.playerId);
     stories = story && story.events.length > 0 ? [story] : [];
@@ -109,19 +128,22 @@ export async function startStoryOrderSession(input: { playerId: string; category
     throw AppError.notFound("No stories available yet");
   }
 
-  const session = await prisma.gameSession.create({
-    data: {
-      playerId: player.id,
-      gameMode: "story_order",
-      totalQuestions: stories.length,
-      metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
-    },
-  });
+  const session =
+    resumedSession ??
+    (await prisma.gameSession.create({
+      data: {
+        playerId: player.id,
+        gameMode: "story_order",
+        totalQuestions: stories.length,
+        metadata: levelAnchorId ? { levelCategoryId: levelAnchorId } : {},
+      },
+    }));
 
   return {
     session,
     levelNumber: levelInfo?.levelNumber ?? null,
     maxLevel: levelInfo?.maxLevel ?? null,
+    resumed: Boolean(resumedSession),
     stories: shuffle(stories).map((story) => ({
       id: story.id,
       slug: story.slug,

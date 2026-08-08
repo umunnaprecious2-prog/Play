@@ -2,7 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
 
-const DEFAULT_PAIR_COUNT = 6;
+const PAIRS_PER_LEVEL = 20;
 const POINTS_PER_PAIR = 10;
 const MAX_LEVEL = 20;
 
@@ -22,10 +22,12 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-// Escalates difficulty over 20 levels using the existing verse pool, so no
-// new content is needed. The level is derived from how many rounds this player has
-// already completed, so pair count and verse difficulty both ramp up the
-// more they play, then hold steady at the hardest tier.
+// Every level always serves a full 20 pairs (matching every other game's
+// 20-per-level standard) -- difficulty still escalates across the 20 levels,
+// but only via which verses are drawn from, never by giving fewer pairs.
+// The level is derived from how many rounds this player has already
+// completed. Early levels draw only from the shortest (easiest) verses;
+// later levels draw from the full pool, including the longest ones.
 async function pickLevelVerses(playerId: string, requestedPairCount?: number) {
   const completedCount = await prisma.gameSession.count({
     where: { playerId, gameMode: "verse_match", status: "COMPLETED" },
@@ -35,11 +37,16 @@ async function pickLevelVerses(playerId: string, requestedPairCount?: number) {
   const allVerses = await prisma.bibleVerse.findMany({ where: { isActive: true } });
   const sortedByDifficulty = [...allVerses].sort((a, b) => a.text.length - b.text.length);
 
-  const pairCount = requestedPairCount
-    ? Math.min(Math.max(requestedPairCount, 3), 20)
-    : Math.min(3 + Math.floor(((level - 1) * 17) / (MAX_LEVEL - 1)), 20, allVerses.length);
+  const pairCount = Math.min(requestedPairCount ?? PAIRS_PER_LEVEL, allVerses.length);
 
-  const windowSize = Math.min(allVerses.length, 5 + level);
+  // The difficulty window must always contain at least pairCount verses, or
+  // a low level would silently serve fewer than 20 pairs despite pairCount
+  // saying 20 -- exactly the bug this replaces.
+  const minWindow = Math.max(pairCount, PAIRS_PER_LEVEL);
+  const windowSize = Math.min(
+    allVerses.length,
+    minWindow + Math.floor(((level - 1) * Math.max(allVerses.length - minWindow, 0)) / (MAX_LEVEL - 1)),
+  );
   const pool = sortedByDifficulty.slice(0, windowSize);
 
   return { level, verses: shuffle(pool).slice(0, pairCount) };

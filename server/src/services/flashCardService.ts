@@ -2,7 +2,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { applyPlayerReward, awardProgressRewards, logProgress } from "./rewardService";
 
-const DEFAULT_DECK_SIZE = 12;
+const CARDS_PER_LEVEL = 20;
 const POINTS_PER_KNOWN_CARD = 5;
 const MAX_LEVEL = 20;
 
@@ -22,8 +22,10 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-// Escalates over 20 levels using the existing verse pool: deck grows and
-// leans toward longer (harder) verses the more rounds this player finishes.
+// Every level always serves a full 20-card deck (matching every other
+// game's 20-per-level standard) -- difficulty still escalates across the 20
+// levels by leaning toward longer (harder) verses at higher levels, but
+// never by handing out fewer cards.
 async function pickLevelDeck(playerId: string, requestedDeckSize?: number) {
   const completedCount = await prisma.gameSession.count({
     where: { playerId, gameMode: "flash_cards", status: "COMPLETED" },
@@ -33,11 +35,16 @@ async function pickLevelDeck(playerId: string, requestedDeckSize?: number) {
   const allVerses = await prisma.bibleVerse.findMany({ where: { isActive: true } });
   const sortedByDifficulty = [...allVerses].sort((a, b) => a.text.length - b.text.length);
 
-  const deckSize = requestedDeckSize
-    ? Math.min(Math.max(requestedDeckSize, 5), 25)
-    : Math.min(5 + Math.floor(((level - 1) * (allVerses.length - 5)) / (MAX_LEVEL - 1)), allVerses.length);
+  const deckSize = Math.min(requestedDeckSize ?? CARDS_PER_LEVEL, allVerses.length);
 
-  const windowSize = Math.min(allVerses.length, 5 + level);
+  // The difficulty window must always contain at least deckSize verses, or a
+  // low level would silently serve fewer than 20 cards despite deckSize
+  // saying 20 -- exactly the bug this replaces.
+  const minWindow = Math.max(deckSize, CARDS_PER_LEVEL);
+  const windowSize = Math.min(
+    allVerses.length,
+    minWindow + Math.floor(((level - 1) * Math.max(allVerses.length - minWindow, 0)) / (MAX_LEVEL - 1)),
+  );
   const pool = sortedByDifficulty.slice(0, windowSize);
 
   return { level, deck: shuffle(pool).slice(0, deckSize) };

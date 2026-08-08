@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
-import type { GameAnswerResult, QuizQuestion } from "../lib/types";
+import { getStoredNickname } from "../lib/player";
+import { QuizResultsScreen } from "./QuizResultsScreen";
+import type { GameAnswerResult, PlayerProfile, QuizQuestion } from "../lib/types";
 
 type AnsweredEntry = GameAnswerResult & { selectedText: string };
 type AnsweredState = Record<string, AnsweredEntry>;
@@ -23,19 +26,17 @@ export function QuizPreview() {
   const [answers, setAnswers] = useState<AnsweredState>({});
   const [submittingText, setSubmittingText] = useState<string | null>(null);
   const [answerError, setAnswerError] = useState<string | null>(null);
+  const [finished, setFinished] = useState(false);
+  const [lastPlayer, setLastPlayer] = useState<PlayerProfile | null>(null);
 
-  useEffect(() => {
-    if (!playerId) {
-      return;
-    }
-
+  function loadSession(id: string) {
     let cancelled = false;
     setIsLoadingSession(true);
     setSessionError(null);
 
     apiFetch<{ success: boolean; data: { session: { id: string }; questions: QuizQuestion[] } }>("/games/quiz/sessions", {
       method: "POST",
-      body: JSON.stringify({ playerId, questionCount: 5 }),
+      body: JSON.stringify({ playerId: id, questionCount: 5 }),
     })
       .then((response) => {
         if (!cancelled) {
@@ -56,7 +57,28 @@ export function QuizPreview() {
     return () => {
       cancelled = true;
     };
+  }
+
+  useEffect(() => {
+    if (!playerId) {
+      return;
+    }
+
+    return loadSession(playerId);
   }, [playerId]);
+
+  function handlePlayAgain() {
+    if (!playerId) {
+      return;
+    }
+
+    setSession(null);
+    setCurrentIndex(0);
+    setAnswers({});
+    setFinished(false);
+    setLastPlayer(null);
+    loadSession(playerId);
+  }
 
   if (isPlayerLoading || isLoadingSession) {
     return (
@@ -77,6 +99,26 @@ export function QuizPreview() {
   }
 
   const { sessionId, questions } = session;
+  const isLastQuestion = currentIndex === questions.length - 1;
+
+  if (finished && lastPlayer) {
+    const answeredList = Object.values(answers);
+    const correctCount = answeredList.filter((entry) => entry.isCorrect).length;
+    const xpEarned = answeredList.reduce((sum, entry) => sum + entry.xpAwarded, 0);
+
+    return (
+      <QuizResultsScreen
+        nickname={getStoredNickname() ?? "friend"}
+        avatarSlug={lastPlayer.avatarSlug}
+        correctCount={correctCount}
+        totalCount={questions.length}
+        xpEarned={xpEarned}
+        totalXp={lastPlayer.xp}
+        onPlayAgain={handlePlayAgain}
+      />
+    );
+  }
+
   const question = questions[currentIndex];
 
   if (!question) {
@@ -94,12 +136,16 @@ export function QuizPreview() {
     setAnswerError(null);
 
     try {
-      const response = await apiFetch<{ success: boolean; data: { result: GameAnswerResult } }>("/games/quiz/answers", {
-        method: "POST",
-        body: JSON.stringify({ sessionId, questionId: question.id, selectedText }),
-      });
+      const response = await apiFetch<{ success: boolean; data: { result: GameAnswerResult; player: PlayerProfile } }>(
+        "/games/quiz/answers",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId, questionId: question.id, selectedText }),
+        },
+      );
 
       setAnswers((previous) => ({ ...previous, [question.id]: { ...response.data.result, selectedText } }));
+      setLastPlayer(response.data.player);
     } catch (submitError) {
       setAnswerError(submitError instanceof Error ? submitError.message : "Could not submit answer");
     } finally {
@@ -109,6 +155,10 @@ export function QuizPreview() {
 
   return (
     <section className="grid gap-5 rounded-[1.75rem] border border-white/80 bg-white/80 p-6 shadow-soft backdrop-blur">
+      <Link href="/games" className="w-fit text-sm font-semibold text-slate-500 transition hover:text-royal-600">
+        ← Back to Games
+      </Link>
+
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black text-slate-900">Quiz preview</h2>
@@ -188,10 +238,17 @@ export function QuizPreview() {
         </button>
         <button
           type="button"
-          onClick={() => setCurrentIndex((value) => Math.min(questions.length - 1, value + 1))}
-          className="rounded-full bg-sky-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-sky-600"
+          disabled={isLastQuestion && !currentAnswer}
+          onClick={() => {
+            if (isLastQuestion) {
+              setFinished(true);
+              return;
+            }
+            setCurrentIndex((value) => Math.min(questions.length - 1, value + 1));
+          }}
+          className="rounded-full bg-sky-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Next
+          {isLastQuestion ? "See My Results" : "Next"}
         </button>
       </div>
     </section>

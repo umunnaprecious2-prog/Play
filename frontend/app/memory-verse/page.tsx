@@ -8,7 +8,8 @@ export default function MemoryVersePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-meadow-600">Memory Verse</p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">Practice with kindness and repetition</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            Kids can read, repeat, and type short verse practice responses with a calm, friendly layout.
+            Read, repeat, and type short verse practice responses with a calm, friendly layout. Built for anyone, kids
+            and adults alike.
           </p>
         </header>
 

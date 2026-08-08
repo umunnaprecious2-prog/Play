@@ -24,7 +24,7 @@ export const GAMES = [
   {
     slug: "memory-verse",
     title: "Memory Verse",
-    description: "Practice verses with gentle repetition, hints, and simple progress tracking for kids.",
+    description: "Practice verses with gentle repetition, hints, and simple progress tracking for anyone.",
     href: "/memory-verse",
     accent: "border-meadow-100",
     icon: "V",

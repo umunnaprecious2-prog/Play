@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { apiFetch } from "../lib/api";
 import { useGuestPlayer } from "../hooks/useGuestPlayer";
-import type { GameAnswerResult, VerseItem } from "../lib/types";
+import { getStoredNickname } from "../lib/player";
+import { QuizResultsScreen } from "./QuizResultsScreen";
+import type { GameAnswerResult, PlayerProfile, VerseItem } from "../lib/types";
 
 type AnsweredState = Record<string, GameAnswerResult>;
 
@@ -23,19 +26,17 @@ export function MemoryVersePreview() {
   const [answers, setAnswers] = useState<AnsweredState>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [answerError, setAnswerError] = useState<string | null>(null);
+  const [finished, setFinished] = useState(false);
+  const [lastPlayer, setLastPlayer] = useState<PlayerProfile | null>(null);
 
-  useEffect(() => {
-    if (!playerId) {
-      return;
-    }
-
+  function loadSession(id: string) {
     let cancelled = false;
     setIsLoadingSession(true);
     setSessionError(null);
 
     apiFetch<{ success: boolean; data: { session: { id: string }; verses: VerseItem[] } }>("/games/memory-verse/sessions", {
       method: "POST",
-      body: JSON.stringify({ playerId, verseCount: 3 }),
+      body: JSON.stringify({ playerId: id, verseCount: 3 }),
     })
       .then((response) => {
         if (!cancelled) {
@@ -56,7 +57,29 @@ export function MemoryVersePreview() {
     return () => {
       cancelled = true;
     };
+  }
+
+  useEffect(() => {
+    if (!playerId) {
+      return;
+    }
+
+    return loadSession(playerId);
   }, [playerId]);
+
+  function handlePlayAgain() {
+    if (!playerId) {
+      return;
+    }
+
+    setSession(null);
+    setCurrentIndex(0);
+    setDraft("");
+    setAnswers({});
+    setFinished(false);
+    setLastPlayer(null);
+    loadSession(playerId);
+  }
 
   if (isPlayerLoading || isLoadingSession) {
     return (
@@ -77,6 +100,26 @@ export function MemoryVersePreview() {
   }
 
   const { sessionId, verses } = session;
+  const isLastVerse = currentIndex === verses.length - 1;
+
+  if (finished && lastPlayer) {
+    const answeredList = Object.values(answers);
+    const correctCount = answeredList.filter((entry) => entry.isCorrect).length;
+    const xpEarned = answeredList.reduce((sum, entry) => sum + entry.xpAwarded, 0);
+
+    return (
+      <QuizResultsScreen
+        nickname={getStoredNickname() ?? "friend"}
+        avatarSlug={lastPlayer.avatarSlug}
+        correctCount={correctCount}
+        totalCount={verses.length}
+        xpEarned={xpEarned}
+        totalXp={lastPlayer.xp}
+        onPlayAgain={handlePlayAgain}
+      />
+    );
+  }
+
   const verse = verses[currentIndex];
 
   if (!verse) {
@@ -96,12 +139,16 @@ export function MemoryVersePreview() {
     setAnswerError(null);
 
     try {
-      const response = await apiFetch<{ success: boolean; data: { result: GameAnswerResult } }>("/games/memory-verse/answers", {
-        method: "POST",
-        body: JSON.stringify({ sessionId, verseId: verse.id, answerText: draft }),
-      });
+      const response = await apiFetch<{ success: boolean; data: { result: GameAnswerResult; player: PlayerProfile } }>(
+        "/games/memory-verse/answers",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId, verseId: verse.id, answerText: draft }),
+        },
+      );
 
       setAnswers((previous) => ({ ...previous, [verse.id]: response.data.result }));
+      setLastPlayer(response.data.player);
     } catch (submitError) {
       setAnswerError(submitError instanceof Error ? submitError.message : "Could not submit your answer");
     } finally {
@@ -117,6 +164,10 @@ export function MemoryVersePreview() {
 
   return (
     <section className="grid gap-5 rounded-[1.75rem] border border-white/80 bg-white/80 p-6 shadow-soft backdrop-blur">
+      <Link href="/games" className="w-fit text-sm font-semibold text-slate-500 transition hover:text-royal-600">
+        ← Back to Games
+      </Link>
+
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black text-slate-900">Memory verse practice</h2>
@@ -178,10 +229,17 @@ export function MemoryVersePreview() {
         </button>
         <button
           type="button"
-          onClick={() => goToIndex(currentIndex + 1)}
-          className="rounded-full bg-meadow-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-meadow-600"
+          disabled={isLastVerse && !currentAnswer}
+          onClick={() => {
+            if (isLastVerse) {
+              setFinished(true);
+              return;
+            }
+            goToIndex(currentIndex + 1);
+          }}
+          className="rounded-full bg-meadow-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-meadow-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Next
+          {isLastVerse ? "See My Results" : "Next"}
         </button>
       </div>
     </section>

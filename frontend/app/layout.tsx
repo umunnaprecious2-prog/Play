@@ -3,8 +3,8 @@ import "./globals.css";
 import { ServiceWorkerRegistration } from "../components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
-  title: "Play - Bible Adventure for Kids",
-  description: "A bright, child-friendly Bible learning app with quiz and memory verse games.",
+  title: "Play - Bible Adventure for Kids & Adults",
+  description: "A bright, welcoming Bible learning app with quiz and memory verse games, built for kids and adults alike.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

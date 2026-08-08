@@ -16,7 +16,7 @@ export const GAMES = [
   {
     slug: "levels",
     title: "Bible Quiz Levels",
-    description: "8 levels, 25 questions each, 10 points per question. Hints cost -2 points, up to 2 per question.",
+    description: "72 levels covering all 66 books of the Bible, up to 25 questions each, 10 points per question. Hints cost -2 points, up to 2 per question.",
     href: "/levels",
     accent: "border-royal-100",
     icon: "Q",

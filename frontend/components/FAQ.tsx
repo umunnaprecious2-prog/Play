@@ -16,7 +16,7 @@ const QUESTIONS = [
   {
     question: "How does the level system work?",
     answer:
-      "Bible Quiz Levels has 8 structured levels of 25 questions each, 10 points a question. Stuck on one? Use a hint for -2 points, up to 2 per question, and a correct answer still earns 6 points even with both hints used. Most of the other games ramp difficulty across up to 20 rounds the same way. Finish one to unlock the next.",
+      "Bible Quiz Levels covers all 66 books of the Bible across 72 structured levels, each with up to 25 questions worth 10 points a question. Stuck on one? Use a hint for -2 points, up to 2 per question, and a correct answer still earns 6 points even with both hints used. Most of the other games ramp difficulty across up to 20 rounds the same way. Finish one to unlock the next.",
   },
   {
     question: "Is Play free to use?",

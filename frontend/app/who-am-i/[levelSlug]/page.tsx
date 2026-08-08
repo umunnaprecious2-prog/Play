@@ -1,11 +1,11 @@
-"use client";
-
-import { useParams } from "next/navigation";
 import { CharacterGuess } from "../../../components/CharacterGuess";
+import { CHARACTER_GUESS_LEVEL_SLUGS } from "../../../lib/characterGuessLevels";
 
-export default function WhoAmILevelPage() {
-  const params = useParams<{ levelSlug: string }>();
+export function generateStaticParams() {
+  return CHARACTER_GUESS_LEVEL_SLUGS.map((levelSlug) => ({ levelSlug }));
+}
 
+export default function WhoAmILevelPage({ params }: { params: { levelSlug: string } }) {
   return (
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto flex max-w-3xl flex-col gap-6">

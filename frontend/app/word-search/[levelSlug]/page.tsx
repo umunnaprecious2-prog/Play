@@ -1,11 +1,11 @@
-"use client";
-
-import { useParams } from "next/navigation";
 import { WordSearch } from "../../../components/WordSearch";
+import { WORD_SEARCH_LEVEL_SLUGS } from "../../../lib/wordSearchLevels";
 
-export default function WordSearchLevelPage() {
-  const params = useParams<{ levelSlug: string }>();
+export function generateStaticParams() {
+  return WORD_SEARCH_LEVEL_SLUGS.map((levelSlug) => ({ levelSlug }));
+}
 
+export default function WordSearchLevelPage({ params }: { params: { levelSlug: string } }) {
   return (
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto flex max-w-3xl flex-col gap-6">

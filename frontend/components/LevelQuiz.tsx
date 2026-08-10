@@ -10,19 +10,14 @@ import type { LevelAnswerResult, LevelHintResult, LevelQuestion } from "../lib/t
 
 const OPTION_LETTERS = ["A", "B", "C", "D"];
 const MAX_HINTS = 2;
+const NEUTRAL_LEVEL_LABEL = "BIBLE QUIZ";
 
 type LevelSession = {
   sessionId: string;
   levelName: string;
-  questions: LevelQuestion[];
   totalQuestions: number;
-  answeredOffset: number;
-};
-
-type QuestionState = {
-  eliminatedOptionIds: string[];
-  hintsUsed: number;
-  answer?: LevelAnswerResult & { selectedText: string };
+  answeredCount: number;
+  currentQuestion: LevelQuestion;
 };
 
 type LevelQuizProps = {
@@ -36,13 +31,23 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
   const [isLoadingSession, setIsLoadingSession] = useState(false);
   const [sessionError, setSessionError] = useState<string | null>(null);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [questionStates, setQuestionStates] = useState<Record<string, QuestionState>>({});
+  const [eliminatedOptionIds, setEliminatedOptionIds] = useState<string[]>([]);
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [currentAnswer, setCurrentAnswer] = useState<(LevelAnswerResult & { selectedText: string }) | null>(null);
+  const [pendingNextQuestion, setPendingNextQuestion] = useState<LevelQuestion | null>(null);
+
   const [isHinting, setIsHinting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [sessionScore, setSessionScore] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
+
+  function resetQuestionState() {
+    setEliminatedOptionIds([]);
+    setHintsUsed(0);
+    setCurrentAnswer(null);
+    setPendingNextQuestion(null);
+  }
 
   function loadSession(restart: boolean) {
     let cancelled = false;
@@ -51,20 +56,25 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
 
     apiFetch<{
       success: boolean;
-      data: { session: { id: string; score: number; totalQuestions: number }; level: { name: string }; questions: LevelQuestion[] };
+      data: {
+        session: { id: string; score: number };
+        level: { name: string };
+        totalQuestions: number;
+        answeredOffset: number;
+        question: LevelQuestion;
+      };
     }>(`/games/levels/${categorySlug}/sessions`, { method: "POST", body: JSON.stringify({ playerId, restart }) })
       .then((response) => {
         if (!cancelled) {
           setSession({
             sessionId: response.data.session.id,
             levelName: response.data.level.name,
-            questions: response.data.questions,
-            totalQuestions: response.data.session.totalQuestions,
-            answeredOffset: response.data.session.totalQuestions - response.data.questions.length,
+            totalQuestions: response.data.totalQuestions,
+            answeredCount: response.data.answeredOffset,
+            currentQuestion: response.data.question,
           });
           setSessionScore(response.data.session.score);
-          setCurrentIndex(0);
-          setQuestionStates({});
+          resetQuestionState();
         }
       })
       .catch((error: unknown) => {
@@ -119,19 +129,11 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
     );
   }
 
-  const { sessionId, questions, levelName, totalQuestions, answeredOffset } = session;
-  const question = questions[currentIndex];
-  const state = question ? questionStates[question.id] ?? { eliminatedOptionIds: [], hintsUsed: 0 } : null;
-
-  if (!question || !state) {
-    return null;
-  }
-
-  const currentAnswer = state.answer;
-  const isLevelComplete = currentAnswer?.isComplete && currentIndex === questions.length - 1;
+  const { sessionId, levelName, totalQuestions, answeredCount, currentQuestion: question } = session;
+  const isLevelComplete = currentAnswer?.isComplete === true;
 
   async function handleHint() {
-    if (!question || currentAnswer || isHinting || state!.hintsUsed >= MAX_HINTS) {
+    if (currentAnswer || isHinting || hintsUsed >= MAX_HINTS) {
       return;
     }
 
@@ -144,17 +146,8 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
         body: JSON.stringify({ sessionId, questionId: question.id }),
       });
 
-      setQuestionStates((previous) => {
-        const prevState = previous[question.id] ?? { eliminatedOptionIds: [], hintsUsed: 0 };
-        return {
-          ...previous,
-          [question.id]: {
-            ...prevState,
-            hintsUsed: response.data.hintNumber,
-            eliminatedOptionIds: [...prevState.eliminatedOptionIds, response.data.eliminatedOptionId],
-          },
-        };
-      });
+      setHintsUsed(response.data.hintNumber);
+      setEliminatedOptionIds((previous) => [...previous, response.data.eliminatedOptionId]);
     } catch (error) {
       setActionError(error instanceof Error ? error.message : "Could not get a hint");
     } finally {
@@ -163,7 +156,7 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
   }
 
   async function handleSelect(selectedText: string) {
-    if (!question || currentAnswer || isSubmitting) {
+    if (currentAnswer || isSubmitting) {
       return;
     }
 
@@ -173,7 +166,7 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
     try {
       const response = await apiFetch<{
         success: boolean;
-        data: { result: LevelAnswerResult; session: { score: number }; player: { xp: number } };
+        data: { result: LevelAnswerResult; session: { score: number }; player: { xp: number }; nextQuestion: LevelQuestion | null };
       }>("/games/levels/answers", {
         method: "POST",
         body: JSON.stringify({ sessionId, questionId: question.id, selectedText }),
@@ -181,18 +174,23 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
 
       setSessionScore(response.data.session.score);
       setTotalXp(response.data.player.xp);
-      setQuestionStates((previous) => ({
-        ...previous,
-        [question.id]: {
-          ...(previous[question.id] ?? { eliminatedOptionIds: [], hintsUsed: 0 }),
-          answer: { ...response.data.result, selectedText },
-        },
-      }));
+      setCurrentAnswer({ ...response.data.result, selectedText });
+      setPendingNextQuestion(response.data.nextQuestion);
     } catch (error) {
       setActionError(error instanceof Error ? error.message : "Could not submit your answer");
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function goToNextQuestion() {
+    if (!pendingNextQuestion) {
+      return;
+    }
+    setSession((previous) =>
+      previous ? { ...previous, answeredCount: previous.answeredCount + 1, currentQuestion: pendingNextQuestion } : previous,
+    );
+    resetQuestionState();
   }
 
   if (isLevelComplete) {
@@ -221,18 +219,18 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
     );
   }
 
-  const hintsRemaining = MAX_HINTS - state.hintsUsed;
-  const maxPointsIfCorrect = Math.max(10 - state.hintsUsed * 2, 0);
+  const hintsRemaining = MAX_HINTS - hintsUsed;
+  const maxPointsIfCorrect = Math.max(10 - hintsUsed * 2, 0);
 
   return (
     <section className="grid gap-5 rounded-[1.75rem] border border-white/80 bg-white/80 p-6 shadow-soft backdrop-blur">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="rounded-full bg-sunrise-50 px-4 py-2 text-sm font-semibold text-sunrise-700">🏅 Score: {sessionScore}</span>
         <span className="rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
-          Question {answeredOffset + currentIndex + 1} of {totalQuestions}
+          Question {answeredCount + 1} of {totalQuestions}
         </span>
         <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">Up to {maxPointsIfCorrect} pts</span>
-        {answeredOffset > 0 ? (
+        {answeredCount > 0 ? (
           <button type="button" onClick={startOver} className="text-xs font-semibold text-slate-400 underline hover:text-slate-600">
             Start level over
           </button>
@@ -240,7 +238,10 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
       </div>
 
       <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-lg">
-        <p className="text-sm uppercase tracking-[0.2em] text-sky-200">{levelName}</p>
+        {/* Some level names (e.g. "Song of Solomon") would give the answer
+            away to a question about them just by being shown -- computed
+            server-side per question via hideLevelLabel, not hardcoded here. */}
+        <p className="text-sm uppercase tracking-[0.2em] text-sky-200">{question.hideLevelLabel ? NEUTRAL_LEVEL_LABEL : levelName}</p>
         <h3 className="mt-3 text-3xl font-black leading-tight">{question.prompt}</h3>
         {/* Scripture reference is withheld until after answering -- shown
             alongside the explanation below instead, since the reference alone
@@ -250,7 +251,7 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
 
       <div className="grid gap-3 sm:grid-cols-2">
         {question.options.map((option, index) => {
-          const isEliminated = state.eliminatedOptionIds.includes(option.id);
+          const isEliminated = eliminatedOptionIds.includes(option.id);
           const isSelected = currentAnswer ? option.text === currentAnswer.selectedText : false;
           const isCorrectOption = currentAnswer ? option.text === currentAnswer.correctText : false;
           const isWrongSelection = currentAnswer ? isSelected && !currentAnswer.isCorrect : false;
@@ -308,16 +309,16 @@ export function LevelQuiz({ categorySlug }: LevelQuizProps) {
               ? `Correct! +${currentAnswer.pointsEarned} points.`
               : `Not quite. The correct answer is "${currentAnswer.correctText}".`}
           </div>
-          {question.explanation ? (
+          {currentAnswer.explanation ? (
             <div className="rounded-2xl bg-royal-50 px-4 py-4 text-sm leading-6 text-royal-900">
               <span className="font-bold">Why: </span>
-              {question.explanation}
-              {question.scriptureReference ? <span className="text-royal-600"> ({question.scriptureReference})</span> : null}
+              {currentAnswer.explanation}
+              {currentAnswer.scriptureReference ? <span className="text-royal-600"> ({currentAnswer.scriptureReference})</span> : null}
             </div>
           ) : null}
           <button
             type="button"
-            onClick={() => setCurrentIndex((value) => Math.min(questions.length - 1, value + 1))}
+            onClick={goToNextQuestion}
             className="justify-self-start rounded-full bg-sky-500 px-6 py-3 text-sm font-bold text-white transition hover:bg-sky-600"
           >
             Next Question →

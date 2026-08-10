@@ -223,11 +223,11 @@ export function QuizPreview() {
         </div>
       ) : null}
 
-      {currentAnswer && question.explanation ? (
+      {currentAnswer && currentAnswer.explanation ? (
         <div className="rounded-2xl bg-sky-50 px-4 py-4 text-sm leading-6 text-sky-900">
           <span className="font-bold">Why: </span>
-          {question.explanation}
-          {question.scriptureReference ? <span className="text-sky-700"> ({question.scriptureReference})</span> : null}
+          {currentAnswer.explanation}
+          {currentAnswer.scriptureReference ? <span className="text-sky-700"> ({currentAnswer.scriptureReference})</span> : null}
         </div>
       ) : null}
 

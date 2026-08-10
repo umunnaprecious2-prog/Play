@@ -57,10 +57,14 @@ export async function getTodayChallenge(playerId: string) {
 
   return {
     alreadyCompleted: false,
+    // No scriptureReference here -- it names the source passage and can
+    // give the answer away before the player has picked one (e.g. a
+    // "which prophet" question whose reference is that prophet's own
+    // book). Returned from submitDailyChallengeAnswer's result instead,
+    // once the question is actually answered.
     question: {
       id: question.id,
       prompt: question.prompt,
-      scriptureReference: question.scriptureReference,
       category: question.category?.name ?? null,
       options: question.options.map((option) => ({ id: option.id, text: option.text })),
     },
@@ -122,6 +126,11 @@ export async function submitDailyChallengeAnswer(input: { playerId: string; ques
   return {
     player: updatedPlayer,
     rewards,
-    result: { isCorrect, xpAwarded, correctText: correctOption?.text ?? null },
+    result: {
+      isCorrect,
+      xpAwarded,
+      correctText: correctOption?.text ?? null,
+      scriptureReference: todaysQuestion.scriptureReference,
+    },
   };
 }

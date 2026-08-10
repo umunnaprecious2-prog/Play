@@ -26,12 +26,14 @@ export type ParentSummary = { id: string; email: string };
 export type ParentAuthResponse = { token: string; expiresAt: string; parent: ParentSummary };
 export type ParentMeResponse = { parent: ParentSummary; children: ChildProfile[] };
 
+// Deliberately no explanation/scriptureReference here -- the API no longer
+// sends either before the player answers, since both would reveal the
+// correct answer. They're only present on GameAnswerResult, returned once
+// the question has actually been answered.
 export type QuizQuestion = {
   id: string;
   slug: string;
   prompt: string;
-  explanation?: string | null;
-  scriptureReference?: string | null;
   imageUrl?: string | null;
   imageAlt?: string | null;
   xpReward: number;
@@ -44,6 +46,8 @@ export type GameAnswerResult = {
   xpAwarded: number;
   starsAwarded: number;
   correctText: string | null;
+  explanation?: string | null;
+  scriptureReference?: string | null;
   isComplete: boolean;
 };
 
@@ -71,12 +75,18 @@ export type Level = {
   attempts: number;
 };
 
+// No explanation/scriptureReference here -- the API only ever sends this ONE
+// question at a time (never the rest of the level's set), and withholds
+// both fields until after it's answered (see LevelAnswerResult).
+// hideLevelLabel is true for the rare question where the level's own name
+// (e.g. "Song of Solomon") would give the answer away just by being shown
+// on screen -- the frontend should display a neutral label instead for
+// this one question.
 export type LevelQuestion = {
   id: string;
   slug: string;
   prompt: string;
-  explanation?: string | null;
-  scriptureReference?: string | null;
+  hideLevelLabel: boolean;
   options: Array<{ id: string; text: string }>;
 };
 
@@ -94,6 +104,8 @@ export type LevelAnswerResult = {
   hintsUsed: number;
   starsAwarded: number;
   correctText: string | null;
+  explanation?: string | null;
+  scriptureReference?: string | null;
   isComplete: boolean;
   nextLevelSlug: string | null;
 };
@@ -160,11 +172,17 @@ export type WordSearchFoundResult = {
 };
 
 // Daily Bible Challenge
+// No scriptureReference here -- it's only sent after answering, on the
+// result below, since it would otherwise reveal the correct answer.
 export type DailyChallengeQuestion = {
   id: string;
   prompt: string;
-  scriptureReference?: string | null;
   category: string | null;
   options: Array<{ id: string; text: string }>;
 };
-export type DailyChallengeAnswerResult = { isCorrect: boolean; xpAwarded: number; correctText: string | null };
+export type DailyChallengeAnswerResult = {
+  isCorrect: boolean;
+  xpAwarded: number;
+  correctText: string | null;
+  scriptureReference?: string | null;
+};

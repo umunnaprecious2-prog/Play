@@ -93,9 +93,7 @@ export function DailyChallenge() {
         {result && !isCorrect && result.correctText ? (
           <p className="text-base font-semibold text-amber-700">The correct answer was &quot;{result.correctText}&quot;.</p>
         ) : null}
-        {today.question.scriptureReference ? (
-          <p className="text-sm text-slate-500">{today.question.scriptureReference}</p>
-        ) : null}
+        {result?.scriptureReference ? <p className="text-sm text-slate-500">{result.scriptureReference}</p> : null}
       </section>
     );
   }

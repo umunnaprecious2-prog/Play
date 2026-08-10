@@ -141,12 +141,16 @@ export async function startQuizSession(input: {
 
   return {
     session,
+    // Deliberately no explanation/scriptureReference here -- both name or
+    // describe the correct answer directly, so sending them before the
+    // player has answered would leak it straight through the API response
+    // regardless of what the UI chooses to render. They're returned from
+    // submitQuizAnswer's result instead, once the question is actually
+    // answered.
     questions: questions.map((question) => ({
       id: question.id,
       slug: question.slug,
       prompt: question.prompt,
-      explanation: question.explanation,
-      scriptureReference: question.scriptureReference,
       imageUrl: question.imageUrl,
       imageAlt: question.imageAlt,
       xpReward: question.xpReward,
@@ -268,6 +272,8 @@ export async function submitQuizAnswer(input: { sessionId: string; questionId: s
       xpAwarded,
       starsAwarded,
       correctText: correctOption?.text ?? null,
+      explanation: question.explanation,
+      scriptureReference: question.scriptureReference,
       isComplete,
     },
   };

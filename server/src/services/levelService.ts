@@ -1,6 +1,8 @@
+import type { Category, QuizOption, QuizQuestion } from "@prisma/client";
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { calculateLevel, updateStreak } from "../utils/gameMath";
+import { categoryNameRevealsAnswer } from "../utils/categoryLabelReveal";
 import { awardProgressRewards } from "./rewardService";
 import { abandonSession, answeredItemIds, findActiveLevelSession } from "./sessionResumeService";
 
@@ -19,6 +21,52 @@ function shuffle<T>(items: T[]): T[] {
   }
 
   return copy;
+}
+
+type FullQuestion = QuizQuestion & { options: QuizOption[]; category: Category | null };
+
+// The only shape a question is ever returned in before it's answered:
+// prompt, image, and shuffled options with no isCorrect flag -- deliberately
+// no explanation/scriptureReference (both would reveal the answer directly)
+// and, unlike the old bulk endpoint, only ever ONE question at a time, never
+// the rest of the level's set. hideLevelLabel tells the frontend when even
+// showing the level's own name would give this specific question away (see
+// categoryLabelReveal.ts) -- computed fresh each time, not hardcoded.
+function formatQuestionForPlay(question: FullQuestion) {
+  const correctOption = question.options.find((option) => option.isCorrect);
+  const hideLevelLabel =
+    Boolean(correctOption && question.category) &&
+    categoryNameRevealsAnswer({
+      categorySlug: question.category!.slug,
+      categoryName: question.category!.name,
+      correctText: correctOption!.text,
+      distractorTexts: question.options.filter((option) => !option.isCorrect).map((option) => option.text),
+    });
+
+  return {
+    id: question.id,
+    slug: question.slug,
+    prompt: question.prompt,
+    imageUrl: question.imageUrl,
+    imageAlt: question.imageAlt,
+    hideLevelLabel,
+    options: shuffle(question.options).map((option) => ({ id: option.id, text: option.text })),
+  };
+}
+
+type SessionMetadata = { categorySlug?: string; categoryId?: string; questionOrder?: string[] };
+
+function readMetadata(raw: unknown): SessionMetadata {
+  return (raw && typeof raw === "object" ? (raw as SessionMetadata) : {}) ?? {};
+}
+
+// Picks the next not-yet-answered question id, in this session's fixed
+// shuffled order. Falls back to the level's plain sortOrder if a session was
+// created before questionOrder started being stored (so an old in-flight
+// session still resumes sanely instead of erroring).
+function pickNextQuestionId(allQuestions: FullQuestion[], storedOrder: string[] | undefined, answeredIds: Set<string>): string | null {
+  const order = storedOrder && storedOrder.length > 0 ? storedOrder : allQuestions.map((q) => q.id);
+  return order.find((id) => !answeredIds.has(id)) ?? null;
 }
 
 export async function listLevelsForPlayer(playerId: string) {
@@ -94,9 +142,9 @@ export async function startLevelSession(input: { playerId: string; categorySlug:
     throw AppError.forbidden("Complete the previous level to unlock this one");
   }
 
-  const questions = await prisma.quizQuestion.findMany({
+  const questions: FullQuestion[] = await prisma.quizQuestion.findMany({
     where: { isActive: true, categoryId: category.id },
-    include: { options: { orderBy: { sortOrder: "asc" } }, category: true, difficulty: true },
+    include: { options: { orderBy: { sortOrder: "asc" } }, category: true },
     take: QUESTIONS_PER_LEVEL,
     orderBy: { sortOrder: "asc" },
   });
@@ -104,6 +152,8 @@ export async function startLevelSession(input: { playerId: string; categorySlug:
   if (questions.length === 0) {
     throw AppError.notFound("This level has no questions yet");
   }
+
+  const questionsById = new Map(questions.map((question) => [question.id, question]));
 
   // Resume an in-progress attempt at this exact level instead of always
   // starting over from question one -- unless the player explicitly asked
@@ -115,23 +165,18 @@ export async function startLevelSession(input: { playerId: string; categorySlug:
       await abandonSession(existing.id);
     } else {
       const answeredIds = await answeredItemIds(existing.id);
-      const remaining = questions.filter((question) => !answeredIds.has(question.id));
+      const storedOrder = readMetadata(existing.metadata).questionOrder;
+      const nextId = pickNextQuestionId(questions, storedOrder, answeredIds);
+      const nextQuestion = nextId ? questionsById.get(nextId) : undefined;
 
-      if (remaining.length > 0) {
+      if (nextQuestion) {
         return {
           session: existing,
           level: { slug: category.slug, name: category.name },
           resumed: true,
-          questions: shuffle(remaining).map((question) => ({
-            id: question.id,
-            slug: question.slug,
-            prompt: question.prompt,
-            explanation: question.explanation,
-            scriptureReference: question.scriptureReference,
-            imageUrl: question.imageUrl,
-            imageAlt: question.imageAlt,
-            options: shuffle(question.options).map((option) => ({ id: option.id, text: option.text })),
-          })),
+          totalQuestions: questions.length,
+          answeredOffset: answeredIds.size,
+          question: formatQuestionForPlay(nextQuestion),
         };
       }
       // Every question was already answered but the session never closed
@@ -140,12 +185,19 @@ export async function startLevelSession(input: { playerId: string; categorySlug:
     }
   }
 
+  // The shuffled order is fixed once, at session creation, and stored on the
+  // session so every later "give me the next question" call (on answer
+  // submission, or on a resume after a page refresh) walks the same
+  // sequence -- rather than exposing the whole 25-question set up front the
+  // way the old bulk endpoint did.
+  const questionOrder = shuffle(questions).map((question) => question.id);
+
   const session = await prisma.gameSession.create({
     data: {
       playerId: player.id,
       gameMode: LEVEL_GAME_MODE,
       totalQuestions: questions.length,
-      metadata: { categorySlug: category.slug, categoryId: category.id },
+      metadata: { categorySlug: category.slug, categoryId: category.id, questionOrder },
     },
   });
 
@@ -155,20 +207,15 @@ export async function startLevelSession(input: { playerId: string; categorySlug:
     update: { attempts: { increment: 1 } },
   });
 
+  const firstQuestion = questionsById.get(questionOrder[0])!;
+
   return {
     session,
     level: { slug: category.slug, name: category.name },
     resumed: false,
-    questions: shuffle(questions).map((question) => ({
-      id: question.id,
-      slug: question.slug,
-      prompt: question.prompt,
-      explanation: question.explanation,
-      scriptureReference: question.scriptureReference,
-      imageUrl: question.imageUrl,
-      imageAlt: question.imageAlt,
-      options: shuffle(question.options).map((option) => ({ id: option.id, text: option.text })),
-    })),
+    totalQuestions: questions.length,
+    answeredOffset: 0,
+    question: formatQuestionForPlay(firstQuestion),
   };
 }
 
@@ -357,6 +404,39 @@ export async function submitLevelAnswer(input: { sessionId: string; questionId: 
     }
   }
 
+  // The next question to hand the frontend, in this session's fixed shuffled
+  // order -- fetched fresh rather than kept from an earlier bulk query, so
+  // the API never has more than one unanswered question's data in flight at
+  // once. Only looked up when the level isn't finished.
+  let nextQuestion: ReturnType<typeof formatQuestionForPlay> | null = null;
+
+  if (!isLevelComplete) {
+    const answeredIds = await answeredItemIds(completedSession.id);
+    let orderList = readMetadata(completedSession.metadata).questionOrder;
+
+    if (!orderList || orderList.length === 0) {
+      // Sessions created before questionOrder started being stored -- fall
+      // back to the level's plain sortOrder so an old in-flight session
+      // still resumes sanely instead of erroring.
+      const fallback = await prisma.quizQuestion.findMany({
+        where: { isActive: true, categoryId: question.categoryId ?? undefined },
+        select: { id: true },
+        orderBy: { sortOrder: "asc" },
+        take: QUESTIONS_PER_LEVEL,
+      });
+      orderList = fallback.map((row) => row.id);
+    }
+
+    const nextId = orderList.find((id) => !answeredIds.has(id));
+    const nextQuestionRow = nextId
+      ? await prisma.quizQuestion.findUnique({ where: { id: nextId }, include: { options: true, category: true } })
+      : null;
+
+    if (nextQuestionRow) {
+      nextQuestion = formatQuestionForPlay(nextQuestionRow);
+    }
+  }
+
   const [rewards] = await Promise.all([
     awardProgressRewards(updatedPlayer.id, updatedPlayer),
     prisma.playerProgressLog.create({
@@ -376,12 +456,15 @@ export async function submitLevelAnswer(input: { sessionId: string; questionId: 
     player: updatedPlayer,
     answer,
     rewards,
+    nextQuestion,
     result: {
       isCorrect,
       pointsEarned,
       hintsUsed,
       starsAwarded,
       correctText: correctOption?.text ?? null,
+      explanation: question.explanation,
+      scriptureReference: question.scriptureReference,
       isComplete: isLevelComplete,
       nextLevelSlug,
     },

@@ -174,7 +174,7 @@
     { "slug": "matthew-apostle", "name": "Matthew", "categorySlug": "apostles", "sortOrder": 67, "clues": ["I collected taxes for Rome before I was called.", "Jesus said 'Follow me' as I sat at my tax booth.", "I wrote one of the four Gospels."] },
     { "slug": "silas", "name": "Silas", "categorySlug": "apostles", "sortOrder": 68, "clues": ["I was a leader among the early believers in Jerusalem.", "I traveled with Paul on his second missionary journey.", "I was beaten and imprisoned with Paul, and we sang hymns at midnight."] },
     { "slug": "timothy", "name": "Timothy", "categorySlug": "apostles", "sortOrder": 69, "clues": ["My mother and grandmother taught me the Scriptures from childhood.", "Paul called me his true son in the faith.", "Paul wrote two New Testament letters directly to me."] },
-    { "slug": "mark-apostle", "name": "Mark", "categorySlug": "apostles", "sortOrder": 70, "clues": ["I am also called John Mark.", "I traveled with Paul and Barnabas, then later with Peter.", "I wrote one of the four Gospels."] }
+    { "slug": "mark-apostle", "name": "Mark", "categorySlug": "apostles", "sortOrder": 70, "clues": ["In the book of Acts, I am referred to by two different names.", "I traveled with Paul and Barnabas, then later with Peter.", "I wrote one of the four Gospels."] }
   ],
   "stories": [
     {

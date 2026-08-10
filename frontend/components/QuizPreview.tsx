@@ -172,7 +172,10 @@ export function QuizPreview() {
       <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-lg">
         <p className="text-sm uppercase tracking-[0.2em] text-sky-200">Bible Quiz</p>
         <h3 className="mt-3 text-3xl font-black leading-tight">{question.prompt}</h3>
-        {question.scriptureReference ? <p className="mt-3 text-sm text-slate-300">{question.scriptureReference}</p> : null}
+        {/* Scripture reference is intentionally withheld until after answering --
+            for many questions (e.g. "which prophet was swallowed by a fish?"
+            with reference "Jonah 1:17") the reference alone gives the answer
+            away. Shown alongside the explanation below once answered instead. */}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">

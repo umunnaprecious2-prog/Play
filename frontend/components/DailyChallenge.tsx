@@ -87,6 +87,15 @@ export function DailyChallenge() {
         <p className="text-lg text-slate-700">
           {isCorrect ? `You got today's challenge right and earned ${xpAwarded} XP.` : "You've already answered today's challenge."}
         </p>
+        {/* Scripture reference is only ever shown here, after answering --
+            never on the question card itself, since it would give the
+            answer away before the child picks an option. */}
+        {result && !isCorrect && result.correctText ? (
+          <p className="text-base font-semibold text-amber-700">The correct answer was &quot;{result.correctText}&quot;.</p>
+        ) : null}
+        {today.question.scriptureReference ? (
+          <p className="text-sm text-slate-500">{today.question.scriptureReference}</p>
+        ) : null}
       </section>
     );
   }
@@ -103,7 +112,6 @@ export function DailyChallenge() {
       <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-lg">
         <p className="text-sm uppercase tracking-[0.2em] text-sunrise-200">One Question, Once a Day</p>
         <h3 className="mt-3 text-3xl font-black leading-tight">{today.question.prompt}</h3>
-        {today.question.scriptureReference ? <p className="mt-3 text-sm text-slate-300">{today.question.scriptureReference}</p> : null}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">

@@ -1,6 +1,8 @@
+import type { Prisma } from "@prisma/client";
 import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { calculateLevel, updateStreak } from "../utils/gameMath";
+import { awardProgressRewards } from "./rewardService";
 
 function shuffle<T>(items: T[]): T[] {
   const copy = [...items];
@@ -17,68 +19,23 @@ function normalizeText(value: string) {
   return value.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
-async function awardProgressRewards(playerId: string) {
-  const player = await prisma.playerProfile.findUnique({ where: { id: playerId } });
+// Picks `count` random question ids from everything matching `where`,
+// preferring ids the player hasn't answered recently so the same round
+// doesn't keep resurfacing. Falls back to the full pool (repeats allowed)
+// only once there genuinely aren't enough unseen questions left -- e.g. a
+// low-difficulty filter with a small pool, or a player who has worked
+// through most of it.
+async function pickRandomQuestionIds(input: {
+  where: Prisma.QuizQuestionWhereInput;
+  count: number;
+  excludeIds: Set<string>;
+}): Promise<string[]> {
+  const rows = await prisma.quizQuestion.findMany({ where: input.where, select: { id: true } });
+  const allIds = rows.map((row) => row.id);
+  const freshIds = allIds.filter((id) => !input.excludeIds.has(id));
+  const pool = freshIds.length >= input.count ? freshIds : allIds;
 
-  if (!player) {
-    throw AppError.notFound("Player profile not found");
-  }
-
-  const badges = await prisma.badge.findMany({
-    where: {
-      isActive: true,
-      xpThreshold: { lte: player.xp },
-      streakDaysNeeded: { lte: player.streakDays },
-    },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
-
-  const unlockedBadges = await prisma.playerBadge.findMany({ where: { playerId } });
-  const unlockedBadgeIds = new Set(unlockedBadges.map((badge) => badge.badgeId));
-  const badgesToUnlock = badges.filter((badge) => !unlockedBadgeIds.has(badge.id));
-
-  if (badgesToUnlock.length > 0) {
-    await prisma.playerBadge.createMany({
-      data: badgesToUnlock.map((badge) => ({ playerId, badgeId: badge.id })),
-      skipDuplicates: true,
-    });
-  }
-
-  const avatarItems = await prisma.avatarItem.findMany({
-    where: {
-      isActive: true,
-      unlockXp: { lte: player.xp },
-      unlockLevel: { lte: player.level },
-      unlockStreakDays: { lte: player.streakDays },
-    },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
-
-  const unlockedAvatars = await prisma.playerAvatarUnlock.findMany({ where: { playerId } });
-  const unlockedAvatarIds = new Set(unlockedAvatars.map((avatar) => avatar.avatarItemId));
-  const avatarsToUnlock = avatarItems.filter((avatar) => !unlockedAvatarIds.has(avatar.id));
-
-  if (avatarsToUnlock.length > 0) {
-    await prisma.playerAvatarUnlock.createMany({
-      data: avatarsToUnlock.map((avatar) => ({ playerId, avatarItemId: avatar.id })),
-      skipDuplicates: true,
-    });
-  }
-
-  const avatarSlug = player.avatarSlug || avatarsToUnlock[0]?.slug || null;
-
-  if (avatarSlug !== player.avatarSlug) {
-    await prisma.playerProfile.update({
-      where: { id: playerId },
-      data: { avatarSlug },
-    });
-  }
-
-  return {
-    badgesUnlocked: badgesToUnlock,
-    avatarsUnlocked: avatarsToUnlock,
-    avatarSlug,
-  };
+  return shuffle(pool).slice(0, input.count);
 }
 
 export async function createPlayerProfile(nickname: string, avatarSlug?: string | null) {
@@ -133,20 +90,41 @@ export async function startQuizSession(input: {
     throw AppError.notFound("Player profile not found");
   }
 
-  const questions = await prisma.quizQuestion.findMany({
-    where: {
-      isActive: true,
-      ...(input.categorySlug ? { category: { slug: input.categorySlug } } : {}),
-      ...(input.difficultySlug ? { difficulty: { slug: input.difficultySlug } } : {}),
-    },
-    include: { options: { orderBy: { sortOrder: "asc" } }, category: true, difficulty: true },
-    take: input.questionCount,
-    orderBy: { createdAt: "desc" },
-  });
+  const where: Prisma.QuizQuestionWhereInput = {
+    isActive: true,
+    ...(input.categorySlug ? { category: { slug: input.categorySlug } } : {}),
+    ...(input.difficultySlug ? { difficulty: { slug: input.difficultySlug } } : {}),
+  };
 
-  if (questions.length === 0) {
+  // Previously this always took the same `questionCount` most-recently-created
+  // questions (orderBy createdAt desc), so every Quick Practice/Trivia session
+  // showed the identical fixed set regardless of how many hundreds of
+  // questions actually exist -- the repetition the user reported in QA.
+  // Fixed by randomly sampling from the whole filtered pool, and preferring
+  // questions this player hasn't answered recently (last 300 quiz answers).
+  const recentAnswers = await prisma.gameSessionAnswer.findMany({
+    where: { session: { playerId: input.playerId, gameMode: "quiz" } },
+    select: { questionId: true },
+    orderBy: { answeredAt: "desc" },
+    take: 300,
+  });
+  const recentlySeenIds = new Set(
+    recentAnswers.map((row) => row.questionId).filter((id): id is string => Boolean(id)),
+  );
+
+  const chosenIds = await pickRandomQuestionIds({ where, count: input.questionCount, excludeIds: recentlySeenIds });
+
+  if (chosenIds.length === 0) {
     throw AppError.notFound("No quiz questions available for the requested filters");
   }
+
+  const orderIndex = new Map(chosenIds.map((id, index) => [id, index]));
+  const questions = (
+    await prisma.quizQuestion.findMany({
+      where: { id: { in: chosenIds } },
+      include: { options: { orderBy: { sortOrder: "asc" } }, category: true, difficulty: true },
+    })
+  ).sort((a, b) => (orderIndex.get(a.id) ?? 0) - (orderIndex.get(b.id) ?? 0));
 
   const session = await prisma.gameSession.create({
     data: {
@@ -218,60 +196,67 @@ export async function submitQuizAnswer(input: { sessionId: string; questionId: s
   const nextIncorrect = session.incorrectCount + (isCorrect ? 0 : 1);
   const nextStreak = updateStreak(session.player.lastActiveAt, session.player.streakDays);
 
-  const updatedPlayer = await prisma.playerProfile.update({
-    where: { id: session.playerId },
-    data: {
-      xp: nextXp,
-      level: calculateLevel(nextXp),
-      stars: session.player.stars + starsAwarded,
-      streakDays: nextStreak,
-      lastActiveAt: new Date(),
-      totalGamesPlayed: session.player.totalGamesPlayed + (session.correctCount + session.incorrectCount + 1 >= session.totalQuestions ? 1 : 0),
-      totalCorrect: session.player.totalCorrect + (isCorrect ? 1 : 0),
-      totalIncorrect: session.player.totalIncorrect + (isCorrect ? 0 : 1),
-    },
-  });
-
-  const answer = await prisma.gameSessionAnswer.create({
-    data: {
-      sessionId: session.id,
-      questionId: question.id,
-      selectedText: input.selectedText,
-      isCorrect,
-      xpAwarded,
-      metadata: { correctText: correctOption?.text ?? null },
-    },
-  });
-
   const totalAnswered = session.correctCount + session.incorrectCount + 1;
   const isComplete = totalAnswered >= session.totalQuestions;
 
-  const completedSession = await prisma.gameSession.update({
-    where: { id: session.id },
-    data: {
-      correctCount: nextCorrect,
-      incorrectCount: nextIncorrect,
-      xpEarned: session.xpEarned + xpAwarded,
-      starsEarned: session.starsEarned + starsAwarded,
-      currentQuestion: totalAnswered,
-      score: session.score + (isCorrect ? 100 : 0),
-      status: isComplete ? "COMPLETED" : "ACTIVE",
-      completedAt: isComplete ? new Date() : null,
-    },
-  });
+  // These three writes touch different rows (player, answer, session) and
+  // none of them reads another's result, so they don't need to happen one
+  // at a time -- previously sequential, which added three full round trips
+  // to every answer submission for no reason.
+  const [updatedPlayer, answer, completedSession] = await Promise.all([
+    prisma.playerProfile.update({
+      where: { id: session.playerId },
+      data: {
+        xp: nextXp,
+        level: calculateLevel(nextXp),
+        stars: session.player.stars + starsAwarded,
+        streakDays: nextStreak,
+        lastActiveAt: new Date(),
+        totalGamesPlayed: session.player.totalGamesPlayed + (session.correctCount + session.incorrectCount + 1 >= session.totalQuestions ? 1 : 0),
+        totalCorrect: session.player.totalCorrect + (isCorrect ? 1 : 0),
+        totalIncorrect: session.player.totalIncorrect + (isCorrect ? 0 : 1),
+      },
+    }),
+    prisma.gameSessionAnswer.create({
+      data: {
+        sessionId: session.id,
+        questionId: question.id,
+        selectedText: input.selectedText,
+        isCorrect,
+        xpAwarded,
+        metadata: { correctText: correctOption?.text ?? null },
+      },
+    }),
+    prisma.gameSession.update({
+      where: { id: session.id },
+      data: {
+        correctCount: nextCorrect,
+        incorrectCount: nextIncorrect,
+        xpEarned: session.xpEarned + xpAwarded,
+        starsEarned: session.starsEarned + starsAwarded,
+        currentQuestion: totalAnswered,
+        score: session.score + (isCorrect ? 100 : 0),
+        status: isComplete ? "COMPLETED" : "ACTIVE",
+        completedAt: isComplete ? new Date() : null,
+      },
+    }),
+  ]);
 
-  const rewards = await awardProgressRewards(updatedPlayer.id);
-
-  await prisma.playerProgressLog.create({
-    data: {
-      playerId: updatedPlayer.id,
-      actionType: isCorrect ? "QUIZ_CORRECT" : "QUIZ_INCORRECT",
-      xpDelta: xpAwarded,
-      starsDelta: starsAwarded,
-      streakDelta: isCorrect ? 1 : 0,
-      metadata: { sessionId: completedSession.id, questionId: question.id, answerId: answer.id },
-    },
-  });
+  // Reward evaluation and the progress-log write are independent of each
+  // other too.
+  const [rewards] = await Promise.all([
+    awardProgressRewards(updatedPlayer.id, updatedPlayer),
+    prisma.playerProgressLog.create({
+      data: {
+        playerId: updatedPlayer.id,
+        actionType: isCorrect ? "QUIZ_CORRECT" : "QUIZ_INCORRECT",
+        xpDelta: xpAwarded,
+        starsDelta: starsAwarded,
+        streakDelta: isCorrect ? 1 : 0,
+        metadata: { sessionId: completedSession.id, questionId: question.id, answerId: answer.id },
+      },
+    }),
+  ]);
 
   return {
     session: completedSession,
@@ -301,7 +286,7 @@ export async function getPlayerProgress(playerId: string) {
     throw AppError.notFound("Player profile not found");
   }
 
-  const rewards = await awardProgressRewards(playerId);
+  const rewards = await awardProgressRewards(playerId, player);
 
   return {
     player,
@@ -459,60 +444,61 @@ export async function submitMemoryVerseAnswer(input: { sessionId: string; verseI
   const nextIncorrect = session.incorrectCount + (isCorrect ? 0 : 1);
   const nextStreak = updateStreak(session.player.lastActiveAt, session.player.streakDays);
 
-  const updatedPlayer = await prisma.playerProfile.update({
-    where: { id: session.playerId },
-    data: {
-      xp: nextXp,
-      level: calculateLevel(nextXp),
-      stars: session.player.stars + starsAwarded,
-      streakDays: nextStreak,
-      lastActiveAt: new Date(),
-      totalGamesPlayed: session.player.totalGamesPlayed + (session.correctCount + session.incorrectCount + 1 >= session.totalQuestions ? 1 : 0),
-      totalCorrect: session.player.totalCorrect + (isCorrect ? 1 : 0),
-      totalIncorrect: session.player.totalIncorrect + (isCorrect ? 0 : 1),
-    },
-  });
-
-  const answer = await prisma.gameSessionAnswer.create({
-    data: {
-      sessionId: session.id,
-      questionId: verse.id,
-      selectedText: input.answerText,
-      isCorrect,
-      xpAwarded,
-      metadata: { correctText: verse.text },
-    },
-  });
-
   const totalAnswered = session.correctCount + session.incorrectCount + 1;
   const isComplete = totalAnswered >= session.totalQuestions;
 
-  const completedSession = await prisma.gameSession.update({
-    where: { id: session.id },
-    data: {
-      correctCount: nextCorrect,
-      incorrectCount: nextIncorrect,
-      xpEarned: session.xpEarned + xpAwarded,
-      starsEarned: session.starsEarned + starsAwarded,
-      currentQuestion: totalAnswered,
-      score: session.score + (isCorrect ? 100 : 0),
-      status: isComplete ? "COMPLETED" : "ACTIVE",
-      completedAt: isComplete ? new Date() : null,
-    },
-  });
+  const [updatedPlayer, answer, completedSession] = await Promise.all([
+    prisma.playerProfile.update({
+      where: { id: session.playerId },
+      data: {
+        xp: nextXp,
+        level: calculateLevel(nextXp),
+        stars: session.player.stars + starsAwarded,
+        streakDays: nextStreak,
+        lastActiveAt: new Date(),
+        totalGamesPlayed: session.player.totalGamesPlayed + (session.correctCount + session.incorrectCount + 1 >= session.totalQuestions ? 1 : 0),
+        totalCorrect: session.player.totalCorrect + (isCorrect ? 1 : 0),
+        totalIncorrect: session.player.totalIncorrect + (isCorrect ? 0 : 1),
+      },
+    }),
+    prisma.gameSessionAnswer.create({
+      data: {
+        sessionId: session.id,
+        questionId: verse.id,
+        selectedText: input.answerText,
+        isCorrect,
+        xpAwarded,
+        metadata: { correctText: verse.text },
+      },
+    }),
+    prisma.gameSession.update({
+      where: { id: session.id },
+      data: {
+        correctCount: nextCorrect,
+        incorrectCount: nextIncorrect,
+        xpEarned: session.xpEarned + xpAwarded,
+        starsEarned: session.starsEarned + starsAwarded,
+        currentQuestion: totalAnswered,
+        score: session.score + (isCorrect ? 100 : 0),
+        status: isComplete ? "COMPLETED" : "ACTIVE",
+        completedAt: isComplete ? new Date() : null,
+      },
+    }),
+  ]);
 
-  const rewards = await awardProgressRewards(updatedPlayer.id);
-
-  await prisma.playerProgressLog.create({
-    data: {
-      playerId: updatedPlayer.id,
-      actionType: isCorrect ? "MEMORY_VERSE_CORRECT" : "MEMORY_VERSE_INCORRECT",
-      xpDelta: xpAwarded,
-      starsDelta: starsAwarded,
-      streakDelta: isCorrect ? 1 : 0,
-      metadata: { sessionId: completedSession.id, verseId: verse.id, answerId: answer.id },
-    },
-  });
+  const [rewards] = await Promise.all([
+    awardProgressRewards(updatedPlayer.id, updatedPlayer),
+    prisma.playerProgressLog.create({
+      data: {
+        playerId: updatedPlayer.id,
+        actionType: isCorrect ? "MEMORY_VERSE_CORRECT" : "MEMORY_VERSE_INCORRECT",
+        xpDelta: xpAwarded,
+        starsDelta: starsAwarded,
+        streakDelta: isCorrect ? 1 : 0,
+        metadata: { sessionId: completedSession.id, verseId: verse.id, answerId: answer.id },
+      },
+    }),
+  ]);
 
   return {
     session: completedSession,

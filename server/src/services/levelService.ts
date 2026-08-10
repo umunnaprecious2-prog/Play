@@ -239,10 +239,15 @@ export async function requestLevelHint(input: { sessionId: string; questionId: s
 }
 
 export async function submitLevelAnswer(input: { sessionId: string; questionId: string; selectedText: string }) {
-  const session = await prisma.gameSession.findUnique({
-    where: { id: input.sessionId },
-    include: { player: true },
-  });
+  // None of these three reads depend on each other's data -- each only
+  // needs input.sessionId/input.questionId, which are already known -- so
+  // fetching them one at a time was three sequential round trips for no
+  // reason. Same fix as gameService's answer-submission paths.
+  const [session, question, hintsUsed] = await Promise.all([
+    prisma.gameSession.findUnique({ where: { id: input.sessionId }, include: { player: true } }),
+    prisma.quizQuestion.findUnique({ where: { id: input.questionId }, include: { options: true, category: true } }),
+    prisma.gameSessionHint.count({ where: { sessionId: input.sessionId, questionId: input.questionId } }),
+  ]);
 
   if (!session || session.gameMode !== LEVEL_GAME_MODE) {
     throw AppError.notFound("Level session not found");
@@ -252,18 +257,9 @@ export async function submitLevelAnswer(input: { sessionId: string; questionId: 
     throw AppError.badRequest("This level session has already ended");
   }
 
-  const question = await prisma.quizQuestion.findUnique({
-    where: { id: input.questionId },
-    include: { options: true, category: true },
-  });
-
   if (!question) {
     throw AppError.notFound("Quiz question not found");
   }
-
-  const hintsUsed = await prisma.gameSessionHint.count({
-    where: { sessionId: session.id, questionId: input.questionId },
-  });
 
   const correctOption = question.options.find((option) => option.isCorrect);
   const isCorrect = Boolean(correctOption && correctOption.text === input.selectedText);
@@ -275,48 +271,49 @@ export async function submitLevelAnswer(input: { sessionId: string; questionId: 
   const nextIncorrect = session.incorrectCount + (isCorrect ? 0 : 1);
   const nextStreak = updateStreak(session.player.lastActiveAt, session.player.streakDays);
 
-  const updatedPlayer = await prisma.playerProfile.update({
-    where: { id: session.playerId },
-    data: {
-      xp: nextXp,
-      level: calculateLevel(nextXp),
-      stars: session.player.stars + starsAwarded,
-      streakDays: nextStreak,
-      lastActiveAt: new Date(),
-      totalGamesPlayed:
-        session.player.totalGamesPlayed + (session.correctCount + session.incorrectCount + 1 >= session.totalQuestions ? 1 : 0),
-      totalCorrect: session.player.totalCorrect + (isCorrect ? 1 : 0),
-      totalIncorrect: session.player.totalIncorrect + (isCorrect ? 0 : 1),
-    },
-  });
-
-  const answer = await prisma.gameSessionAnswer.create({
-    data: {
-      sessionId: session.id,
-      questionId: question.id,
-      selectedText: input.selectedText,
-      isCorrect,
-      xpAwarded: pointsEarned,
-      metadata: { correctText: correctOption?.text ?? null, hintsUsed, pointsEarned },
-    },
-  });
-
   const totalAnswered = session.correctCount + session.incorrectCount + 1;
   const isLevelComplete = totalAnswered >= session.totalQuestions;
 
-  const completedSession = await prisma.gameSession.update({
-    where: { id: session.id },
-    data: {
-      correctCount: nextCorrect,
-      incorrectCount: nextIncorrect,
-      xpEarned: session.xpEarned + pointsEarned,
-      starsEarned: session.starsEarned + starsAwarded,
-      currentQuestion: totalAnswered,
-      score: session.score + pointsEarned,
-      status: isLevelComplete ? "COMPLETED" : "ACTIVE",
-      completedAt: isLevelComplete ? new Date() : null,
-    },
-  });
+  // Same independent-writes-in-parallel fix as gameService.ts's answer paths.
+  const [updatedPlayer, answer, completedSession] = await Promise.all([
+    prisma.playerProfile.update({
+      where: { id: session.playerId },
+      data: {
+        xp: nextXp,
+        level: calculateLevel(nextXp),
+        stars: session.player.stars + starsAwarded,
+        streakDays: nextStreak,
+        lastActiveAt: new Date(),
+        totalGamesPlayed:
+          session.player.totalGamesPlayed + (session.correctCount + session.incorrectCount + 1 >= session.totalQuestions ? 1 : 0),
+        totalCorrect: session.player.totalCorrect + (isCorrect ? 1 : 0),
+        totalIncorrect: session.player.totalIncorrect + (isCorrect ? 0 : 1),
+      },
+    }),
+    prisma.gameSessionAnswer.create({
+      data: {
+        sessionId: session.id,
+        questionId: question.id,
+        selectedText: input.selectedText,
+        isCorrect,
+        xpAwarded: pointsEarned,
+        metadata: { correctText: correctOption?.text ?? null, hintsUsed, pointsEarned },
+      },
+    }),
+    prisma.gameSession.update({
+      where: { id: session.id },
+      data: {
+        correctCount: nextCorrect,
+        incorrectCount: nextIncorrect,
+        xpEarned: session.xpEarned + pointsEarned,
+        starsEarned: session.starsEarned + starsAwarded,
+        currentQuestion: totalAnswered,
+        score: session.score + pointsEarned,
+        status: isLevelComplete ? "COMPLETED" : "ACTIVE",
+        completedAt: isLevelComplete ? new Date() : null,
+      },
+    }),
+  ]);
 
   let nextLevelSlug: string | null = null;
 
@@ -360,18 +357,19 @@ export async function submitLevelAnswer(input: { sessionId: string; questionId: 
     }
   }
 
-  const rewards = await awardProgressRewards(updatedPlayer.id);
-
-  await prisma.playerProgressLog.create({
-    data: {
-      playerId: updatedPlayer.id,
-      actionType: isCorrect ? "LEVEL_QUIZ_CORRECT" : "LEVEL_QUIZ_INCORRECT",
-      xpDelta: pointsEarned,
-      starsDelta: starsAwarded,
-      streakDelta: isCorrect ? 1 : 0,
-      metadata: { sessionId: completedSession.id, questionId: question.id, answerId: answer.id, hintsUsed },
-    },
-  });
+  const [rewards] = await Promise.all([
+    awardProgressRewards(updatedPlayer.id, updatedPlayer),
+    prisma.playerProgressLog.create({
+      data: {
+        playerId: updatedPlayer.id,
+        actionType: isCorrect ? "LEVEL_QUIZ_CORRECT" : "LEVEL_QUIZ_INCORRECT",
+        xpDelta: pointsEarned,
+        starsDelta: starsAwarded,
+        streakDelta: isCorrect ? 1 : 0,
+        metadata: { sessionId: completedSession.id, questionId: question.id, answerId: answer.id, hintsUsed },
+      },
+    }),
+  ]);
 
   return {
     session: completedSession,

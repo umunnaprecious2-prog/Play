@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma, PlayerProfile } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { calculateLevel, updateStreak } from "../utils/gameMath";
 import { AppError } from "../exceptions/AppError";
@@ -52,54 +52,66 @@ async function countTotalLevelsCompleted(playerId: string): Promise<number> {
 // the one shared implementation; levelService.ts previously had its own
 // separate copy that didn't check the milestone threshold below, since that
 // threshold didn't exist yet.
-export async function awardProgressRewards(playerId: string) {
-  const player = await prisma.playerProfile.findUnique({ where: { id: playerId } });
+//
+// This runs after every single answer submission in every game, so its
+// latency directly adds to "how long until the correct/incorrect feedback
+// shows up" -- it was previously ~7 sequential DB round trips (refetching a
+// player the caller had usually just fetched already, then four independent
+// lookups one at a time, then two unlock writes one at a time). Fixed by
+// accepting an already-loaded player (skips the redundant refetch) and
+// running the independent reads/writes in parallel instead of in sequence --
+// same queries, same result, far fewer round trips end to end. This matters
+// most against a real network-hop database (production's Neon connection),
+// where each sequential round trip adds real, felt latency.
+export async function awardProgressRewards(playerId: string, preloadedPlayer?: PlayerProfile) {
+  const player = preloadedPlayer ?? (await prisma.playerProfile.findUnique({ where: { id: playerId } }));
 
   if (!player) {
     throw AppError.notFound("Player profile not found");
   }
 
-  const totalLevelsCompleted = await countTotalLevelsCompleted(playerId);
+  const [totalLevelsCompleted, eligibleBadges, unlockedBadges, avatarItems, unlockedAvatars] = await Promise.all([
+    countTotalLevelsCompleted(playerId),
+    prisma.badge.findMany({
+      where: { isActive: true, xpThreshold: { lte: player.xp }, streakDaysNeeded: { lte: player.streakDays } },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    }),
+    prisma.playerBadge.findMany({ where: { playerId } }),
+    prisma.avatarItem.findMany({
+      where: {
+        isActive: true,
+        unlockXp: { lte: player.xp },
+        unlockLevel: { lte: player.level },
+        unlockStreakDays: { lte: player.streakDays },
+      },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    }),
+    prisma.playerAvatarUnlock.findMany({ where: { playerId } }),
+  ]);
 
-  const eligibleBadges = await prisma.badge.findMany({
-    where: { isActive: true, xpThreshold: { lte: player.xp }, streakDaysNeeded: { lte: player.streakDays } },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
   const badges = eligibleBadges.filter(
     (badge) => badge.levelsCompletedThreshold == null || totalLevelsCompleted >= badge.levelsCompletedThreshold,
   );
-
-  const unlockedBadges = await prisma.playerBadge.findMany({ where: { playerId } });
   const unlockedBadgeIds = new Set(unlockedBadges.map((badge) => badge.badgeId));
   const badgesToUnlock = badges.filter((badge) => !unlockedBadgeIds.has(badge.id));
 
-  if (badgesToUnlock.length > 0) {
-    await prisma.playerBadge.createMany({
-      data: badgesToUnlock.map((badge) => ({ playerId, badgeId: badge.id })),
-      skipDuplicates: true,
-    });
-  }
-
-  const avatarItems = await prisma.avatarItem.findMany({
-    where: {
-      isActive: true,
-      unlockXp: { lte: player.xp },
-      unlockLevel: { lte: player.level },
-      unlockStreakDays: { lte: player.streakDays },
-    },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
-
-  const unlockedAvatars = await prisma.playerAvatarUnlock.findMany({ where: { playerId } });
   const unlockedAvatarIds = new Set(unlockedAvatars.map((avatar) => avatar.avatarItemId));
   const avatarsToUnlock = avatarItems.filter((avatar) => !unlockedAvatarIds.has(avatar.id));
 
-  if (avatarsToUnlock.length > 0) {
-    await prisma.playerAvatarUnlock.createMany({
-      data: avatarsToUnlock.map((avatar) => ({ playerId, avatarItemId: avatar.id })),
-      skipDuplicates: true,
-    });
-  }
+  await Promise.all([
+    badgesToUnlock.length > 0
+      ? prisma.playerBadge.createMany({
+          data: badgesToUnlock.map((badge) => ({ playerId, badgeId: badge.id })),
+          skipDuplicates: true,
+        })
+      : null,
+    avatarsToUnlock.length > 0
+      ? prisma.playerAvatarUnlock.createMany({
+          data: avatarsToUnlock.map((avatar) => ({ playerId, avatarItemId: avatar.id })),
+          skipDuplicates: true,
+        })
+      : null,
+  ]);
 
   return { badgesUnlocked: badgesToUnlock, avatarsUnlocked: avatarsToUnlock };
 }

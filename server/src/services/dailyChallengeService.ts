@@ -87,32 +87,37 @@ export async function submitDailyChallengeAnswer(input: { playerId: string; ques
   const xpAwarded = isCorrect ? DAILY_POINTS : 0;
   const starsAwarded = isCorrect ? 1 : 0;
 
-  const updatedPlayer = await applyPlayerReward(input.playerId, {
-    xpDelta: xpAwarded,
-    starsDelta: starsAwarded,
-    isCorrect,
-    countsAsGamePlayed: true,
-  });
-
-  await prisma.dailyChallengeCompletion.create({
-    data: {
-      playerId: input.playerId,
-      challengeDate: date,
-      questionId: todaysQuestion.id,
+  // These two writes are independent of each other, same as the parallel
+  // fixes applied to the other games' answer-submission paths.
+  const [updatedPlayer] = await Promise.all([
+    applyPlayerReward(input.playerId, {
+      xpDelta: xpAwarded,
+      starsDelta: starsAwarded,
       isCorrect,
-      xpAwarded,
-    },
-  });
+      countsAsGamePlayed: true,
+    }),
+    prisma.dailyChallengeCompletion.create({
+      data: {
+        playerId: input.playerId,
+        challengeDate: date,
+        questionId: todaysQuestion.id,
+        isCorrect,
+        xpAwarded,
+      },
+    }),
+  ]);
 
-  const rewards = await awardProgressRewards(updatedPlayer.id);
-  await logProgress({
-    playerId: updatedPlayer.id,
-    actionType: isCorrect ? "DAILY_CHALLENGE_CORRECT" : "DAILY_CHALLENGE_INCORRECT",
-    xpDelta: xpAwarded,
-    starsDelta: starsAwarded,
-    streakDelta: isCorrect ? 1 : 0,
-    metadata: { questionId: todaysQuestion.id },
-  });
+  const [rewards] = await Promise.all([
+    awardProgressRewards(updatedPlayer.id, updatedPlayer),
+    logProgress({
+      playerId: updatedPlayer.id,
+      actionType: isCorrect ? "DAILY_CHALLENGE_CORRECT" : "DAILY_CHALLENGE_INCORRECT",
+      xpDelta: xpAwarded,
+      starsDelta: starsAwarded,
+      streakDelta: isCorrect ? 1 : 0,
+      metadata: { questionId: todaysQuestion.id },
+    }),
+  ]);
 
   return {
     player: updatedPlayer,

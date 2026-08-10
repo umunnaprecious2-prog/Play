@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ServiceWorkerRegistration } from "../components/ServiceWorkerRegistration";
 import { BackNav } from "../components/BackNav";
+import { ColdStartBanner } from "../components/ColdStartBanner";
 
 export const metadata: Metadata = {
   title: "Play - Bible Adventure for Kids & Adults",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <ColdStartBanner />
         <BackNav />
         {children}
         <ServiceWorkerRegistration />

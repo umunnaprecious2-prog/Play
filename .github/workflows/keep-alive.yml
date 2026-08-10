@@ -1,0 +1,23 @@
+name: Keep Render backend warm
+
+# Render's free tier spins the backend down after a period of inactivity,
+# so the first real player request after idle time can take 50+ seconds
+# ("cold start"). Pinging the health endpoint on a schedule keeps it from
+# going idle in the first place for most of the day, without paying for an
+# always-on plan. This does not guarantee zero cold starts -- Render can
+# still sleep the service between pings, or the schedule can be delayed
+# under GitHub Actions' best-effort cron -- so the frontend also has its own
+# friendly "waking up" loading state for whenever a cold start does happen.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health endpoint
+        run: |
+          curl -fsS --max-time 90 "https://play-api-hb7f.onrender.com/api/health" || \
+          curl -fsS --max-time 90 "https://play-api-hb7f.onrender.com/api/health"

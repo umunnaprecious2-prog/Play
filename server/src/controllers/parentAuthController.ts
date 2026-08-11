@@ -1,10 +1,12 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
+import { extractToken } from "../middlewares/auth";
 import {
   addChildProfile,
   claimGuestProfile,
   listChildren,
   loginParent,
+  logoutParent,
   signupParent,
 } from "../services/parentAuthService";
 
@@ -20,6 +22,13 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   const result = await loginParent(email, password);
 
   res.status(200).json({ success: true, data: result });
+});
+
+export const logout = asyncHandler(async (req: Request, res: Response) => {
+  const token = extractToken(req);
+  if (token) await logoutParent(token);
+
+  res.status(200).json({ success: true, data: { loggedOut: true } });
 });
 
 export const me = asyncHandler(async (req: Request, res: Response) => {

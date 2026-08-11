@@ -38,6 +38,13 @@ export async function loginAdmin(email: string, password: string) {
   };
 }
 
+export async function logoutAdmin(token: string) {
+  // Deleting by tokenHash, not id, so this can only ever revoke the exact
+  // session the caller actually holds -- there's no way to pass another
+  // admin's session id and log them out instead.
+  await prisma.adminSession.deleteMany({ where: { tokenHash: hashToken(token) } });
+}
+
 export async function getCurrentAdmin(token: string) {
   const session = await prisma.adminSession.findUnique({
     where: { tokenHash: hashToken(token) },

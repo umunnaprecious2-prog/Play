@@ -114,6 +114,18 @@ export default function AccountPage() {
   }
 
   function handleSignOut() {
+    // Revoke the session server-side (best-effort) so the token can't still
+    // be used if it ever leaked, instead of only forgetting it locally --
+    // previously this cleared localStorage only, leaving the token valid on
+    // the server for up to PARENT_SESSION_TTL_DAYS regardless of "signing out".
+    const token = getParentToken();
+    if (token) {
+      void apiFetch("/parents/logout", { method: "POST", authToken: token }).catch(() => {
+        // Sign-out should never get the user stuck signed in locally just
+        // because the revoke call failed (offline, cold-starting API, etc.)
+      });
+    }
+
     clearParentToken();
     setParentEmail(null);
     setChildren([]);

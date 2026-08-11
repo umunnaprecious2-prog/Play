@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { addChild, claimChild, login, me, signup } from "../controllers/parentAuthController";
+import { addChild, claimChild, login, logout, me, signup } from "../controllers/parentAuthController";
 import { authenticateParent } from "../middlewares/auth";
+import { authLimiter } from "../middlewares/rateLimit";
 import { validateBody } from "../middlewares/validate";
 import { addChildSchema, claimChildSchema, parentLoginSchema, parentSignupSchema } from "../validators/parentAuthValidators";
 
@@ -35,7 +36,7 @@ const router = Router();
  *       409:
  *         description: An account with this email already exists
  */
-router.post("/signup", validateBody(parentSignupSchema), signup);
+router.post("/signup", authLimiter, validateBody(parentSignupSchema), signup);
 
 /**
  * @swagger
@@ -59,7 +60,7 @@ router.post("/signup", validateBody(parentSignupSchema), signup);
  *       401:
  *         description: Invalid email or password
  */
-router.post("/login", validateBody(parentLoginSchema), login);
+router.post("/login", authLimiter, validateBody(parentLoginSchema), login);
 
 /**
  * @swagger
@@ -80,6 +81,21 @@ router.post("/login", validateBody(parentLoginSchema), login);
  *         description: Missing or invalid/expired session token
  */
 router.get("/me", authenticateParent, me);
+
+/**
+ * @swagger
+ * /parents/logout:
+ *   post:
+ *     tags: [Parents]
+ *     summary: Revoke the current parent session server-side
+ *     description: Deletes this session's token from the database so it can no longer be used, even before it naturally expires. Signing out on the frontend now calls this instead of only clearing the local token.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logged out
+ */
+router.post("/logout", authenticateParent, logout);
 
 /**
  * @swagger

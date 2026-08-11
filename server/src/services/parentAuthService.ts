@@ -71,6 +71,12 @@ export async function loginParent(email: string, password: string) {
   return { ...session, parent: serializeParent(parent) };
 }
 
+export async function logoutParent(token: string) {
+  // Deleting by tokenHash, not id, so this can only ever revoke the exact
+  // session the caller actually holds.
+  await prisma.parentSession.deleteMany({ where: { tokenHash: hashToken(token) } });
+}
+
 export async function getCurrentParentSession(token: string) {
   const session = await prisma.parentSession.findUnique({
     where: { tokenHash: hashToken(token) },

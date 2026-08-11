@@ -3,7 +3,7 @@ import { AppError } from "../exceptions/AppError";
 import { prisma } from "../lib/prisma";
 import { hashToken } from "../utils/token";
 
-function extractToken(req: Request): string | null {
+export function extractToken(req: Request): string | null {
   const header = req.headers.authorization;
 
   if (header?.startsWith("Bearer ")) {

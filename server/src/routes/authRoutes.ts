@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { login, me } from "../controllers/authController";
+import { login, logout, me } from "../controllers/authController";
 import { authenticateAdmin } from "../middlewares/auth";
+import { authLimiter } from "../middlewares/rateLimit";
 import { validateBody } from "../middlewares/validate";
 import { loginSchema } from "../validators/authValidators";
 
@@ -34,7 +35,7 @@ const router = Router();
  *       401:
  *         description: Invalid admin credentials
  */
-router.post("/login", validateBody(loginSchema), login);
+router.post("/login", authLimiter, validateBody(loginSchema), login);
 
 /**
  * @swagger
@@ -55,5 +56,20 @@ router.post("/login", validateBody(loginSchema), login);
  *         description: Missing or invalid/expired admin token
  */
 router.get("/me", authenticateAdmin, me);
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Revoke the current admin session server-side
+ *     description: Deletes this session's token from the database so it can no longer be used, even before it naturally expires.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logged out
+ */
+router.post("/logout", authenticateAdmin, logout);
 
 export default router;

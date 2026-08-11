@@ -222,7 +222,7 @@ export function CharacterGuess({ levelSlug }: { levelSlug: string }) {
             onChange={(event) => setGuess(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && submitGuess()}
             placeholder="Type your guess..."
-            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base outline-none transition focus:border-gold-400 focus:ring-4 focus:ring-gold-100"
+            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base outline-none transition focus:border-gold-400 focus:ring-4 focus:ring-gold-100"
           />
           <div className="flex flex-wrap gap-3">
             <button

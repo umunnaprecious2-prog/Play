@@ -168,7 +168,7 @@ export default function AccountPage() {
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="parent@example.com"
                 required
-                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base outline-none transition focus:border-royal-400 focus:ring-4 focus:ring-royal-100"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base outline-none transition focus:border-royal-400 focus:ring-4 focus:ring-royal-100"
               />
             </label>
 
@@ -309,7 +309,7 @@ export default function AccountPage() {
               onChange={(event) => setNewNickname(event.target.value)}
               placeholder="Little Lamp"
               maxLength={40}
-              className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base outline-none transition focus:border-sunrise-400 focus:ring-4 focus:ring-sunrise-100"
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base outline-none transition focus:border-sunrise-400 focus:ring-4 focus:ring-sunrise-100"
             />
           </label>
 

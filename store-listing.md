@@ -50,11 +50,11 @@ Primary: Education
 Secondary: Trivia (if the store allows a secondary category)
 
 ## Support URL
-https://play-frontend-cz51.onrender.com (or the final production domain, if
-one gets set up before submission)
+https://play-frontend-static.onrender.com (or the final production domain,
+if one gets set up before submission)
 
 ## Privacy Policy URL
-https://play-frontend-cz51.onrender.com/privacy
+https://play-frontend-static.onrender.com/privacy
 
 ## Content rating questionnaire — prep notes
 Answering these accurately in each console's actual questionnaire (can't be

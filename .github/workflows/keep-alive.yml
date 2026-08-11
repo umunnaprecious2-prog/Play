@@ -1,23 +1,24 @@
 name: Keep Render services warm
 
-# Render's free tier spins a web service down after a period of inactivity,
-# so the first real request after idle time can take 50+ seconds ("cold
-# start") -- and while it's asleep, Render shows its OWN branded "waking up"
-# splash page (ASCII art, server logs) before the real app ever loads, not
-# anything from this codebase. play-api and play-frontend are two SEPARATE
-# Render web services (render.yaml), each with its own independent idle
-# clock, so both need their own ping -- pinging only the API left the
-# frontend free to fall asleep on its own and show Render's raw splash
-# screen to real visitors, which is what this fixed (previously this
-# workflow only pinged the backend).
+# Render's free tier spins a web SERVICE (a live process) down after a
+# period of inactivity, so the first real request after idle time can take
+# 50+ seconds ("cold start") -- and while it's asleep, Render shows its OWN
+# branded "waking up" splash page (ASCII art, server logs) before the real
+# app ever loads, not anything from this codebase.
 #
-# Pinging on a schedule keeps both from going idle in the first place for
-# most of the day, without paying for an always-on plan. This does not
-# guarantee zero cold starts -- Render can still sleep a service between
-# pings, or the schedule can be delayed under GitHub Actions' best-effort
-# cron -- so the frontend app itself also has its own friendly "waking up"
-# loading state (ColdStartBanner) for whenever a cold start still happens
-# once the frontend has actually loaded.
+# Only play-api (render.yaml) is a live Web Service subject to this. The
+# frontend used to be one too (play-frontend, pinged here previously) but
+# has since been replaced by play-frontend-static, a Render Static Site --
+# pre-built files served directly with no process to ever sleep, so it has
+# no cold start to ping around and is deliberately not pinged here.
+#
+# Pinging the API on a schedule keeps it from going idle in the first place
+# for most of the day, without paying for an always-on plan. This does not
+# guarantee zero cold starts -- Render can still sleep it between pings, or
+# the schedule can be delayed under GitHub Actions' best-effort cron -- so
+# the frontend app itself also has its own friendly "waking up" loading
+# state (ColdStartBanner) for whenever a cold start still happens on the
+# API after the (never-sleeping) frontend has loaded.
 on:
   schedule:
     - cron: "*/10 * * * *"
@@ -31,7 +32,3 @@ jobs:
         run: |
           curl -fsS --max-time 90 "https://play-api-hb7f.onrender.com/api/health" || \
           curl -fsS --max-time 90 "https://play-api-hb7f.onrender.com/api/health"
-      - name: Ping frontend
-        run: |
-          curl -fsS --max-time 90 -o /dev/null "https://play-frontend-cz51.onrender.com/" || \
-          curl -fsS --max-time 90 -o /dev/null "https://play-frontend-cz51.onrender.com/"

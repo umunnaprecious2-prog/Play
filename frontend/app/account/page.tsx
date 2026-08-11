@@ -236,9 +236,9 @@ export default function AccountPage() {
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto flex max-w-3xl flex-col gap-6 py-10">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/70 bg-white/80 p-6 shadow-soft backdrop-blur">
-          <div>
+          <div className="min-w-0">
             <span className="text-sm font-bold uppercase tracking-[0.2em] text-royal-500">Account</span>
-            <h1 className="mt-1 text-2xl font-black text-slate-900">{parentEmail}</h1>
+            <h1 className="mt-1 break-words text-2xl font-black text-slate-900">{parentEmail}</h1>
           </div>
           <button
             type="button"

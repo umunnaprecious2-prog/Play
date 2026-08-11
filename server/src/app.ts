@@ -33,7 +33,23 @@ const allowedOrigins = [
   ...(process.env.NODE_ENV !== "production" ? ["http://localhost:3000"] : []),
 ];
 
-app.use(helmet());
+app.use(
+  helmet({
+    // Everything else stays Helmet's default CSP (already reasonably strict
+    // and confirmed working for both the JSON API and the self-hosted
+    // Swagger UI at /api-docs). The one directive worth tightening:
+    // frame-ancestors defaults to 'self', but nothing in this app -- API
+    // responses or the Swagger docs -- is ever legitimately embedded in an
+    // iframe, including one on this same origin, so 'none' is strictly
+    // better here with no functional cost.
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "frame-ancestors": ["'none'"],
+      },
+    },
+  }),
+);
 app.use(
   cors({
     origin(origin, callback) {

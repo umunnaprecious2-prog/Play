@@ -15,10 +15,18 @@ name: Keep Render services warm
 # Pinging the API on a schedule keeps it from going idle in the first place
 # for most of the day, without paying for an always-on plan. This does not
 # guarantee zero cold starts -- Render can still sleep it between pings, or
-# the schedule can be delayed under GitHub Actions' best-effort cron -- so
-# the frontend app itself also has its own friendly "waking up" loading
-# state (ColdStartBanner) for whenever a cold start still happens on the
-# API after the (never-sleeping) frontend has loaded.
+# the schedule can be delayed under GitHub Actions' best-effort cron, or (as
+# observed directly: a real ping once timed out even at 2x90s because Neon,
+# the database, was also cold-starting on top of the API itself) a slow
+# wake-up can just take longer than the timeout on a given run -- so the
+# frontend app itself also has its own friendly "waking up" loading state
+# (ColdStartBanner) for whenever a cold start still happens on the API after
+# the (never-sleeping) frontend has loaded.
+#
+# continue-on-error below is deliberate: an occasional slow/failed ping here
+# is an expected, unremarkable outcome of the free tier this is working
+# around, not an incident -- so it shouldn't mark the whole run "failed" and
+# fire GitHub's default failure-notification email every time it happens.
 on:
   schedule:
     - cron: "*/10 * * * *"
@@ -29,6 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping backend health endpoint
+        continue-on-error: true
         run: |
           curl -fsS --max-time 90 "https://play-api-hb7f.onrender.com/api/health" || \
           curl -fsS --max-time 90 "https://play-api-hb7f.onrender.com/api/health"

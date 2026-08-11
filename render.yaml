@@ -23,38 +23,21 @@ services:
       - key: ADMIN_BOOTSTRAP_PASSWORD
         sync: false
 
-  # Next.js frontend (Web Service -- see play-frontend-static below, which is
-  # replacing this). Left in place, unmodified, until play-frontend-static is
-  # confirmed working live -- Render can't convert an existing service's type
-  # in place via Blueprint sync, only create new ones, so the old one has to
-  # be deleted manually in the dashboard once the new one is verified.
-  - type: web
-    name: play-frontend
-    runtime: node
-    plan: free
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    startCommand: npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      # The "play-api" name was already taken on Render, so it got assigned this
-      # suffixed URL instead of the plain https://play-api.onrender.com. If play-api
-      # is ever recreated under a different name/URL, update this to match.
-      - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://play-api-hb7f.onrender.com/api
-
-  # Next.js frontend, static-exported. play-frontend above is a free-tier Web
-  # Service, meaning it's a live Node process that Render puts to sleep after
-  # inactivity -- the first request after that shows Render's own "waking
-  # up" splash page (not this app's UI) and can take 50+ seconds. This app
-  # has zero Next.js API routes of its own (every real API call goes to the
-  # separate play-api service) and every page already builds as static/SSG
-  # content, so it doesn't need a live server at all. A Render Static Site
-  # serves pre-built files directly with no process to sleep -- eliminating
-  # the splash-screen problem entirely, for free, rather than just reducing
-  # its frequency the way the keep-alive ping (.github/workflows/keep-alive.yml)
-  # does for services that do need to stay running.
+  # Next.js frontend, static-exported. Deployed as a Render Static Site
+  # (files served directly, no live process) rather than a Web Service,
+  # since this app has zero Next.js API routes of its own (every real API
+  # call goes to the separate play-api service above) and every page already
+  # builds as static/SSG content -- so it doesn't need a live server at all.
+  # That means it never sleeps and never shows Render's own "waking up"
+  # splash page, unlike a free-tier Web Service.
+  #
+  # This replaces a former "play-frontend" Web Service (deleted by the user
+  # from the Render dashboard -- Blueprint sync can create new services but
+  # can't convert or delete existing ones). That service's URL,
+  # play-frontend-cz51.onrender.com, is permanently retired along with it --
+  # Render doesn't allow a URL to be reassigned to a different service, by
+  # rename or otherwise, so don't reintroduce a same-named service expecting
+  # to recover it.
   - type: web
     name: play-frontend-static
     runtime: static

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:mobile": "cross-env CAPACITOR_BUILD=1 NEXT_PUBLIC_API_BASE_URL=https://play-api-hb7f.onrender.com/api next build",
+    "build:mobile": "cross-env CAPACITOR_BUILD=1 NEXT_PUBLIC_API_BASE_URL=https://play-api-hb7f.onrender.com/api next build && node scripts/stripMobileOnlyAssets.mjs",
     "cap:sync": "npm run build:mobile && npx cap sync"
   },
   "dependencies": {
